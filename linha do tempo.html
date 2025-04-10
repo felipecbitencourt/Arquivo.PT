@@ -1,121 +1,392 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Como Checar Notícias</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f9f9f9;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo Completa de Fake News | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset e Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            color: #ff0000;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-    header {
-      background-color: #0057a3;
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease;
+        }
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
-    }
+        /* Linha do Tempo */
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+            margin: 0 auto;
+        }
+        /* Linha vertical */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #ff0000;
+        }
+        
+        /* Items da linha do tempo */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #333;
+        }
+        /* Bolinha do ano */
+        .timeline-year {
+            position: absolute;
+            left: -50px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        /* Conteúdo do item */
+        .timeline-content {
+            background: #111;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.1);
+            border-left: 3px solid #ff0000;
+        }
+        .timeline-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .timeline-image {
+            width: 100%;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #333;
+            max-height: 400px;
+            object-fit: cover;
+        }
+        .timeline-text {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        .timeline-source {
+            color: #777;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        .timeline-source a {
+            color: #ff5555;
+            text-decoration: none;
+        }
+        .timeline-source a:hover {
+            text-decoration: underline;
+        }
 
-    h2 {
-      color: #0057a3;
-    }
+        /* Destaque para fatos importantes */
+        .timeline-fact {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border-left: 3px solid #ff0000;
+        }
 
-    .passo {
-      background-color: #fff;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-left: 5px solid #0057a3;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .timeline {
+                padding-left: 30px;
+            }
+            .timeline::before {
+                left: 15px;
+            }
+            .timeline-year {
+                left: -30px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .timeline-content {
+                padding: 1.5rem;
+            }
+            .timeline-title {
+                font-size: 1.5rem;
+            }
+        }
 
-    .fontes-confiaveis ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .fontes-confiaveis li {
-      margin-bottom: 0.5rem;
-    }
-
-    .quiz {
-      background-color: #e0f0ff;
-      padding: 1rem;
-      margin-top: 2rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background-color: #eee;
-    }
-  </style>
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Como Checar Notícias</h1>
-    <p>Evite cair em fake news. Aprenda a verificar a veracidade de uma informação.</p>
-  </header>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <header class="page-header">
+            <h1>LINHA DO TEMPO DAS FAKE NEWS</h1>
+            <p>As notícias falsas mais impactantes da última década e como foram desmascaradas</p>
+        </header>
 
-  <main>
-    <h2>🧭 Passo a passo para checar uma notícia</h2>
+        <!-- Linha do Tempo -->
+        <div class="timeline">
+            
+            <!-- 2010 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2010</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Obama é muçulmano"</h3>
+                    <img src="https://images.unsplash.com/photo-1562670652-e5947bddb335?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Presidente Barack Obama" class="timeline-image">
+                    <p class="timeline-text">
+                        Circulou nos EUA a falsa informação de que o presidente Barack Obama seria muçulmano e não cristão como sempre declarou. A teoria ganhou força em grupos conservadores.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 18% dos americanos acreditavam nesta fake news em 2015 (Pew Research Center)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Jornalistas comprovaram a frequência de Obama em igrejas cristãs e seu batismo. O próprio presidente divulgou sua certidão de nascimento para combater desinformação.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20100804120000/http://www.nytimes.com/2010/08/05/us/politics/05obama.html" target="_blank">Arquivo.pt - NY Times (2010)</a>
+                    </p>
+                </div>
+            </div>
 
-    <div class="passo">
-      <h3>1. Leia além do título</h3>
-      <p>Muitos títulos são sensacionalistas ou enganosos. Leia o conteúdo completo da matéria antes de formar uma opinião.</p>
+            <!-- 2012 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2012</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Fim do mundo maia"</h3>
+                    <img src="https://images.unsplash.com/photo-1542606835-5ddc0bb3c7bb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Calendário maia" class="timeline-image">
+                    <p class="timeline-text">
+                        A interpretação equivocada do calendário maia levou milhões a acreditarem que o mundo acabaria em 21/12/2012. Vídeos e posts alarmistas se espalharam globalmente.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 10% dos americanos estocaram suprimentos (National Geographic)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Arqueólogos explicaram que a data marcava apenas o fim de um ciclo no calendário maia, não o apocalipse. A NASA divulgou comunicado oficial desmentindo.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20121215120000/http://www.nasa.gov/topics/earth/features/2012.html" target="_blank">Arquivo.pt - NASA (2012)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2014 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2014</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Ebola nos EUA" (Teoria da conspiração)</h3>
+                    <img src="https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Profissional de saúde com equipamento de proteção" class="timeline-image">
+                    <p class="timeline-text">
+                        Durante o surto de Ebola na África, circularam teorias de que o governo dos EUA estaria espalhando o vírus deliberadamente ou que ele seria transmitido pelo ar.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 37% dos americanos temiam pegar Ebola (Washington Post)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Especialistas em saúde pública explicaram os modos reais de transmissão. Apenas 4 casos foram confirmados nos EUA, todos em profissionais de saúde que trataram pacientes na África.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20141001120000/https://www.cdc.gov/vhf/ebola/index.html" target="_blank">Arquivo.pt - CDC (2014)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2016 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2016</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Pizzagate" - Teoria da conspiração</h3>
+                    <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Pizzaria envolvida no caso" class="timeline-image">
+                    <p class="timeline-text">
+                        Teoria falsa afirmava que políticos democratas dos EUA operavam uma rede de tráfico sexual numa pizzaria em Washington. A fake news levou um homem a invadir o local armado.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 46% dos republicanos acreditavam em alguma versão da história (YouGov)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Investigações policiais e jornalísticas comprovaram a falsidade das acusações. Tornou-se caso emblemático de desinformação política.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20161221124503/https://www.nytimes.com/2016/11/22/us/politics/05pizzagate.html" target="_blank">Arquivo.pt - NY Times (2016)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2018 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2018</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Vacinas causam autismo"</h3>
+                    <img src="https://images.unsplash.com/photo-1575505586569-646b2ca898fc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Campanha de vacinação" class="timeline-image">
+                    <p class="timeline-text">
+                        A falsa ligação entre vacinas e autismo, baseada em estudo fraudulento de 1998, ressurgiu globalmente. No Brasil, grupos antivacina usaram redes sociais para espalhar desinformação.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> Queda de 20% na cobertura vacinal no Brasil (Ministério da Saúde)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> A comunidade científica reafirmou a segurança das vacinas. O estudo original foi retratado e seu autor perdeu a licença médica.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20181015120000/https://g1.globo.com/ciencia-e-saude/noticia/2018/10/15/oms-alerta-para-aumento-de-casos-de-sarampo-no-mundo-brasil-tem-quase-2-mil.ghtml" target="_blank">Arquivo.pt - G1 (2018)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2019 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2019</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Mamadeira erótica" nas escolas</h3>
+                    <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Protesto contra suposta mamadeira erótica" class="timeline-image">
+                    <p class="timeline-text">
+                        Circulou no Brasil a falsa informação de que o governo distribuiria "mamadeiras com bico em forma de pênis" e "kit gay" em escolas. Levou a protestos e ataques a professores.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 58% dos brasileiros acreditavam em alguma versão da história (Datafolha)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> O MEC e secretarias de educação negaram a existência do material. Jornalistas rastrearam a origem da falsa imagem da mamadeira.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20190515120000/https://www1.folha.uol.com.br/educacao/2019/05/ministerio-da-educacao-nega-ter-produzido-mamadeira-com-bico-em-forma-de-penis.shtml" target="_blank">Arquivo.pt - Folha (2019)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2020 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2020</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Cloroquina cura COVID-19"</h3>
+                    <img src="https://images.unsplash.com/photo-1584483766114-2cea6facdf57?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Comprimidos de cloroquina" class="timeline-image">
+                    <p class="timeline-text">
+                        No auge da pandemia, espalhou-se que a cloroquina seria cura eficaz contra COVID-19. A desinformação foi amplificada por autoridades, levando a automedicação perigosa e desvio do medicamento.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 35% dos brasileiros tentaram obter cloroquina (Datafolha)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Estudos robustos comprovaram sua ineficácia. A OMS alertou sobre os riscos. O próprio criador da hidroxicloroquina desmentiu seu uso para COVID.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20200617120000/https://www1.folha.uol.com.br/equilibrioesaude/2020/06/oms-interrompe-testes-com-hidroxicloroquina-contra-covid-19.shtml" target="_blank">Arquivo.pt - Folha (2020)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2021 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2021</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Chips nas vacinas da COVID"</h3>
+                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Vacina contra COVID-19" class="timeline-image">
+                    <p class="timeline-text">
+                        Teorias afirmavam que vacinas contra COVID-19 continham microchips para rastreamento populacional, supostamente patrocinados por Bill Gates. Viralizou em grupos antivacina.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 28% dos americanos acreditavam na história (Reuters)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Especialistas em vacinas explicaram a impossibilidade física de chips nas agulhas. Bill Gates desmentiu pessoalmente. Fotos de supostos "chips" eram de outras peças eletrônicas.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20210115120000/https://www.bbc.com/portuguese/internacional-55678738" target="_blank">Arquivo.pt - BBC (2021)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2022</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">"Urnas eletrônicas fraudadas"</h3>
+                    <img src="https://images.unsplash.com/photo-1551524559-8af4e6624178?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Urna eletrônica brasileira" class="timeline-image">
+                    <p class="timeline-text">
+                        Durante as eleições brasileiras, circularam alegações infundadas de fraude nas urnas eletrônicas. Vídeos manipulados e afirmações sem provas questionavam o processo eleitoral.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 53% dos eleitores de um candidato desconfiavam das urnas (Datafolha)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Especialistas em tecnologia e o TSE demonstraram a segurança do sistema. Auditorias independentes confirmaram a confiabilidade das urnas.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20221005120000/https://www.bbc.com/portuguese/brasil-63149167" target="_blank">Arquivo.pt - BBC (2022)</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="timeline-item">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Deepfakes políticos</h3>
+                    <img src="https://images.unsplash.com/photo-1677442135136-760c813a743d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Exemplo de deepfake" class="timeline-image">
+                    <p class="timeline-text">
+                        Vídeos falsos gerados por IA de políticos fazendo declarações polêmicas se tornaram comuns. Caso famoso: suposto vídeo do presidente Lula defendendo confisco de poupanças.
+                    </p>
+                    <div class="timeline-fact">
+                        <strong>Impacto:</strong> 60% das pessoas não identificam deepfakes (MIT Study)
+                    </div>
+                    <p class="timeline-text">
+                        <strong>Como foi desmentido:</strong> Agências de checagem identificaram inconsistências (sincronia labial imperfeita, tom de voz artificial). O político negou em canais oficiais.
+                    </p>
+                    <p class="timeline-source">
+                        Fonte: <a href="https://arquivo.pt/wayback/20230515120000/https://www.aosfatos.org/noticias/deepfake-de-lula-sobre-confisco-de-poupancas-e-falso/" target="_blank">Arquivo.pt - Aos Fatos (2023)</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <div class="passo">
-      <h3>2. Verifique a fonte</h3>
-      <p>O site é confiável? É conhecido por divulgar boatos ou por fazer jornalismo sério?</p>
-    </div>
-
-    <div class="passo">
-      <h3>3. Procure em sites de checagem</h3>
-      <p>Várias plataformas verificam se notícias viraram boatos ou não.</p>
-    </div>
-
-    <div class="passo">
-      <h3>4. Veja a data e o contexto</h3>
-      <p>Notícias antigas ou tiradas de contexto podem enganar mesmo sendo verdadeiras originalmente.</p>
-    </div>
-
-    <div class="passo">
-      <h3>5. Pesquise por outras fontes</h3>
-      <p>Outros portais confiáveis também estão falando sobre o assunto? Isso é sinal de credibilidade.</p>
-    </div>
-
-    <h2>🔍 Fontes confiáveis de checagem</h2>
-    <div class="fontes-confiaveis">
-      <ul>
-        <li><a href="https://www.aosfatos.org" target="_blank">Aos Fatos</a></li>
-        <li><a href="https://www.boatos.org" target="_blank">Boatos.org</a></li>
-        <li><a href="https://lupa.uol.com.br" target="_blank">Agência Lupa</a></li>
-        <li><a href="https://www.factcheck.org/" target="_blank">FactCheck.org (EUA)</a></li>
-      </ul>
-    </div>
-
-    <div class="quiz">
-      <h2>🧠 Mini Quiz: Você saberia checar?</h2>
-      <p><strong>Exemplo:</strong> “Nova lei exige chip em todos os cidadãos até 2025.”</p>
-      <p><em>Verdadeiro ou Falso?</em></p>
-      <!-- Pode colocar botões de resposta e um feedback interativo aqui -->
-      <button onclick="alert('FALSO! Essa é uma fake news clássica já desmentida por várias agências de checagem.')">Falso</button>
-      <button onclick="alert('Ops! Na verdade essa é uma fake news. A lei mencionada nem existe.')">Verdadeiro</button>
-    </div>
-  </main>
-
-  <footer>
-    <p>Parte do projeto para a Competição do Arquivo.pt | 2025</p>
-  </footer>
 </body>
 </html>
