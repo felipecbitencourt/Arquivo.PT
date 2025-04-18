@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terra Plana: Linha do Tempo de Desinformação | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset e Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            color: #ff0000;
+        }
+        
+        /* Cabeçalho */
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .timeline-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        .timeline-header p {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Linha do Tempo */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 50px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #ff0000;
+        }
+        
+        /* Itens da Linha */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #333;
+        }
+        .timeline-year {
+            position: absolute;
+            left: -50px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            color: white;
+        }
+        .timeline-content {
+            background: #111;
+            border-radius: 10px;
+            padding: 2rem;
+            border-left: 3px solid #ff0000;
+        }
+        .timeline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .timeline-source {
+            display: inline-block;
+            background: #222;
+            color: #ff5555;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+        .timeline-source:hover {
+            background: #333;
+        }
+        .timeline-text {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        .timeline-image {
+            max-width: 100%;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #333;
+        }
+        .timeline-divider {
+            height: 1px;
+            background: #333;
+            margin: 1.5rem 0;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .timeline {
+                padding-left: 30px;
+            }
+            .timeline::before {
+                left: 15px;
+            }
+            .timeline-year {
+                left: -30px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .timeline-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-header">
+        <h1>TERRA PLANA: CRONOLOGIA DA DESINFORMAÇÃO</h1>
+        <p>Como uma teoria marginal do século 19 se tornou viral na era digital - registros do Arquivo.pt</p>
+    </div>
+    
+    <div class="timeline">
+        <!-- 2004 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2004</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Primeiros fóruns online ressuscitam a teoria</h3>
+                <a href="https://arquivo.pt/wayback/20041010120000/http://www.theflatearthsociety.org/" class="timeline-source" target="_blank">Flat Earth Society (arquivado)</a>
+                <p class="timeline-text">Fóruns da Flat Earth Society ganham tração com alegações de "conspiração global" da NASA.</p>
+                <div class="timeline-divider"></div>
+                <p><strong>Contexto:</strong> Uso de supostas "inconsistências" em fotos da NASA como "prova".</p>
+            </div>
+        </div>
+        
+        <!-- 2015 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2015</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Vídeo "NASA Lies" viraliza no YouTube</h3>
+                <a href="https://arquivo.pt/wayback/20151215120000/https://www.youtube.com/watch?v=VUYorYivwJY" class="timeline-source" target="_blank">YouTube (arquivado)</a>
+                <p class="timeline-text">Vídeo com "análises" de imagens da NASA atinge 5 milhões de visualizações.</p>
+                <div class="timeline-divider"></div>
+                <p><strong>Técnica:</strong> Uso de softwares de edição para "provar" manipulação de imagens.</p>
+            </div>
+        </div>
+        
+        <!-- 2017 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2017</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Celebridades promovem terra plana</h3>
+                <a href="https://arquivo.pt/wayback/20170210120000/https://www.bbc.com/portuguese/internacional-38932562" class="timeline-source" target="_blank">BBC Brasil (arquivado)</a>
+                <p class="timeline-text">Astro do basquete Kyrie Irving declara publicamente acreditar na teoria.</p>
+                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Globo terrestre" class="timeline-image">
+            </div>
+        </div>
+        
+        <!-- 2018 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2018</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Documentário "Behind the Curve"</h3>
+                <a href="https://arquivo.pt/wayback/20181115120000/https://www.netflix.com/title/81015076" class="timeline-source" target="_blank">Netflix (arquivado)</a>
+                <p class="timeline-text">Filme expõe táticas do movimento, incluindo experimentos que refutam suas próprias teorias.</p>
+                <div class="timeline-divider"></div>
+                <p><strong>Ironia:</strong> Os criadores do documentário usaram equipamentos de GPS que dependem da curvatura terrestre.</p>
+            </div>
+        </div>
+        
+        <!-- 2020 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2020</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Pandemia impulsiona teorias</h3>
+                <a href="https://arquivo.pt/wayback/20200510120000/https://www.publico.pt/2020/05/10/ciencia/noticia/covid19-desinformacao-terra-plana-1916585" class="timeline-source" target="_blank">Público (arquivado)</a>
+                <p class="timeline-text">Teóricos da terra plana associam COVID-19 a "controle mental para esconder a verdade".</p>
+            </div>
+        </div>
+        
+        <!-- 2023 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2023</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">IA gera "provas" de terra plana</h3>
+                <a href="https://arquivo.pt/wayback/20230415120000/https://www.wired.com/story/flat-earthers-ai-generated-images/" class="timeline-source" target="_blank">Wired (arquivado)</a>
+                <p class="timeline-text">Midjourney e Stable Diffusion são usados para criar imagens realistas de "borda da Terra".</p>
+                <div class="timeline-divider"></div>
+                <p><strong>Dado:</strong> 72% das imagens de terra plana no Twitter em 2023 eram IA (MIT Study).</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
