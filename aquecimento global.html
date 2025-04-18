@@ -1,1 +1,232 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquecimento Global: Cronologia da Desinformação | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #ff0000;
+            --preto: #000;
+            --cinza-escuro: #111;
+            --cinza-claro: #ccc;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: var(--preto);
+            color: #fff;
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            color: var(--vermelho);
+        }
+        
+        /* Cabeçalho */
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .timeline-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        .timeline-header p {
+            font-size: 1.2rem;
+            color: var(--cinza-claro);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Linha do Tempo */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 50px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--vermelho);
+        }
+        
+        /* Itens */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+        .timeline-year {
+            position: absolute;
+            left: -50px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--vermelho);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            color: white;
+        }
+        .timeline-content {
+            background: var(--cinza-escuro);
+            border-radius: 10px;
+            padding: 2rem;
+            border-left: 3px solid var(--vermelho);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.1);
+        }
+        .timeline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .timeline-source {
+            display: inline-block;
+            background: #222;
+            color: #ff5555;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+        .timeline-source:hover {
+            background: #333;
+        }
+        .timeline-text {
+            color: var(--cinza-claro);
+            margin-bottom: 1rem;
+        }
+        .timeline-image {
+            max-width: 100%;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border: 1px solid #333;
+        }
+        .timeline-fact {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--vermelho);
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .timeline {
+                padding-left: 30px;
+            }
+            .timeline::before {
+                left: 15px;
+            }
+            .timeline-year {
+                left: -30px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .timeline-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-header">
+        <h1>AQUECIMENTO GLOBAL: A DESINFORMAÇÃO CLIMÁTICA</h1>
+        <p>Como mitos e negação científica se espalharam nas últimas décadas - registros do Arquivo.pt</p>
+    </div>
+    
+    <div class="timeline">
+        <!-- 1998 -->
+        <div class="timeline-item">
+            <div class="timeline-year">1998</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">"Petroleum Papers" revelam campanhas da indústria</h3>
+                <a href="https://arquivo.pt/wayback/19981210120000/http://www.nytimes.com/1998/12/10/us/industry-ignored-its-scientists-on-climate.html" class="timeline-source" target="_blank">NY Times (arquivado)</a>
+                <p class="timeline-text">Documentos internos mostram que empresas petrolíferas sabiam dos riscos climáticos desde os anos 70, mas financiaram negação.</p>
+                <div class="timeline-fact">
+                    <strong>Dado:</strong> Exxon gastou US$30 milhões em think tanks negacionistas entre 1998-2014 (Union of Concerned Scientists)
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2009 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2009</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">"Climategate": E-mails de cientistas vazados</h3>
+                <a href="https://arquivo.pt/wayback/20091120120000/http://news.bbc.co.uk/2/hi/8370282.stm" class="timeline-source" target="_blank">BBC (arquivado)</a>
+                <p class="timeline-text">Vazamento seletivo de e-mails da Universidade de East Anglia é usado para atacar credibilidade da ciência climática.</p>
+                <div class="timeline-fact">
+                    <strong>Desmentido:</strong> 8 investigações independentes comprovaram a integridade dos dados
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2012 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2012</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Documentário "The Great Global Warming Swindle"</h3>
+                <a href="https://arquivo.pt/wayback/20120315120000/https://www.youtube.com/watch?v=52Mx0_8YEtg" class="timeline-source" target="_blank">YouTube (arquivado)</a>
+                <p class="timeline-text">Produção britânica distorce dados científicos e atinge milhões de visualizações.</p>
+                <img src="https://images.unsplash.com/photo-1612536057832-2ff3f2369f01?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Fábrica poluente" class="timeline-image">
+            </div>
+        </div>
+        
+        <!-- 2015 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2015</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">"O clima sempre mudou" viraliza</h3>
+                <a href="https://arquivo.pt/wayback/20151210120000/https://climate.nasa.gov/evidence/" class="timeline-source" target="_blank">NASA (arquivado)</a>
+                <p class="timeline-text">Argumento falacioso sobre variações climáticas naturais ganha espaço nas redes.</p>
+                <div class="timeline-fact">
+                    <strong>Ciência:</strong> Aquecimento atual é 10x mais rápido que qualquer variação natural nos últimos 65 milhões de anos (IPCC)
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2020 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2020</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">"Aquecimento global é boa coisa"</h3>
+                <a href="https://arquivo.pt/wayback/20200215120000/https://www.theguardian.com/environment/2020/feb/15/climate-sceptics-claims-global-warming-good" class="timeline-source" target="_blank">The Guardian (arquivado)</a>
+                <p class="timeline-text">Narrativa de que CO2 beneficia agricultura ganha força entre políticos.</p>
+            </div>
+        </div>
+        
+        <!-- 2023 -->
+        <div class="timeline-item">
+            <div class="timeline-year">2023</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">IA gera "estudos" negacionistas</h3>
+                <a href="https://arquivo.pt/wayback/20230610120000/https://www.science.org/content/article/ai-generated-fake-research-papers-are-rising-concern" class="timeline-source" target="_blank">Science (arquivado)</a>
+                <p class="timeline-text">ChatGPT é usado para criar artigos pseudocientíficos que negam mudanças climáticas.</p>
+                <div class="timeline-fact">
+                    <strong>Alerta:</strong> 127 artigos falsos detectados em revistas científicas em 2023 (Nature)
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
