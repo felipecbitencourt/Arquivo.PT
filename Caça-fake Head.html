@@ -1,0 +1,861 @@
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="screen active" id="startScreen">
+            <header>
+                <h1 style="color: var(--primary)">CAÇA FAKES</h1>
+                <p class="subtitle">Você consegue identificar uma fake news?
+                    Teste sua habilidade em distinguir notícias verdadeiras de falsas do ARQUIVO.PT e descubra quais conteúdos foram gerados por inteligência artificial!</p>
+            </header>
+
+            <div class="mode-selector">
+                <button class="mode-btn" onclick="selectMode('normal', event)">
+                    <i class="fas fa-play-circle" style="color: var(--primary)"></i>
+                    <h3>Modo Normal</h3>
+                    <p>Jogue no seu ritmo</p>
+                </button>
+                <button class="mode-btn" onclick="selectMode('timed', event)">
+                    <i class="fas fa-clock" style="color: var(--primary)"></i>
+                    <h3>Modo Cronômetro</h3>
+                    <p>1 minuto para desafiar</p>
+                </button>
+            </div>
+            
+            <button class="nav-btn" id="startBtn" onclick="startGame()" style="display: none; margin: 0 auto;">
+                COMEÇAR JOGO
+            </button>
+        </div>
+
+        <!-- Phase 1 Screen -->
+        <div class="screen phase-screen" id="phase1Screen">
+            <div class="phase-icon" style="color: var(--phase1)">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase1)">FASE 1: FAKES FAMOSAS</h2>
+            <p class="phase-description">
+                Identifique notícias falsas que se tornaram virais e estão armazenadas no ARQUIVO.PT. Esta fase ajuda a reconhecer padrões comuns de desinformação.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase1')" style="background-color: var(--phase1)">
+                INICIAR FASE 1
+            </button>
+        </div>
+
+        <!-- Phase 2 Screen -->
+        <div class="screen phase-screen" id="phase2Screen">
+            <div class="phase-icon" style="color: var(--phase2)">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase2)">FASE 2: VAIS PRECISAR DE UM OLHAR ATENTO...</h2>
+            <p class="phase-description">
+                Desafie-se com fake news mais sofisticadas que exigem atenção aos detalhes.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase2')" style="background-color: var(--phase2)">
+                INICIAR FASE 2
+            </button>
+        </div>
+
+        <!-- Phase 3 Screen -->
+        <div class="screen phase-screen" id="phase3Screen">
+            <div class="phase-icon" style="color: var(--phase3)">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase3)">FASE 3: DESAFIO IA</h2>
+            <p class="phase-description">
+                O teste final! Identifique imagens geradas por inteligência artificial.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase3')" style="background-color: var(--phase3); color: #333;">
+                INICIAR FASE 3
+            </button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="game-header">
+                <h1 style="color: var(--primary)">CAÇA FAKES</h1>
+                <div class="phase-tag" id="phaseTag"></div>
+                <div class="timer-container" id="timerContainer" style="display: none;">
+                    Tempo: <span class="timer" id="timer">01:00</span>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="image-container">
+                    <img src="" alt="Imagem para classificar" class="news-image" id="newsImage">
+                    <div class="image-loading" id="imageLoading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    </div>
+                </div>
+                
+                <div class="options-container">
+                    <div class="game-options">
+                        <button class="option-btn" onclick="selectOption(true)" id="optionTrue">
+                            <i class="fas fa-check"></i> VERDADEIRO
+                        </button>
+                        <button class="option-btn" onclick="selectOption(false)" id="optionFalse">
+                            <i class="fas fa-times"></i> FALSO
+                        </button>
+                    </div>
+
+                    <button class="hint-btn" onclick="showHint()" id="hintBtn">
+                        <i class="fas fa-lightbulb"></i> PEDIR DICA (-10s)
+                    </button>
+
+                    <div class="feedback" id="feedback">
+                        Feedback será mostrado aqui após sua resposta.
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-text" id="progressText">QUESTÃO 1 DE X</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>
+                    <i class="fas fa-arrow-left"></i> ANTERIOR
+                </button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                    PRÓXIMA <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <div class="results-container">
+                <h2 class="results-title" style="color: var(--primary)">RESULTADO FINAL</h2>
+                <div class="score-display" id="scoreDisplay">
+                    0 acertos de 0 (0%)
+                </div>
+                <div class="result-message" id="resultMessage"></div>
+                
+                <!-- Phase 1 Results -->
+                <div class="phase-results phase1-results" id="phase1Results">
+                    <h3><i class="fas fa-bullhorn"></i> FASE 1: FAKES FAMOSAS</h3>
+                    <div id="answersDetails1"></div>
+                </div>
+                
+                <!-- Phase 2 Results -->
+                <div class="phase-results phase2-results" id="phase2Results">
+                    <h3><i class="fas fa-microscope"></i> FASE 2: ANÁLISE TÉCNICA</h3>
+                    <div id="answersDetails2"></div>
+                </div>
+                
+                <!-- Phase 3 Results -->
+                <div class="phase-results phase3-results" id="phase3Results">
+                    <h3><i class="fas fa-robot"></i> FASE 3: DESAFIO IA</h3>
+                    <div id="answersDetails3"></div>
+                </div>
+                
+                <div class="nav-buttons" style="margin-top: 2rem;">
+                    <button class="nav-btn" onclick="restartGame()">
+                        <i class="fas fa-redo"></i> JOGAR NOVAMENTE
+                    </button>
+                    <button class="nav-btn share-btn" onclick="shareResults()">
+                        <i class="fas fa-share-alt"></i> COMPARTILHAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados de notícias organizado por fases
+        const newsDatabase = {
+            phase1: [ // Fakes famosas/virais
+                {
+                    title: "Projeto Petição",
+                    image: "https://static.wixstatic.com/media/73a840_ad1e6db26a4c4dccb7a75c37d241b1c8~mv2.png",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        description: "Análise científica desmentindo a petição"
+                    },
+                    {
+                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        description: "Relatório da Academia Nacional de Ciências dos EUA"
+                    }
+                ],
+                    explanation: "A petição mencionada, conhecida como Oregon Petition, é enganosa e não representa um consenso científico real. Apesar de afirmar ter sido assinada por 30.000 cientistas, a maioria dos signatários não tem formação em climatologia, e qualquer pessoa com formação científica - mesmo sem relação com o tema - pôde assiná-la. O documento foi distribuído com aparência de artigo oficial da Academia Nacional de Ciências dos EUA, que desmentiu publicamente qualquer envolvimento. A comunidade científica, ao contrário do que o texto afirma, possui consenso consolidado de que o aquecimento global é real e causado por ações humanas, como demonstrado por diversos estudos revisados por pares."
+                },
+                {
+                    title: "Autismo e Vacina",
+                    image: "https://exemplo.com/mamadeira-piroca.jpg",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        description: "Análise científica desmentindo a petição"
+                    },
+                    {
+                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        description: "Relatório da Academia Nacional de Ciências dos EUA"
+                    }
+                ],
+                    explanation: "A informação de que há uma ligação entre autismo e o DNA de bebês abortados presente em vacinas é falsa porque não há evidências científicas que sustentem essa afirmação. Estudos amplamente reconhecidos e revisados por pares demonstram que o autismo é um distúrbio do desenvolvimento neurológico com causas multifatoriais, incluindo genética e fatores ambientais, mas nenhuma pesquisa confiável associa vacinas ao autismo. Além disso, vacinas passam por rigorosos testes de segurança antes de serem aprovadas, e organizações de saúde global, como a OMS e o CDC, rejeitam categoricamente essa ligação. A alegação é parte de teorias da conspiração sem fundamento científico."
+                },
+                {
+                    title: "Papa renuncia",
+                    image: "https://static.wixstatic.com/media/73a840_a32b7a8ffbc246f6856561e04946564d~mv2.png",
+                    isFake: false,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20191007012658/http://noticias.terra.com.br/mundo/europa/papa-renuncia-diz-nao-ter-mais-forcas-para-o-ministerio,4a0c368d4a5cc310VgnCLD2000000ec6eb0aRCRD.html",
+                        description: "Fonte original"
+                    }
+               
+                },
+                {
+                    title: "Eleições Portugal",
+                    image: "https://static.wixstatic.com/media/73a840_b1d3c17f95354ddeb3090d07c59ac2e1~mv2.png",
+                    isFake: false,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20191211153508/https://www.jornaldenegocios.pt/economia/politica/eleicoes/presidenciais/detalhe/_marcelo_rebelo_de_sousa_e_presidente_da_republica",
+                        description: "Fonte original"
+                }
+            ],
+            phase2: [ // Análise técnica (suas sugestões)
+                {
+                    title: "José Saramago ",
+                    image: "https://exemplo.com/frase-saramago-fake.jpg",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20141002173620/http://perguntasparvas.blogs.sapo.pt/frases-do-facebook-portugal-nao-tem-1006522",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://observador.pt/factchecks/fact-check-saramago-disse-que-nao-havia-esquerda-ou-direita-em-portugal-mas-apenas-um-bando-de-salafrarios/",
+                        description: "Fonte desmentindo a atribuição da frase à Saramago"
+                    }
+                ],
+                    explanation: "A frase é falsa porque não há nenhuma fonte confiável que comprove que José Saramago a tenha dito ou escrito, e seu conteúdo é incompatível com a visão política bem estruturada e engajada que o autor sempre demonstrou. Atribuí-la a ele é uma forma de desinformação que desrespeita sua trajetória intelectual e política."
+                },
+                {
+                    title: "E",
+                    image: "https://exemplo.com/aquecimento-global-peticao.jpg",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        description: "Análise científica desmentindo a petição"
+                    },
+                    {
+                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        description: "Relatório da Academia Nacional de Ciências dos EUA"
+                    }
+                ],
+                    explanation: "A petição é enganosa - maioria dos signatários não eram climatologistas e a Academia Nacional de Ciências dos EUA desmentiu envolvimento."
+                },
+                {
+                    title: "F",
+                    image: "https://exemplo.com/vacina-autismo.jpg",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        description: "Análise científica desmentindo a petição"
+                    },
+                    {
+                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        description: "Relatório da Academia Nacional de Ciências dos EUA"
+                    }
+                ],
+                    explanation: "Nenhuma pesquisa confiável associa vacinas ao autismo. A alegação foi criada por estudo fraudulento e rejeitada pela comunidade científica."
+                }
+            ],
+         
+
+        // Variáveis do jogo
+        let currentPhase = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let gameMode = 'normal';
+        let timeLeft = 60;
+        let timerInterval;
+        let hasAnswered = false;
+        let shuffledQuestions = [];
+        let phaseScores = { phase1: 0, phase2: 0, phase3: 0 };
+
+        // Elementos DOM
+        const startScreen = document.getElementById('startScreen');
+        const phase1Screen = document.getElementById('phase1Screen');
+        const phase2Screen = document.getElementById('phase2Screen');
+        const phase3Screen = document.getElementById('phase3Screen');
+        const gameScreen = document.getElementById('gameScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const startBtn = document.getElementById('startBtn');
+        const phaseTag = document.getElementById('phaseTag');
+        const newsImage = document.getElementById('newsImage');
+        const imageLoading = document.getElementById('imageLoading');
+        const optionTrue = document.getElementById('optionTrue');
+        const optionFalse = document.getElementById('optionFalse');
+        const hintBtn = document.getElementById('hintBtn');
+        const feedback = document.getElementById('feedback');
+        const progressText = document.getElementById('progressText');
+        const progressFill = document.getElementById('progressFill');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const timerContainer = document.getElementById('timerContainer');
+        const timerElement = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const resultMessage = document.getElementById('resultMessage');
+        const answersDetails1 = document.getElementById('answersDetails1');
+        const answersDetails2 = document.getElementById('answersDetails2');
+        const answersDetails3 = document.getElementById('answersDetails3');
+        const phase1Results = document.getElementById('phase1Results');
+        const phase2Results = document.getElementById('phase2Results');
+        const phase3Results = document.getElementById('phase3Results');
+
+        // Funções do jogo
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / shuffledQuestions.length) * 100;
+            
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `QUESTÃO ${currentQuestion + 1} DE ${shuffledQuestions.length}`;
+        }
+
+        // Adicione esta função no seu script
+        function restartGame() {
+            // Reseta todas as variáveis do jogo
+            currentPhase = '';
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            phaseScores = { phase1: 0, phase2: 0, phase3: 0 };
+            
+            // Para o timer se estiver ativo
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // Volta para a tela inicial
+            switchScreen('startScreen');
+            
+            // Reseta a seleção de modo
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            startBtn.style.display = 'none';
+        }
+
+        // Seleciona o modo de jogo
+        function selectMode(mode, event) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            startBtn.style.display = 'block';
+        }
+
+        // Inicia o jogo (mostra a primeira fase)
+        function startGame() {
+            switchScreen('phase1Screen');
+        }
+
+        // Inicia uma fase específica
+        function startPhase(phase) {
+            currentPhase = phase;
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            hasAnswered = false;
+            
+            // Embaralha as questões da fase atual
+            shuffledQuestions = shuffleArray([...newsDatabase[phase]]);
+            
+            // Configura a interface para a fase
+            switch (phase) {
+                case 'phase1':
+                    phaseTag.textContent = 'FASE 1: FAKES FAMOSAS';
+                    phaseTag.className = 'phase-tag phase1';
+                    progressFill.className = 'progress-fill phase1';
+                    break;
+                case 'phase2':
+                    phaseTag.textContent = 'FASE 2: ANÁLISE TÉCNICA';
+                    phaseTag.className = 'phase-tag phase2';
+                    progressFill.className = 'progress-fill phase2';
+                    break;
+                case 'phase3':
+                    phaseTag.textContent = 'FASE 3: DESAFIO IA';
+                    phaseTag.className = 'phase-tag phase3';
+                    progressFill.className = 'progress-fill phase3';
+                    break;
+            }
+            
+            switchScreen('gameScreen');
+            
+            if (gameMode === 'timed') {
+                timeLeft = 60;
+                updateTimerDisplay();
+                if (timerInterval) clearInterval(timerInterval);
+                timerContainer.style.display = 'block';
+                startTimer();
+            } else {
+                timerContainer.style.display = 'none';
+            }
+            
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Alterna entre telas
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Inicia o cronômetro
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endTimedGame();
+                }
+            }, 1000);
+        }
+
+        // Atualiza o display do cronômetro
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 10) {
+                timerElement.classList.add('pulse');
+                timerElement.style.color = '#ff4757';
+            } else {
+                timerElement.classList.remove('pulse');
+                timerElement.style.color = '#ff4757';
+            }
+        }
+
+        // Finaliza o jogo por tempo
+        function endTimedGame() {
+            showResults();
+        }
+
+        // Função para ajustar o contêiner da imagem
+        function adjustImageContainer(imgWidth, imgHeight) {
+            const container = document.querySelector('.image-container');
+            const maxWidth = document.querySelector('.game-card').clientWidth;
+            const maxHeight = window.innerHeight * 0.6; // 60% da altura da janela
+            
+            // Calcula a proporção
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+            
+            // Define as novas dimensões mantendo a proporção
+            const newWidth = imgWidth * ratio;
+            const newHeight = imgHeight * ratio;
+            
+            // Aplica as dimensões
+            container.style.width = `${newWidth}px`;
+            container.style.height = `${newHeight}px`;
+            container.style.maxWidth = '100%';
+        }
+        
+
+        // Carrega a questão atual
+        // Modifique a função loadQuestion para incluir o ajuste de tamanho
+        function loadQuestion() {
+            hasAnswered = false;
+            
+            if (currentQuestion < shuffledQuestions.length) {
+                const question = shuffledQuestions[currentQuestion];
+                
+                // Mostra loading
+                newsImage.style.opacity = 0;
+                imageLoading.style.display = 'flex';
+                
+                // Carrega a imagem
+                const img = new Image();
+                img.src = question.image;
+                
+                img.onload = function() {
+                    // Ajusta o tamanho do contêiner com base na imagem
+                    adjustImageContainer(this.width, this.height);
+                    
+                    // Atribui a imagem ao elemento
+                    newsImage.src = question.image;
+                    newsImage.onload = () => {
+                        imageLoading.style.display = 'none';
+                        newsImage.style.opacity = 1;
+                    };
+                };
+                
+                img.onerror = function() {
+                    // Caso a imagem não carregue, usa tamanho padrão
+                    adjustImageContainer(800, 600);
+                    newsImage.src = question.image;
+                    imageLoading.style.display = 'none';
+                    newsImage.style.opacity = 1;
+                };
+                
+                // Reseta os botões
+                optionTrue.classList.remove('selected-true', 'selected-false');
+                optionFalse.classList.remove('selected-true', 'selected-false');
+                optionTrue.disabled = false;
+                optionFalse.disabled = false;
+                hintBtn.disabled = false;
+                feedback.style.display = 'none';
+                
+                // Atualiza navegação
+                prevBtn.disabled = currentQuestion === 0;
+                nextBtn.disabled = true;
+                
+                if (currentQuestion === shuffledQuestions.length - 1) {
+                    nextBtn.textContent = currentPhase === 'phase3' ? 'VER RESULTADO' : 'PRÓXIMA FASE';
+                } else {
+                    nextBtn.textContent = 'PRÓXIMA';
+                }
+
+            } else {
+                showResults();
+            }
+        }
+
+        
+        // Seleciona uma opção
+        function selectOption(userChoice) {
+            if (hasAnswered || (gameMode === 'timed' && timeLeft <= 0)) return;
+            
+            hasAnswered = true;
+            const question = shuffledQuestions[currentQuestion];
+            const isCorrect = (userChoice === question.isFake);
+            
+            // Marca a resposta do usuário
+            if (userChoice) {
+                optionTrue.classList.add('selected-true');
+                optionFalse.classList.add('selected-false');
+            } else {
+                optionFalse.classList.add('selected-false');
+                optionTrue.classList.add('selected-true');
+            }
+            
+            // Desabilita os botões
+            optionTrue.disabled = true;
+            optionFalse.disabled = true;
+            hintBtn.disabled = true;
+
+                // Cria o HTML das fontes
+            let sourcesHTML = '';
+            if (question.sources && question.sources.length > 0) {
+                sourcesHTML = `
+                    <div class="sources-container" id="sourcesContainer" style="display: none;">
+                        <h4>Fontes que desmentem:</h4>
+                        ${question.sources.map(source => `
+                            <div class="source-item">
+                                <a href="${source.url}" target="_blank" class="source-link">${source.url}</a>
+                                <span class="source-description">${source.description}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="show-sources-btn" onclick="document.getElementById('sourcesContainer').style.display = 'block'; this.style.display = 'none'">
+                        Mostrar fontes que desmentem esta fake news
+                    </button>
+                `;
+            }
+
+            
+            // Mostra feedback baseado no gabarito real (isFake) em vez da resposta do usuário
+            if (question.isFake) {
+                feedback.innerHTML = `❌ É FAKE! ${question.explanation} ${sourcesHTML}`;
+                feedback.className = 'feedback feedback-incorrect';
+            } else {
+                feedback.innerHTML = `✅ É FATO! ${question.explanation} ${sourcesHTML}`;
+                feedback.className = 'feedback feedback-correct';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Armazena a resposta
+            userAnswers.push({
+                userChoice,
+                isCorrect,
+                image: question.image,
+                explanation: question.explanation,
+                sources: question.sources || []
+            });
+            
+            // Habilita o próximo botão
+            nextBtn.disabled = false;
+            
+            // No modo cronômetro, avança automaticamente
+            if (gameMode === 'timed' && timeLeft > 0) {
+                setTimeout(() => {
+                    if (!nextBtn.disabled) {
+                        nextQuestion();
+                    }
+                }, 2000);
+            }
+        }
+
+        // Mostra dica
+        function showHint() {
+            if (hasAnswered || (gameMode === 'timed' && timeLeft <= 0)) return;
+            
+            const question = shuffledQuestions[currentQuestion];
+            
+            const hint = question.isFake 
+                ? "Dica: Esta notícia mostra sinais de desinformação..."
+                : "Dica: Esta notícia parece ser autêntica e verificável...";
+            
+            feedback.textContent = hint;
+            feedback.className = 'feedback';
+            feedback.style.display = 'block';
+            
+            // Penalização no modo cronômetro
+            if (gameMode === 'timed') {
+                timeLeft = Math.max(5, timeLeft - 10);
+                updateTimerDisplay();
+            }
+            
+            hintBtn.disabled = true;
+        }
+
+        // Navega para próxima questão ou fase
+        function nextQuestion() {
+            if (currentQuestion === shuffledQuestions.length - 1) {
+                // Salva a pontuação da fase
+                phaseScores[currentPhase] = score;
+                
+                // Verifica se é a última fase
+                if (currentPhase === 'phase3') {
+                    showResults();
+                    return;
+                }
+                
+                // Avança para a próxima fase
+                switch (currentPhase) {
+                    case 'phase1':
+                        switchScreen('phase2Screen');
+                        break;
+                    case 'phase2':
+                        switchScreen('phase3Screen');
+                        break;
+                }
+                return;
+            }
+            
+            currentQuestion++;
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Volta para questão anterior
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // Remove a última resposta se existir
+                if (userAnswers.length > currentQuestion - 1) {
+                    const lastAnswer = userAnswers.pop();
+                    if (lastAnswer.isCorrect) score--;
+                }
+                
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        // Mostra resultados finais
+        function showResults() {
+            if (gameMode === 'timed') {
+                clearInterval(timerInterval);
+            }
+            
+            // Salva a pontuação da fase final
+            phaseScores[currentPhase] = score;
+            
+            // Calcula totais
+            const totalQuestions = Object.values(newsDatabase).reduce((acc, phase) => acc + phase.length, 0);
+            const totalScore = Object.values(phaseScores).reduce((acc, score) => acc + score, 0);
+            const percentage = Math.round((totalScore / totalQuestions) * 100);
+            
+            switchScreen('resultsScreen');
+            
+            // Atualiza resultados gerais
+            scoreDisplay.textContent = `${totalScore} acertos de ${totalQuestions} (${percentage}%)`;
+            
+            // Mensagem personalizada
+            if (percentage >= 80) {
+                resultMessage.textContent = "🏆 Excelente! Você é um verdadeiro detetive de notícias!";
+                resultMessage.style.backgroundColor = "rgba(46, 213, 115, 0.1)";
+            } else if (percentage >= 50) {
+                resultMessage.textContent = "👍 Bom trabalho! Continue praticando para melhorar.";
+                resultMessage.style.backgroundColor = "rgba(255, 165, 0, 0.1)";
+            } else {
+                resultMessage.textContent = "🤔 Precisa praticar mais! Tente novamente para melhorar.";
+                resultMessage.style.backgroundColor = "rgba(255, 71, 87, 0.1)";
+            }
+            
+            // Mostra/oculta seções de resultados por fase
+            phase1Results.style.display = phaseScores.phase1 !== undefined ? 'block' : 'none';
+            phase2Results.style.display = phaseScores.phase2 !== undefined ? 'block' : 'none';
+            phase3Results.style.display = phaseScores.phase3 !== undefined ? 'block' : 'none';
+            
+            // Detalhes das respostas por fase
+            renderPhaseResults('phase1', answersDetails1);
+            renderPhaseResults('phase2', answersDetails2);
+            renderPhaseResults('phase3', answersDetails3);
+        }
+
+        // Renderiza os resultados de uma fase específica
+        function renderPhaseResults(phase, container) {
+            container.innerHTML = '';
+            
+            if (!phaseScores[phase]) return;
+            
+            newsDatabase[phase].forEach((q, i) => {
+                // Cria o HTML das fontes para a tela de resultados
+                let sourcesHTML = '';
+                if (q.sources && q.sources.length > 0) {
+                    sourcesHTML = `
+                        <div class="sources-container">
+                            <h4>Fontes relacionadas:</h4>
+                            ${q.sources.map(source => `
+                                <div class="source-item">
+                                    <a href="${source.url}" target="_blank" class="source-link">${source.url}</a>
+                                    <span class="source-description">${source.description}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                const answerDiv = document.createElement('div');
+                answerDiv.className = "answer-detail";
+                
+                answerDiv.innerHTML = `
+                    <div class="result-item">
+                        <img src="${q.image}" class="thumbnail" alt="Miniatura">
+                        <div class="result-content">
+                            <h4 class="news-title">${q.title}</h4>
+                            <div class="answer-status ${q.isFake ? 'fake' : 'true'}">
+                                ${q.isFake ? '❌ É FAKE' : '✅ É FATO'}
+                            </div>
+                            <p class="explanation">${q.explanation}</p>
+                            ${sourcesHTML}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(answerDiv);
+            });
+        }
+        // Atualize a função shareResults
+function shareResults() {
+    const totalQuestions = Object.values(newsDatabase).reduce((acc, phase) => acc + phase.length, 0);
+    const totalScore = Object.values(phaseScores).reduce((acc, score) => acc + score, 0);
+    const percentage = Math.round((totalScore / totalQuestions) * 100);
+    
+    const shareText = `Acabei de jogar "Caça Fakes" e acertei ${totalScore} de ${totalQuestions} notícias (${percentage}%)! 🕵️‍♂️ Tente você também:  https://felipecb2511.wixsite.com/my-site-1`;
+    const shareTitle = 'Meu resultado no jogo "Caça Fakes"';
+    
+    // Tenta usar a API Web Share se disponível
+    if (navigator.share) {
+        navigator.share({
+            title: shareTitle,
+            text: shareText
+        }).catch(err => {
+            console.error('Erro ao compartilhar:', err);
+            fallbackShare(shareText);
+        });
+    } else {
+        fallbackShare(shareText);
+    }
+}
+
+        // Função de fallback para navegadores sem API de compartilhamento
+        function fallbackShare(text) {
+            // Tenta copiar para a área de transferência
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Resultado copiado para a área de transferência! Cole nas redes sociais.');
+                }).catch(err => {
+                    console.error('Erro ao copiar:', err);
+                    prompt('Copie o texto abaixo para compartilhar:', text);
+                });
+            } else {
+                // Fallback mais antigo para navegadores muito antigos
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Resultado copiado para a área de transferência! Cole nas redes sociais.');
+                } catch (err) {
+                    prompt('Copie o texto abaixo para compartilhar:', text);
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Copia para área de transferência
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Resultado copiado para a área de transferência! Cole nas redes sociais.');
+            }).catch(err => {
+                console.error('Erro ao copiar:', err);
+                alert('Não foi possível copiar o resultado. Tente manualmente.');
+            });
+        }
+
+        // Embaralha as questões
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Inicializa o jogo quando a página carrega
+        window.addEventListener('DOMContentLoaded', () => {
+            startScreen.classList.add('active');
+        });
+
+        window.addEventListener('resize', function() {
+            if (currentPhase && currentQuestion < shuffledQuestions.length) {
+                const img = new Image();
+                img.src = shuffledQuestions[currentQuestion].image;
+                img.onload = function() {
+                    adjustImageContainer(this.width, this.height);
+                };
+            }
+        });
+    </script>
+</body>
+</html>
