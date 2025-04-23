@@ -1,3 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caça Fake - O Jogo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --secondary: #2f3542;
+            --correct: #2ed573;
+            --incorrect: #ff6b81;
+            --background: #1e272e;
+            --text: #f1f2f6;
+            --card-bg: #2f3542;
+            --phase1: #ff7f50;
+            --phase2: #4682b4;
+            --phase3: #9acd32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Start Screen */
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .mode-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
+        }
+
+        .mode-btn.selected {
+            border-color: var(--primary);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .mode-btn i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .mode-btn h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Phase Screen */
+        .phase-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .phase-screen.active {
+            display: block;
+        }
+
+        .phase-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .phase-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .phase-description {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        /* Game Screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .phase-tag {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+
+        .phase1 {
+            background-color: var(--phase1);
+            color: white;
+        }
+
+        .phase2 {
+            background-color: var(--phase2);
+            color: white;
+        }
+
+        .phase3 {
+            background-color: var(--phase3);
+            color: #333;
+        }
+
+        .timer-container {
+            font-size: 1.2rem;
+        }
+
+        .timer {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .image-container {
+    
+            position: relative;
+            max-height: 80vh; /* Limite máximo de altura */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000; /* Fundo preto para imagens não quadradas */
+            margin: 0 auto;
+        }
+
+        .news-image {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* Mantém a proporção sem cortar */
+            transition: opacity 0.3s;
+        }
+
+        .image-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .options-container {
+            padding: 1.5rem;
+        }
+
+        .game-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sources-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .source-item {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .source-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.3s;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .source-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .source-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: block;
+        }
+
+        .show-sources-btn {
+            background: transparent;
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .show-sources-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .game-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn.selected-true {
+            background: var(--correct);
+            color: white;
+        }
+
+        .option-btn.selected-false {
+            background: var(--incorrect);
+            color: white;
+        }
+
+        .hint-btn {
+            background: var(--secondary);
+            color: var(--text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .hint-btn:hover:not(:disabled) {
+            background: #3d4450;
+        }
+
+        .hint-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 1.5rem 0;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-correct {
+            background: rgba(46, 213, 115, 0.1);
+            border-left: 4px solid var(--correct);
+            color: var(--correct);
+        }
+
+        .feedback-incorrect {
+            background: rgba(255, 107, 129, 0.1);
+            border-left: 4px solid var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .progress-container {
+            margin-top: 2rem;
+        }
+
+        .progress-text {
+            margin-bottom: 0.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+
+        .progress-fill.phase1 {
+            background: var(--phase1);
+        }
+
+        .progress-fill.phase2 {
+            background: var(--phase2);
+        }
+
+        .progress-fill.phase3 {
+            background: var(--phase3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #ff3342;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: var(--secondary);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .phase-btn {
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Results Screen */
+        .results-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .results-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .result-message {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        .phase-results {
+            margin-bottom: 2rem;
+        }
+
+        .phase-results h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .phase-results h3 i {
+            font-size: 1.8rem;
+        }
+
+        .phase1-results h3 {
+            color: var(--phase1);
+        }
+
+        .phase2-results h3 {
+            color: var(--phase2);
+        }
+
+        .phase3-results h3 {
+            color: var(--phase3);
+        }
+
+        .answer-detail {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        .answer-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .answer-image {
+            width: 100%;
+            border-radius: 5px;
+            margin: 1rem 0;
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .share-btn {
+            background: #1da1f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .share-btn:hover {
+            background: #1991db;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+
+        .result-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid var(--secondary);
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        /* Estilos para a tela de resultados */
+    .news-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+    }
+
+    .answer-status {
+        padding: 0.5rem;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+
+    .answer-status.true {
+        background-color: rgba(46, 213, 115, 0.2);
+        color: var(--correct);
+    }
+
+    .answer-status.fake {
+        background-color: rgba(255, 107, 129, 0.2);
+        color: var(--incorrect);
+    }
+
+    .explanation {
+        margin: 1rem 0;
+        line-height: 1.6;
+    }
+
+    .source-link {
+        color: var(--primary);
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 0.5rem;
+        transition: opacity 0.3s;
+    }
+
+    .source-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+    </style>
+
+
 <div class="phase-card phase1-card">
     <div class="phase-header">
         <div class="phase-icon">
