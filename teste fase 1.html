@@ -636,3 +636,229 @@
         INICIAR FASE <i class="fas fa-arrow-right"></i>
     </button>
 </div>
+
+    </head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="screen active" id="startScreen">
+            <header>
+                <h1 style="color: var(--primary)">CAÇA FAKES</h1>
+                <p class="subtitle">Você consegue identificar uma fake news?
+                    Teste sua habilidade em distinguir notícias verdadeiras de falsas do ARQUIVO.PT e descubra quais conteúdos foram gerados por inteligência artificial!</p>
+            </header>
+
+            <div class="mode-selector">
+                <button class="mode-btn" onclick="selectMode('normal', event)">
+                    <i class="fas fa-play-circle" style="color: var(--primary)"></i>
+                    <h3>Modo Normal</h3>
+                    <p>Jogue no seu ritmo</p>
+                </button>
+                <button class="mode-btn" onclick="selectMode('timed', event)">
+                    <i class="fas fa-clock" style="color: var(--primary)"></i>
+                    <h3>Modo Cronômetro</h3>
+                    <p>1 minuto para desafiar</p>
+                </button>
+            </div>
+            
+            <button class="nav-btn" id="startBtn" onclick="startGame()" style="display: none; margin: 0 auto;">
+                COMEÇAR JOGO
+            </button>
+        </div>
+
+        <!-- Phase 1 Screen -->
+        <div class="screen phase-screen" id="phase1Screen">
+            <div class="phase-icon" style="color: var(--phase1)">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase1)">FASE 1: FAKES FAMOSAS</h2>
+            <p class="phase-description">
+                Identifique notícias falsas que se tornaram virais e estão armazenadas no ARQUIVO.PT. Esta fase ajuda a reconhecer padrões comuns de desinformação.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase1')" style="background-color: var(--phase1)">
+                INICIAR FASE 1
+            </button>
+        </div>
+
+        <!-- Phase 2 Screen -->
+        <div class="screen phase-screen" id="phase2Screen">
+            <div class="phase-icon" style="color: var(--phase2)">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase2)">FASE 2: VAIS PRECISAR DE UM OLHAR ATENTO...</h2>
+            <p class="phase-description">
+                Desafie-se com fake news mais sofisticadas que exigem atenção aos detalhes.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase2')" style="background-color: var(--phase2)">
+                INICIAR FASE 2
+            </button>
+        </div>
+
+        <!-- Phase 3 Screen -->
+        <div class="screen phase-screen" id="phase3Screen">
+            <div class="phase-icon" style="color: var(--phase3)">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase3)">FASE 3: DESAFIO IA</h2>
+            <p class="phase-description">
+                O teste final! Identifique imagens geradas por inteligência artificial.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase3')" style="background-color: var(--phase3); color: #333;">
+                INICIAR FASE 3
+            </button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="game-header">
+                <h1 style="color: var(--primary)">CAÇA FAKES</h1>
+                <div class="phase-tag" id="phaseTag"></div>
+                <div class="timer-container" id="timerContainer" style="display: none;">
+                    Tempo: <span class="timer" id="timer">01:00</span>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="image-container">
+                    <img src="" alt="Imagem para classificar" class="news-image" id="newsImage">
+                    <div class="image-loading" id="imageLoading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    </div>
+                </div>
+                
+                <div class="options-container">
+                    <div class="game-options">
+                        <button class="option-btn" onclick="selectOption(true)" id="optionTrue">
+                            <i class="fas fa-check"></i> VERDADEIRO
+                        </button>
+                        <button class="option-btn" onclick="selectOption(false)" id="optionFalse">
+                            <i class="fas fa-times"></i> FALSO
+                        </button>
+                    </div>
+
+                    <button class="hint-btn" onclick="showHint()" id="hintBtn">
+                        <i class="fas fa-lightbulb"></i> PEDIR DICA (-10s)
+                    </button>
+
+                    <div class="feedback" id="feedback">
+                        Feedback será mostrado aqui após sua resposta.
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-text" id="progressText">QUESTÃO 1 DE X</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>
+                    <i class="fas fa-arrow-left"></i> ANTERIOR
+                </button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                    PRÓXIMA <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <div class="results-container">
+                <h2 class="results-title" style="color: var(--primary)">RESULTADO FINAL</h2>
+                <div class="score-display" id="scoreDisplay">
+                    0 acertos de 0 (0%)
+                </div>
+                <div class="result-message" id="resultMessage"></div>
+                
+                <!-- Phase 1 Results -->
+                <div class="phase-results phase1-results" id="phase1Results">
+                    <h3><i class="fas fa-bullhorn"></i> FASE 1: FAKES FAMOSAS</h3>
+                    <div id="answersDetails1"></div>
+                </div>
+                
+                <!-- Phase 2 Results -->
+                <div class="phase-results phase2-results" id="phase2Results">
+                    <h3><i class="fas fa-microscope"></i> FASE 2: ANÁLISE TÉCNICA</h3>
+                    <div id="answersDetails2"></div>
+                </div>
+                
+                <!-- Phase 3 Results -->
+                <div class="phase-results phase3-results" id="phase3Results">
+                    <h3><i class="fas fa-robot"></i> FASE 3: DESAFIO IA</h3>
+                    <div id="answersDetails3"></div>
+                </div>
+                
+                <div class="nav-buttons" style="margin-top: 2rem;">
+                    <button class="nav-btn" onclick="restartGame()">
+                        <i class="fas fa-redo"></i> JOGAR NOVAMENTE
+                    </button>
+                    <button class="nav-btn share-btn" onclick="shareResults()">
+                        <i class="fas fa-share-alt"></i> COMPARTILHAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados de notícias organizado por fases
+        const newsDatabase = {
+            phase1: [ // Fakes famosas/virais
+                {
+                    title: "Projeto Petição",
+                    image: "https://static.wixstatic.com/media/73a840_ad1e6db26a4c4dccb7a75c37d241b1c8~mv2.png",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        description: "Análise científica desmentindo a petição"
+                    },
+                    {
+                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        description: "Relatório da Academia Nacional de Ciências dos EUA"
+                    }
+                ],
+                    explanation: "A petição mencionada, conhecida como Oregon Petition, é enganosa e não representa um consenso científico real. Apesar de afirmar ter sido assinada por 30.000 cientistas, a maioria dos signatários não tem formação em climatologia, e qualquer pessoa com formação científica - mesmo sem relação com o tema - pôde assiná-la. O documento foi distribuído com aparência de artigo oficial da Academia Nacional de Ciências dos EUA, que desmentiu publicamente qualquer envolvimento. A comunidade científica, ao contrário do que o texto afirma, possui consenso consolidado de que o aquecimento global é real e causado por ações humanas, como demonstrado por diversos estudos revisados por pares."
+                },
+                {
+                    title: "Autismo e Vacina",
+                    image: "https://static.wixstatic.com/media/73a840_2c44de4769544bd390ec0f26a81c7d72~mv2.png",
+                    isFake: true,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20200306202019/http://juliosevero.blogspot.com/2009/08/ha-uma-ligacao-entre-autismo-e-o-dna-de.html",
+                        description: "Fonte original da fake news"
+                    },
+                    {
+                        url: "https://www.publico.pt/2025/03/21/ciencia/ensaio/vacinas-nao-causam-autismo-nao-sao-precisos-estudos-2126533",
+                        description: "Análise científica desmentindo a declaração"
+                    }
+                ],
+                    explanation: "A informação de que há uma ligação entre autismo e o DNA de bebês abortados presente em vacinas é falsa porque não há evidências científicas que sustentem essa afirmação. Estudos amplamente reconhecidos e revisados por pares demonstram que o autismo é um distúrbio do desenvolvimento neurológico com causas multifatoriais, incluindo genética e fatores ambientais, mas nenhuma pesquisa confiável associa vacinas ao autismo. Além disso, vacinas passam por rigorosos testes de segurança antes de serem aprovadas, e organizações de saúde global, como a OMS e o CDC, rejeitam categoricamente essa ligação. A alegação é parte de teorias da conspiração sem fundamento científico."
+                },
+                {
+                    title: "Papa renuncia",
+                    image: "https://static.wixstatic.com/media/73a840_a32b7a8ffbc246f6856561e04946564d~mv2.png",
+                    isFake: false,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20191007012658/http://noticias.terra.com.br/mundo/europa/papa-renuncia-diz-nao-ter-mais-forcas-para-o-ministerio,4a0c368d4a5cc310VgnCLD2000000ec6eb0aRCRD.html",
+                        description: "Fonte original"
+                    }
+               
+                },
+                {
+                    title: "Eleições Portugal",
+                    image: "https://static.wixstatic.com/media/73a840_b1d3c17f95354ddeb3090d07c59ac2e1~mv2.png",
+                    isFake: false,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20191211153508/https://www.jornaldenegocios.pt/economia/politica/eleicoes/presidenciais/detalhe/_marcelo_rebelo_de_sousa_e_presidente_da_republica",
+                        description: "Fonte original"
+                }
