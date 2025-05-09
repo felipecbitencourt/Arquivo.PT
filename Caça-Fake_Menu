@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caça-Fake</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== ESTILOS GERAIS ===== */
+    :root {
+      --primary: #ff4757;
+      --secondary: #2f3542;
+      --correct: #2ed573;
+      --incorrect: #ff6b81;
+      --background: #1e272e;
+      --text: #f1f2f6;
+      --card-bg: #2f3542;
+      --phase1: #ff7f50;
+      --phase2: #4682b4;
+      --phase3: #9acd32;
+      --hint-color: #ffa502;
+      --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .main-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ===== OLHO ANIMADO ===== */
+    .eye-container {
+      position: relative;
+      width: 220px;
+      height: 100px;
+      margin: 1rem auto;
+    }
+
+    .logo-eye {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 100%;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .eye-detail {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+    }
+
+    .eye-detail-1 {
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+    }
+
+    .eye-detail-2 {
+      width: 60%;
+      height: 60%;
+      top: 20%;
+      left: 20%;
+    }
+
+    .eye-pupil {
+      position: absolute;
+      width: 40%;
+      height: 40%;
+      background: var(--primary);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease-out;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ===== CONTAINER DE JOGOS ===== */
+    .games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .game-description {
+      margin-bottom: 2rem;
+      flex-grow: 1;
+    }
+
+    .play-button {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      display: inline-block;
+      border: none;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .play-button:hover {
+      background: #ff3342;
+      transform: translateY(-3px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 600px) {
+      .games-container {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .game-card {
+        padding: 1.5rem;
+      }
+    }
+
+    /* ===== ANIMAÇÕES ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <h1>CAÇA-FAKE</h1>
+    <div class="subtitle">
+      Nesta secção, podes treinar as tuas competências em identificar o que é real e o que não é. 
+      Existem duas modalidades de jogo para experimentares:
+    </div>
+    
+    <!-- Olho fixo com pupila que segue o cursor -->
+    <div class="eye-container">
+      <div class="logo-eye">
+        <div class="eye-detail eye-detail-1"></div>
+        <div class="eye-detail eye-detail-2"></div>
+        <div class="eye-pupil" id="eyePupil"></div>
+      </div>
+    </div>
+    
+    <div class="games-container">
+      <!-- Jogo 1 -->
+      <div class="game-card">
+        <div class="game-title">CAÇA-FAKE NOTÍCIAS</div>
+        <div class="game-description">
+          Sabes dizer quais notícias do repositório do Arquivo.pt são falsas e quais são verdadeiras? 
+          Teste os conhecimentos aprendidos em 'Checagem'.
+       </div>
+        <a href="https://www.olharcritico.org/ca%C3%A7a-fake-fase-1" class="play-button">JOGAR AGORA</a>
+      </div>
+      
+      <!-- Jogo 2 -->
+      <div class="game-card">
+        <div class="game-title">CAÇA-FAKES IA</div>
+        <div class="game-description">
+          Com os avanços da IA, o que é real e o que não é acabam por se confundir. 
+          Consegues distinguir quais imagens e notícias foram geradas por IA e quais não?
+        </div>
+        <a href="https://www.olharcritico.org/c%C3%B3pia-ca%C3%A7a-fake-fase-1" class="play-button">JOGAR AGORA</a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const pupil = document.getElementById('eyePupil');
+      const eyeContainer = document.querySelector('.eye-container');
+      
+      document.addEventListener('mousemove', function(e) {
+        // Obtém a posição do olho
+        const eyeRect = eyeContainer.getBoundingClientRect();
+        const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+        const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+        
+        // Calcula a direção do mouse em relação ao centro do olho
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        // Calcula o ângulo entre o centro do olho e o cursor
+        const angle = Math.atan2(mouseY - eyeCenterY, mouseX - eyeCenterX);
+        
+        // Limita o movimento da pupila dentro do olho
+        const distance = Math.min(15, Math.sqrt(Math.pow(mouseX - eyeCenterX, 2) + Math.pow(mouseY - eyeCenterY, 2)) / 10);
+        
+        // Calcula a nova posição da pupila
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+        
+        // Aplica o movimento
+        pupil.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+      });
+      
+      // Reset quando o mouse sai da janela
+      document.addEventListener('mouseout', function() {
+        pupil.style.transform = 'translate(-50%, -50%)';
+      });
+    });
+  </script>
+</body>
+</html>
