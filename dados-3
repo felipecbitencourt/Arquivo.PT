@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Análise de Teorias da Conspiração</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        .dashboard-container {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .content-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .selection-panel {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .chart-panel {
+            flex: 2;
+            min-width: 700px;
+        }
+
+        .vehicle-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+
+        .info-note {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #FF4040;
+            font-family: 'Helvetica Bold', sans-serif;
+        }
+
+        .control-title {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .vehicle-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .vehicle-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .scale-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        #compareBtn {
+            background-color: #FF4040;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Helvetica', sans-serif;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        #compareBtn:hover {
+            background-color: #ff6b6b;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #aaa;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        
+        <div class="dashboard-container">
+            <div class="content-container">
+                <div class="selection-panel">
+                    <div class="control-title">Selecione as teorias para comparar:</div>
+                    <div class="vehicle-selector" id="theorySelector">
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-theory="qanon" checked>
+                            <span class="vehicle-color" style="background-color: #FF4040;"></span>
+                            <span>QAnon</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-theory="illuminati" checked>
+                            <span class="vehicle-color" style="background-color: #00A0E3;"></span>
+                            <span>Illuminati</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-theory="chemtrails" checked>
+                            <span class="vehicle-color" style="background-color: #0055A4;"></span>
+                            <span>Chemtrails</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-theory="reptilianos" checked>
+                            <span class="vehicle-color" style="background-color: #E31C79;"></span>
+                            <span>Reptilianos</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-theory="ufo" checked>
+                            <span class="vehicle-color" style="background-color: #00BC8C;"></span>
+                            <span>UFO</span>
+                        </label>
+                    </div>
+                    
+                    <div class="control-title">Opções de Visualização:</div>
+                    <div class="scale-options">
+                        <label class="scale-option">
+                            <input type="radio" name="scale" value="linear" checked>
+                            <span>Escala Linear</span>
+                        </label>
+                        <label class="scale-option">
+                            <input type="radio" name="scale" value="logarithmic">
+                            <span>Escala Logarítmica (valores em potências de 10)</span>
+                        </label>
+                    </div>
+                    
+                    <button id="compareBtn">Visualizar gráfico</button>
+                    
+                    <div class="footer-note">
+                        <p>Dados coletados do Arquivo.pt entre 2000-2020</p>
+                        <p>Passe o mouse sobre as linhas para ver os valores exatos</p>
+                    </div>
+                </div>
+                
+                <div class="chart-panel">
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="info-note">
+                        <p>Dados retirados de Arquivo.pt.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Dados completos
+        const data = {
+            years: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+            
+            // Dados por teoria
+            datasets: {
+                qanon: {
+                    label: 'QAnon',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 3, 35, 19, 6, 1, 2, 9, 12, 25, 19, 40616, 73747, 141036],
+                    color: '#FF4040'
+                },
+                illuminati: {
+                    label: 'Illuminati',
+                    data: [81, 376, 0, 0, 2, 525, 1954, 1535, 6157, 162179, 84740, 100450, 51194, 47012, 351253, 118132, 593972, 217734, 246481, 183752, 169434],
+                    color: '#00A0E3'
+                },
+                chemtrails: {
+                    label: 'Chemtrails',
+                    data: [0, 8, 0, 3, 17, 47, 15, 29, 211, 44213, 37060, 22080, 4608, 11623, 123232, 279933, 244270, 132669, 77797, 78281, 80126],
+                    color: '#0055A4'
+                },
+                reptilianos: {
+                    label: 'Reptilianos',
+                    data: [0, 7, 29, 0, 0, 14, 22, 129, 186, 3640, 1653, 6925, 3, 3961, 47451, 126661, 59047, 145434, 46992, 53247, 54448],
+                    color: '#E31C79'
+                },
+                ufo: {
+                    label: 'UFO',
+                    data: [8, 3150, 3098, 6840, 6732, 15948, 697, 16, 63508, 748962, 136029, 142822, 70623, 50782, 371451, 207678, 930558, 357065, 141565, 549667, 551545],
+                    color: '#00BC8C'
+                }
+            }
+        };
+
+        // Configuração inicial do gráfico
+        const mainCtx = document.getElementById('mainChart').getContext('2d');
+        let mainChart = new Chart(mainCtx, {
+            type: 'line',
+            data: {
+                labels: data.years,
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'white',
+                            font: {
+                                family: 'Helvetica'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: {
+                            family: 'Helvetica Bold',
+                            size: 14
+                        },
+                        bodyFont: {
+                            family: 'Helvetica',
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Menções a Teorias da Conspiração por Ano',
+                        font: {
+                            size: 18,
+                            family: 'Helvetica Bold'
+                        },
+                        color: 'white',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'white',
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Número de Ocorrências',
+                            color: 'white',
+                            font: {
+                                family: 'Helvetica',
+                                size: 14
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Ano',
+                            color: 'white',
+                            font: {
+                                family: 'Helvetica',
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
+                }
+            }
+        });
+
+        // Função para aplicar escala logarítmica
+        function applyLogScale(dataArray) {
+            return dataArray.map(value => value > 0 ? Math.log10(value + 1) : 0);
+        }
+
+        // Função para atualizar o gráfico
+        function updateChart() {
+            const scaleType = document.querySelector('input[name="scale"]:checked').value;
+            const selectedTheories = Array.from(document.querySelectorAll('.vehicle-checkbox input:checked')).map(el => el.dataset.theory);
+            
+            // Preparar datasets para o gráfico
+            const chartDatasets = [];
+            
+            selectedTheories.forEach(theory => {
+                const theoryData = data.datasets[theory];
+                let chartData = [...theoryData.data];
+                
+                if (scaleType === 'logarithmic') {
+                    chartData = applyLogScale(chartData);
+                }
+                
+                chartDatasets.push({
+                    label: theoryData.label,
+                    data: chartData,
+                    borderColor: theoryData.color,
+                    backgroundColor: `${theoryData.color}20`,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: theoryData.color,
+                    fill: false,
+                    tension: 0.3
+                });
+            });
+            
+            // Atualizar gráfico
+            mainChart.data.datasets = chartDatasets;
+            mainChart.options.scales.y.type = scaleType;
+            
+            // Configurar ticks diferentes para cada escala
+            if (scaleType === 'logarithmic') {
+                mainChart.options.scales.y.ticks.callback = function(value) {
+                    return Math.pow(10, value).toLocaleString();
+                };
+            } else {
+                mainChart.options.scales.y.ticks.callback = function(value) {
+                    return value.toLocaleString();
+                };
+            }
+            
+            mainChart.update();
+        }
+
+        // Evento para o botão de comparação
+        document.getElementById('compareBtn').addEventListener('click', updateChart);
+
+        // Evento para checkboxes
+        document.querySelectorAll('.vehicle-checkbox input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Garante que pelo menos um está selecionado
+                const anyChecked = Array.from(document.querySelectorAll('.vehicle-checkbox input')).some(cb => cb.checked);
+                if (!anyChecked) {
+                    this.checked = true;
+                    alert('Selecione pelo menos uma teoria para visualizar.');
+                }
+            });
+        });
+
+        // Evento para mudança de escala
+        document.querySelectorAll('input[name="scale"]').forEach(radio => {
+            radio.addEventListener('change', updateChart);
+        });
+
+        // Inicializar gráfico
+        updateChart();
+    </script>
+</body>
+</html>
