@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Análise de Fake News por Veículo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      
+      .main-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.content-container {
+    display: flex;
+    gap: 30px;
+}
+
+.selection-panel {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.chart-panel {
+    flex: 2;
+    min-width: 700px;
+}
+
+.vehicle-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 500px;
+    width: 100%;
+}
+
+.info-note {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 20px;
+    text-align: center;
+}
+
+        .dashboard-container {
+            font-family: 'Helvetica', sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+        .chart-container {
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1, h2 {
+            color: #FF4040;
+            font-family: 'Helvetica Bold', sans-serif;
+        }
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 20px 0;
+           justify-content: space-between; 
+        }
+        .control-group {
+            flex: 1;
+            min-width: 300px;
+          	max-width: 45%;
+        }
+        .control-title {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .vehicle-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .vehicle-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .vehicle-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .scale-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .footer-note {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #aaa;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .vehicle-total {
+            font-size: 13px;
+        }
+        #compareBtn {
+            background-color: #FF4040;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Helvetica', sans-serif;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        #compareBtn:hover {
+            background-color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+        <div class="main-container">
+  
+        
+        <div class="dashboard-container">
+            <div class="content-container">
+                <div class="selection-panel">
+                    <div class="control-title">Selecione os veículos para comparar:</div>
+                    <div class="vehicle-selector" id="vehicleSelector">
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="all" checked>
+                            <span class="vehicle-color" style="background-color: #FF4040;"></span>
+                            <span>Todas as fontes</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="publico">
+                            <span class="vehicle-color" style="background-color: #00A0E3;"></span>
+                            <span>Público</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="dn">
+                            <span class="vehicle-color" style="background-color: #0055A4;"></span>
+                            <span>Diário de Notícias</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="sic">
+                            <span class="vehicle-color" style="background-color: #E31C79;"></span>
+                            <span>SIC Notícias</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="rtp">
+                            <span class="vehicle-color" style="background-color: #00BC8C;"></span>
+                            <span>RTP</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="observador">
+                            <span class="vehicle-color" style="background-color: #FF7F00;"></span>
+                            <span>Observador</span>
+                        </label>
+                        <label class="vehicle-checkbox">
+                            <input type="checkbox" data-vehicle="cm">
+                            <span class="vehicle-color" style="background-color: #E31937;"></span>
+                            <span>Correio da Manhã</span>
+                        </label>
+                    </div>
+                    
+                    <div class="control-title">Opções de Visualização:</div>
+                    <div class="scale-options">
+                        <label class="scale-option">
+                            <input type="radio" name="scale" value="linear" checked>
+                            <span>Escala Linear</span>
+                        </label>
+                        <label class="scale-option">
+                            <input type="radio" name="scale" value="logarithmic">
+                            <span>Escala Logarítmica (valores em potências de 10)</span>
+                        </label>
+                    </div>
+                    
+                    <button id="compareBtn">Visualizar gráfico</button>
+                    
+                    <div class="footer-note">
+                        <h3>Total de notícias registradas:</h3>
+                        <div class="vehicles-grid">
+                            <div class="vehicle-total">Público: 105.057.146</div>
+                            <div class="vehicle-total">Diário de Notícias: 15.267.275</div>
+                            <div class="vehicle-total">SIC Notícias: 199.879</div>
+                            <div class="vehicle-total">RTP: 55.250.299</div>
+                            <div class="vehicle-total">Observador: 3.319.716</div>
+                            <div class="vehicle-total">Correio da Manhã: 4.343.753</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-panel">
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="info-note">
+                        <p>Passe o mouse sobre as linhas para ver os valores exatos. Dados retirados de Arquivo.pt.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Dados completos
+        const data = {
+            years: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+            
+            // Dados por veículo
+            datasets: {
+                all: {
+                    label: 'Todas as fontes',
+                    data: [1, 4, 0, 14, 35, 58, 24, 19, 117, 48040, 27765, 36942,11400, 317, 7657, 24202, 36142, 2357823, 480516, 314179, 741697],
+                    color: '#FF4040'
+                },
+                publico: {
+                    label: 'Público',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 11, 10, 100, 6, 2122, 2194, 1958, 1517],
+                    color: '#00A0E3'
+                },
+                dn: {
+                    label: 'Diário de Notícias',
+                    data: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 4020, 12683, 72318, 102133],
+                    color: '#0055A4'
+                },
+                sic: {
+                    label: 'SIC Notícias',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 434, 1200],
+                    color: '#E31C79'
+                },
+                rtp: {
+                    label: 'RTP',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 4, 0, 245, 6196, 4452, 2106],
+                    color: '#00BC8C'
+                },
+                observador: {
+                    label: 'Observador',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 16, 13377, 25751, 48730, 20316],
+                    color: '#FF7F00'
+                },
+                cm: {
+                    label: 'Correio da Manhã',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8431, 4805, 3673, 722],
+                    color: '#E31937'
+                }
+            }
+        };
+
+        // Configuração inicial do gráfico
+        const mainCtx = document.getElementById('mainChart').getContext('2d');
+        let mainChart = new Chart(mainCtx, {
+            type: 'line',
+            data: {
+                labels: data.years,
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white',
+                            font: {
+                                family: 'Helvetica'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: {
+                            family: 'Helvetica Bold',
+                            size: 14
+                        },
+                        bodyFont: {
+                            family: 'Helvetica',
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'white',
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
+                }
+            }
+        });
+
+        // Função para aplicar escala logarítmica
+        function applyLogScale(dataArray) {
+            return dataArray.map(value => value > 0 ? Math.log10(value + 1) : 0);
+        }
+
+        // Função para atualizar o gráfico
+        function updateChart() {
+            const scaleType = document.querySelector('input[name="scale"]:checked').value;
+            const selectedVehicles = Array.from(document.querySelectorAll('.vehicle-checkbox input:checked')).map(el => el.dataset.vehicle);
+            
+            // Preparar datasets para o gráfico
+            const chartDatasets = [];
+            
+            selectedVehicles.forEach(vehicle => {
+                const vehicleData = data.datasets[vehicle];
+                let chartData = [...vehicleData.data];
+                
+                if (scaleType === 'logarithmic') {
+                    chartData = applyLogScale(chartData);
+                }
+                
+                chartDatasets.push({
+                    label: vehicleData.label,
+                    data: chartData,
+                    borderColor: vehicleData.color,
+                    backgroundColor: `${vehicleData.color}20`,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: vehicleData.color,
+                    fill: false,
+                    tension: 0.3
+                });
+            });
+            
+            // Atualizar gráfico
+            mainChart.data.datasets = chartDatasets;
+            mainChart.options.scales.y.type = scaleType;
+            mainChart.update();
+        }
+
+        // Evento para o botão de comparação
+        document.getElementById('compareBtn').addEventListener('click', updateChart);
+
+        // Evento para checkboxes (permite seleção múltipla)
+        document.querySelectorAll('.vehicle-checkbox input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Se "Todas as fontes" for selecionada, desmarca as outras
+                if (this.dataset.vehicle === 'all' && this.checked) {
+                    document.querySelectorAll('.vehicle-checkbox input:not([data-vehicle="all"])').forEach(cb => {
+                        cb.checked = false;
+                    });
+                }
+                // Se qualquer outra for selecionada, desmarca "Todas as fontes"
+                else if (this.checked) {
+                    document.querySelector('.vehicle-checkbox input[data-vehicle="all"]').checked = false;
+                }
+                
+                // Garante que pelo menos um está selecionado
+                const anyChecked = Array.from(document.querySelectorAll('.vehicle-checkbox input')).some(cb => cb.checked);
+                if (!anyChecked) {
+                    this.checked = true;
+                }
+            });
+        });
+
+        // Evento para mudança de escala
+        document.querySelectorAll('input[name="scale"]').forEach(radio => {
+            radio.addEventListener('change', updateChart);
+        });
+
+        // Inicializar gráfico
+        updateChart();
+    </script>
+</body>
+</html>
