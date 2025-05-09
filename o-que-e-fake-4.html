@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo da Desinformação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+  :root {
+    --roxo: #8e44ad;
+    --azul: #3498db;
+    --vermelho: #e74c3c;
+    --laranja: #f39c12;
+    --cinza: #ecf0f1;
+    --preto: #2c3e50;
+}
+
+body {
+    font-family: 'helvetic bold', Tahoma, Geneva, Verdana, helvetic bold;
+    line-height: 1.5;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+.timeline-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.timeline-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--preto);
+}
+
+.timeline-title h2 {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.timeline-title p {
+    font-size: clamp(1rem, 3.5vw, 1.1rem);
+    color: #7f8c8d;
+    padding: 0 10px;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--roxo), var(--laranja));
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.timeline-period {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+.timeline-content {
+    background: white;
+    padding: 20px 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    margin-left: 20px;
+    position: relative;
+    border-top: 3px solid;
+}
+
+.timeline-content::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background: white;
+}
+
+.era-pre-digital .timeline-period { background: var(--roxo); }
+.era-pre-digital .timeline-content { border-color: var(--roxo); }
+
+.era-digital .timeline-period { background: var(--azul); }
+.era-digital .timeline-content { border-color: var(--azul); }
+
+.era-redes .timeline-period { background: var(--vermelho); }
+.era-redes .timeline-content { border-color: var(--vermelho); }
+
+.era-ia .timeline-period { background: var(--laranja); }
+.era-ia .timeline-content { border-color: var(--laranja); }
+
+.timeline-content h3 {
+    margin-top: 0;
+    color: var(--preto);
+    font-size: clamp(1.3rem, 4vw, 1.5rem);
+    margin-bottom: 8px;
+}
+
+.timeline-years {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: var(--cinza);
+    border-radius: 20px;
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.timeline-example {
+    background-color: rgba(0,0,0,0.03);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 12px 0;
+    border-left: 2px solid;
+    font-size: clamp(0.85rem, 3vw, 0.95rem);
+    line-height: 1.4;
+}
+
+.era-pre-digital .timeline-example { border-color: var(--roxo); }
+.era-digital .timeline-example { border-color: var(--azul); }
+.era-redes .timeline-example { border-color: var(--vermelho); }
+.era-ia .timeline-example { border-color: var(--laranja); }
+
+.timeline-features {
+    padding-left: 15px;
+    margin: 10px 0 0;
+}
+
+.timeline-features li {
+    margin-bottom: 6px;
+    position: relative;
+    font-size: clamp(0.85rem, 3vw, 1rem);
+    line-height: 1.4;
+}
+
+.timeline-features li::before {
+    content: '•';
+    position: absolute;
+    left: -12px;
+    color: var(--preto);
+    font-weight: bold;
+}
+
+.timeline-icon {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+    .timeline {
+        padding-left: 35px;
+    }
+    
+    .timeline::before {
+        left: 17px;
+    }
+    
+    .timeline-period {
+        left: -35px;
+        width: 35px;
+        height: 35px;
+    }
+    
+    .timeline-content {
+        margin-left: 15px;
+        padding: 15px 12px;
+    }
+    
+    .timeline-example {
+        padding: 8px;
+    }
+    
+    .timeline-features {
+        padding-left: 12px;
+    }
+}
+
+/* Ajustes para orientação retrato em celulares */
+@media (max-width: 400px) and (orientation: portrait) {
+    .timeline-title h2 {
+        font-size: 1.6rem;
+    }
+    
+    .timeline-content h3 {
+        font-size: 1.2rem;
+    }
+    
+    .timeline-features li {
+        font-size: 0.82rem;
+    }
+}
+
+/* Melhorias para links em mobile */
+.timeline-example a {
+    word-break: break-all;
+    font-size: 0.8rem;
+    color: inherit;
+    text-decoration: underline;
+}   
+  </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <div class="timeline-title">
+            <h2>A Evolução da Desinformação</h2>
+            <p>Da imprensa à inteligência artificial: como as fake news se transformaram</p>
+        </div>
+        
+        <div class="timeline">
+            <!-- Era Pré-Digital -->
+            <div class="timeline-item era-pre-digital">
+                <div class="timeline-period">
+                    <i class="fas fa-scroll timeline-icon"></i>
+                </div>
+                <div class="timeline-content">
+                    <span class="timeline-years">Até 1990</span>
+                    <h3>Era Analógica</h3>
+                    
+                    <div class="timeline-example">
+                        <strong>Exemplo icônico:</strong> "Protocolos dos Sábios de Sião" (1903) - documento antissemita forjado que influenciou décadas de perseguição
+                    </div>
+                    
+                    <ul class="timeline-features">
+                        <li>Propaganda impressa e panfletos</li>
+                        <li>Transmissões de rádio manipuladas (ex: Guerra dos Mundos, 1938)</li>
+                        <li>Desinformação estatal durante a Guerra Fria</li>
+                        <li>Velocidade limitada pela distribuição física</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Era Digital Nascente -->
+            <div class="timeline-item era-digital">
+                <div class="timeline-period">
+                    <i class="fas fa-desktop timeline-icon"></i>
+                </div>
+                <div class="timeline-content">
+                    <span class="timeline-years">1990-2005</span>
+                    <h3>Internet Inicial</h3>
+                    
+                    <div class="timeline-example">
+                        <strong>Exemplo icônico:</strong> Correntes de email com alertas falsos (ex: vírus fictícios, lendas urbanas)
+                    </div>
+                    
+                    <ul class="timeline-features">
+                        <li>Surgimento dos primeiros sites de teorias conspiratórias</li>
+                        <li>Fóruns online e grupos de discussão espalhando mitos</li>
+                        <li>Hoaxes digitais substituindo correntes de carta</li>
+                        <li>Velocidade de disseminação medida em horas/dias</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Era das Redes Sociais -->
+            <div class="timeline-item era-redes">
+                <div class="timeline-period">
+                    <i class="fas fa-thumbs-up timeline-icon"></i>
+                </div>
+                <div class="timeline-content">
+                    <span class="timeline-years">2005-2015</span>
+                    <h3>Redes Sociais</h3>
+                    
+                    <div class="timeline-example">
+                        <strong>Exemplo icônico:</strong> "Papa Francisco endossa Trump" (2016) - fake news que gerou repercussão nas redes sociais. (Confira em: <a href="https://arquivo.pt/wayback/20170303003549/http://observador.pt/2017/02/21/as-cinco-noticias-falsas-espalhadas-por-donald-trump-e-a-sua-equipa/" target="_blank">reportagem retirada de Arquivo.pt</a>)
+                    </div>
+                    
+                    <ul class="timeline-features">
+                        <li>Algoritmos que privilegiam conteúdo emocional</li>
+                        <li>Fábricas de trolls e redes de bots automatizados</li>
+                        <li>Microtargeting de audiências específicas</li>
+                        <li>Velocidade de disseminação medida em minutos/horas</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Era da IA Generativa -->
+            <div class="timeline-item era-ia">
+                <div class="timeline-period">
+                    <i class="fas fa-robot timeline-icon"></i>
+                </div>
+                <div class="timeline-content">
+                    <span class="timeline-years">2020-Presente</span>
+                    <h3>IA Generativa</h3>
+                    
+                    <div class="timeline-example">
+                        <strong>Exemplo icônico:</strong> Deepfake de Zelensky (2022) - vídeo falso sugerindo rendição da Ucrânia (Confira em: <a href="https://arquivo.pt/wayback/20220506054519/https://www.publico.pt/2022/03/17/mundo/noticia/video-zelenskii-anunciar-rendicao-ucrania-verdadeiro-1999129" target="_blank">reportagem Público retirada de Arquivo.pt</a>)
+                    </div>
+                    
+                    <ul class="timeline-features">
+                        <li>Vídeos e áudios sintéticos hiper-realistas</li>
+                        <li>Chatbots disseminando narrativas em escala</li>
+                        <li>Desinformação personalizada para indivíduos</li>
+                        <li>Velocidade de disseminação medida em segundos/minutos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

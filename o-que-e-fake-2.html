@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7 Categorias da Desordem Informacional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --vermelho: #cc0000;
+      --vermelho-claro: #ff3333;
+      --vermelho-escuro: #990000;
+      --preto: #121212;
+      --cinza-escuro: #252525;
+      --cinza-medio: #4a4a4a;
+      --cinza-claro: #e0e0e0;
+      --branco: #ffffff;
+      --sombra: 0 10px 20px rgba(0, 0, 0, 0.4);
+      --borda-radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--branco);
+      color: var(--cinza-claro);
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.7;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .header-container {
+      background: linear-gradient(135deg, var(--vermelho-escuro), var(--vermelho));
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: var(--sombra);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, 
+        #cc0000, #ff3333, #ff6666, #ff3333, #cc0000);
+      animation: rainbow 8s linear infinite;
+      background-size: 400% 100%;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .header-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+      color: var(--branco);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 900;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 400;
+      color: var(--branco);
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .grid-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .grid .card:last-child {
+      grid-column: 1 / -1;
+      max-width: calc(50% - 12.5px);
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: var(--cinza-escuro);
+      border-radius: var(--borda-radius);
+      padding: 30px;
+      min-height: 220px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-left: 8px solid var(--vermelho);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--vermelho);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(204, 0, 0, 0.3);
+    }
+
+    .card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+      color: var(--branco);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card p {
+      font-size: 1.05rem;
+      font-weight: 400;
+      margin-top: 0;
+      color: rgba(255, 255, 255, 0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+      background: rgba(255, 255, 255, 0.1);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-number {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 3rem;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.05);
+      z-index: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      
+      .grid .card:last-child {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 3rem 1.5rem 2.5rem;
+      }
+      
+      .grid-container {
+        padding: 0 1.5rem 4rem;
+      }
+      
+      .card {
+        padding: 25px;
+        min-height: auto;
+      }
+      
+      .card h3 {
+        font-size: 1.3rem;
+      }
+      
+      .card p {
+        font-size: 1rem;
+      }
+    }
+
+    /* Animação */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+    .card:nth-child(7) { animation-delay: 0.7s; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--cinza-medio);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--cinza-medio);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-container">
+    <h1 class="header-title">7 CATEGORIAS DA DESORDEM INFORMACIONAL</h1>
+    <p class="header-subtitle">Classificação dos principais tipos de desinformação e conteúdo enganoso na era digital</p>
+  </div>
+
+  <div class="grid-container">
+    <div class="grid">
+      <div class="card">
+        <span class="card-number">1</span>
+        <h3><span class="card-icon">🃏</span> Sátira ou Paródia</h3>
+        <p>Conteúdo humorístico sem intenção de causar danos, mas com potencial para enganar quando retirado do contexto original ou compartilhado como se fosse verdadeiro.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">2</span>
+        <h3><span class="card-icon">📢</span> Conteúdo Tendencioso</h3>
+        <p>Uso seletivo e enganoso de informações para moldar a percepção sobre um problema ou indivíduo, distorcendo a realidade através de omissões ou ênfase desproporcional.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">3</span>
+        <h3><span class="card-icon">🎭</span> Conteúdo Impostor</h3>
+        <p>Quando fontes genuínas são personificadas ou substituídas por fontes falsas com intuito deliberado de enganar, usando identidades ou marcas reconhecíveis.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">4</span>
+        <h3><span class="card-icon">🚨</span> Conteúdo Fabricado</h3>
+        <p>Novo conteúdo 100% falso, projetado deliberadamente para enganar e causar danos, frequentemente criado para manipulação política ou ganho financeiro.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">5</span>
+        <h3><span class="card-icon">🔗</span> Conexão Falsa</h3>
+        <p>Títulos, recursos visuais ou legendas que não correspondem ao conteúdo real, criando uma narrativa enganosa através da associação incorreta de elementos.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">6</span>
+        <h3><span class="card-icon">📌</span> Contexto Falso</h3>
+        <p>Conteúdo genuíno compartilhado com informações contextuais falsas que alteram radicalmente seu significado original, incluindo datas, locais ou circunstâncias.</p>
+      </div>
+      <div class="card">
+        <span class="card-number">7</span>
+        <h3><span class="card-icon">🛠</span> Conteúdo Manipulado</h3>
+        <p>Informações ou imagens genuínas que foram alteradas ou editadas de forma enganosa, incluindo deepfakes, edições de áudio/vídeo e manipulações fotográficas sofisticadas.</p>
+      </div>
+    </div>
+  </div>
+
+ 
+
+</body>
+</html>

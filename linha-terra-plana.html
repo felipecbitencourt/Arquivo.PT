@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Linha do Tempo Histórica do Terraplanismo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --primary: #e63946;
+  --secondary: #1d3557;
+  --accent: #457b9d;
+  --light: #f1faee;
+  --dark: #1a1a1a;
+  --gray: #6c757d;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--white);
+  color: var(--dark);
+  font-family: 'Raleway', sans-serif;
+  line-height: 1.6;
+  padding: 0;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--secondary), var(--dark));
+  color: white;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #f4a261, var(--primary));
+  animation: rainbow 8s linear infinite;
+  background-size: 400% 100%;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0.8rem;
+  color: var(--white);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.9;
+  font-weight: 400;
+  padding: 0 10px;
+}
+
+.timeline-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.timeline {
+  position: relative;
+  padding: 30px 0;
+}
+
+/* Linha da timeline (só aparece no desktop) */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  display: none; /* Escondida por padrão */
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.timeline-year {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  box-shadow: var(--shadow);
+  margin: 0 auto 15px;
+  z-index: 2;
+}
+
+.timeline-content {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border-top: 3px solid var(--primary);
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+  border-top-color: var(--accent);
+}
+
+.timeline-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  margin-bottom: 0.8rem;
+  color: var(--secondary);
+  text-align: center;
+}
+
+.timeline-text {
+  color: var(--gray);
+  margin-bottom: 1rem;
+  font-size: clamp(0.95rem, 3vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.timeline-source {
+  display: block;
+  text-align: center;
+  background: var(--light);
+  color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-top: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-image {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 0.8rem 0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  margin: 1rem 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  margin: 0 5px 8px 0;
+  background-color: var(--light);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
+.timeline-item:nth-child(4) { animation-delay: 0.4s; }
+.timeline-item:nth-child(5) { animation-delay: 0.5s; }
+.timeline-item:nth-child(6) { animation-delay: 0.6s; }
+.timeline-item:nth-child(7) { animation-delay: 0.7s; }
+
+/* Versão Desktop - Acima de 768px */
+@media (min-width: 768px) {
+  .hero {
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    padding: 0;
+  }
+
+  .timeline-container {
+    padding: 0 2rem 4rem;
+  }
+
+  .timeline {
+    padding: 40px 0;
+  }
+
+  /* Mostra a linha apenas no desktop */
+  .timeline::before {
+    display: block;
+  }
+
+  .timeline-item {
+    width: 50%;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+  }
+
+  .timeline-item:nth-child(odd) {
+    left: 0;
+  }
+
+  .timeline-item:nth-child(even) {
+    left: 50%;
+  }
+
+  .timeline-year {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+    top: 20px;
+    margin: 0;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-year {
+    right: -40px;
+  }
+
+  .timeline-item:nth-child(even) .timeline-year {
+    left: -40px;
+  }
+
+  .timeline-content {
+    padding: 30px;
+    border-radius: 12px;
+    border-top-width: 4px;
+  }
+
+  .timeline-title {
+    font-size: 1.6rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .timeline-text {
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-source {
+    display: inline-flex;
+    width: auto;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    margin-top: 0;
+  }
+
+  .timeline-image {
+    max-width: 400px;
+    margin: 1rem 0;
+  }
+
+  .timeline-divider {
+    margin: 1.5rem 0;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    margin-right: 8px;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Acessibilidade - Redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .timeline-item,
+  .timeline-content:hover,
+  .timeline-image:hover {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .timeline-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1><i class="fas fa-globe"></i> Terra Plana: Uma História</h1>
+    <p class="subtitle">Da antiguidade ao movimento moderno - com fontes históricas e arquivadas</p>
+  </section>
+
+  <div class="timeline-container">
+    <div class="timeline">
+      <!-- Antiguidade -->
+      <div class="timeline-item">
+        <div class="timeline-year">600 a.C.</div>
+        <div class="timeline-content">
+          <span class="tag">Cosmologia</span>
+          <span class="tag">Antiguidade</span>
+          <h3 class="timeline-title">Origens nas civilizações antigas</h3>
+          <p class="timeline-text">A concepção da Terra como plano ou disco aparece em culturas como a mesopotâmica, egípcia e hebraica. Os gregos pré-socráticos, como Tales e Anaxímenes, defendiam modelos planos da Terra.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://arquivo.pt/wayback/20131106173629/http://www.ccvalg.pt/astronomia/historia/antiguidade.htm" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Centro Ciência Viva de Algarve (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 330 a.C. -->
+      <div class="timeline-item">
+        <div class="timeline-year">330 a.C.</div>
+        <div class="timeline-content">
+          <span class="tag">Ciência</span>
+          <span class="tag">Grécia</span>
+          <h3 class="timeline-title">Aristóteles apresenta evidências da Terra esférica</h3>
+          <p class="timeline-text">Aristóteles fornece as primeiras evidências empíricas da esfericidade da Terra, observando a sombra circular durante eclipses lunares e mudanças nas constelações visíveis ao viajar para norte ou sul.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://www.bbc.com/portuguese/noticias/2016/02/160130_vert_earth_terra_redonda_ml" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Reportagem BBC
+          </a>
+          
+        </div>
+      </div>
+
+      <!-- 1849 -->
+      <div class="timeline-item">
+        <div class="timeline-year">1849</div>
+        <div class="timeline-content">
+          <span class="tag">Modernidade</span>
+          <span class="tag">Pseudociência</span>
+          <h3 class="timeline-title">Samuel Rowbotham e o terraplanismo moderno</h3>
+          <p class="timeline-text">O inventor inglês Samuel Rowbotham publica "Zetetic Astronomy" sob o pseudônimo "Parallax", baseado em experimentos falhos no Velho Rio Bedford. Ele propõe a Terra como um disco plano com o Polo Norte no centro e uma parede de gelo (Antártica) na borda.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://www.scielo.br/j/rbef/a/hYbJGZz96cG3qM7rwzKfWZR/" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Artigo
+          </a>
+          
+        </div>
+      </div>
+
+      <!-- 1956 -->
+      <div class="timeline-item">
+        <div class="timeline-year">1956</div>
+        <div class="timeline-content">
+          <span class="tag">Organização</span>
+          <span class="tag">Sociedade</span>
+          <h3 class="timeline-title">Criação da Flat Earth Society</h3>
+          <p class="timeline-text">Samuel Shenton funda a International Flat Earth Research Society em Dover, Inglaterra, como sucessora da Universal Zetetic Society de Rowbotham. A sociedade ganha notoriedade durante a corrida espacial.</p>
+          <div class="timeline-divider"></div>
+          <p><strong>Contexto:</strong> Reação ao lançamento do Sputnik e à era espacial :cite[2]</p>
+          <a href="https://arquivo.pt/wayback/20041010120000/http://www.theflatearthsociety.org/" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Flat Earth Society (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2004-2010 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2004</div>
+        <div class="timeline-content">
+          <span class="tag">Internet</span>
+          <span class="tag">Revitalização</span>
+          <h3 class="timeline-title">Terraplanismo na era digital</h3>
+          <p class="timeline-text">Fóruns online e plataformas de vídeo permitem a disseminação global das ideias terraplanistas.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://arquivo.pt/wayback/20231125071201/https://wiki.tfes.org/The_Conspiracy" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Terraplanismo e Nasa (arquivado)
+          </a>
+
+        </div>
+      </div>
+
+      <!-- 2015-2020 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-content">
+          <span class="tag">Viralização</span>
+          <span class="tag">Redes Sociais</span>
+          <h3 class="timeline-title">Era das redes sociais e algoritmos</h3>
+          <p class="timeline-text">Plataformas como YouTube e amplificam o terraplanismo através de algoritmos que promovem conteúdo controverso.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://arquivo.pt/wayback/20190218043719/https://www.theguardian.com/science/2019/feb/17/study-blames-youtube-for-rise-in-number-of-flat-earthers" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Reportagem sobre impacto das redes no terraplanismo (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2020 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2020</div>
+        <div class="timeline-content">
+          <span class="tag">Pandemia</span>
+          <span class="tag">Negacionismo</span>
+          <h3 class="timeline-title">Conexão com o negacionismo pandêmico</h3>
+          <p class="timeline-text">O movimento terraplanista se alia a outros grupos negacionistas durante a COVID-19, promovendo teorias sobre "controle global" e desacreditando instituições científicas.</p>
+          <div class="timeline-divider"></div>
+          <a href="https://sul21.com.br/noticias/educacao/2024/02/o-negacionismo-da-pandemia-aproximou-terraplanistas-e-bolsonaristas-diz-antropologo/" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Terraplanismo + Covid no cenário brasileiro
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
