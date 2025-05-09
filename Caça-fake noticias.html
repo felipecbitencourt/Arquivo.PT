@@ -1,3 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caça Fake - Reportagens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+   <style>
+/* ===== ESTILOS GERAIS ===== */
+
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  overflow: auto;
+  animation: fadeIn 0.3s;
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: var(--primary);
+  transform: scale(1.2);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+:root {
+  --primary: #ff4757;
+  --secondary: #2f3542;
+  --correct: #2ed573;
+  --incorrect: #ff6b81;
+  --background: #1e272e;
+  --text: #f1f2f6;
+  --card-bg: #2f3542;
+  --phase1: #ff7f50;
+  --phase2: #4682b4;
+  --phase3: #9acd32;
+  --hint-color: #ffa502;
+  --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ===== CONTROLE DE IMAGENS ===== */
+.image-container {
+  max-height: 400px;
+  width: 100%;
+  background: #000;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.news-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.news-image:hover {
+  transform: scale(1.02);
+}
+
+.image-loading {
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 2px solid var(--secondary);
+  transition: var(--transition);
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+  border-color: var(--primary);
+}
+
+/* ===== TELAS DO JOGO ===== */
+.screen {
+  display: none;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* ===== HEADERS ===== */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1, h2, h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-size: 3.5rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto 1rem;
+}
+
+/* ===== BOTÕES ===== */
+.btn {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  text-align: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-hint {
+  background: transparent;
+  border: 1px solid var(--hint-color);
+  color: var(--text);
+}
+
+.btn-phase1 {
+  background: var(--phase1);
+  color: white;
+}
+
+.btn-phase2 {
+  background: var(--phase2);
+  color: white;
+}
+
+.btn-phase3 {
+  background: var(--phase3);
+  color: #333;
+}
+
+/* ===== MODOS DE JOGO ===== */
+.mode-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.mode-btn {
+  background: var(--card-bg);
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  padding: 2rem 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.mode-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
+  border-color: var(--primary);
+}
+
+.mode-btn:hover::after {
+  opacity: 1;
+}
+
+.mode-btn.selected {
+  border-color: var(--primary);
+  background: rgba(255, 71, 87, 0.1);
+  box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+}
+
+.mode-btn i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  transition: transform 0.3s;
+  color: var(--primary);
+}
+
+.mode-btn:hover i {
+  transform: scale(1.1);
+}
+
+.mode-btn h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== TELAS DE FASE ===== */
+.phase-screen {
+  text-align: center;
+}
+
+.phase-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+.phase-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.phase-description {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* ===== JOGO ===== */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.phase-tag {
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.phase1-tag {
+  background: linear-gradient(135deg, var(--phase1) 0%, #e66a37 100%);
+  color: white;
+}
+
+.phase2-tag {
+  background: linear-gradient(135deg, var(--phase2) 0%, #3a6b99 100%);
+  color: white;
+}
+
+.phase3-tag {
+  background: linear-gradient(135deg, var(--phase3) 0%, #7cb518 100%);
+  color: #333;
+}
+
+.timer-container {
+  font-size: 1.2rem;
+  background: var(--secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timer {
+  font-weight: bold;
+  color: var(--primary);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.3rem;
+}
+
+.game-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+  transition: var(--transition);
+}
+
+.game-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.options-container {
+  padding: 1.5rem;
+}
+
+.game-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.option-btn {
+  background: var(--secondary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.option-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.option-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.option-btn.selected-true {
+  background: var(--correct);
+  color: white;
+  box-shadow: 0 0 15px rgba(46, 213, 115, 0.4);
+}
+
+.option-btn.selected-false {
+  background: var(--incorrect);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 107, 129, 0.4);
+}
+
+.hint-btn {
+  background: var(--secondary);
+  color: var(--text);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  transition: var(--transition);
+  border: 1px solid var(--hint-color);
+}
+
+.hint-btn:hover:not(:disabled) {
+  background: var(--hint-color);
+  color: #333;
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+.hint-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.feedback {
+  padding: 1.5rem;
+  border-radius: 5px;
+  margin: 1.5rem 0;
+  font-weight: 600;
+  display: none;
+  animation: slideUp 0.5s ease-out;
+}
+
+.feedback-correct {
+  background: rgba(46, 213, 115, 0.1);
+  border-left: 4px solid var(--correct);
+  color: var(--correct);
+}
+
+.feedback-incorrect {
+  background: rgba(255, 107, 129, 0.1);
+  border-left: 4px solid var(--incorrect);
+  color: var(--incorrect);
+}
+
+.progress-container {
+  margin-top: 2rem;
+}
+
+.progress-text {
+  margin-bottom: 0.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease-out, background 0.3s;
+}
+
+.progress-fill.phase1 {
+  background: linear-gradient(90deg, var(--phase1), #e66a37);
+}
+
+.progress-fill.phase2 {
+  background: linear-gradient(90deg, var(--phase2), #3a6b99);
+}
+
+.progress-fill.phase3 {
+  background: linear-gradient(90deg, var(--phase3), #7cb518);
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+
+.nav-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  transition: var(--transition);
+  flex: 1;
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: #ff3342;
+  transform: translateY(-3px);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn:hover:not(:disabled)::after {
+  opacity: 1;
+}
+
+.nav-btn:disabled {
+  background: var(--secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== RESULTADOS ===== */
+.results-container {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.results-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.results-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.score-display {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), #ff6b81);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulse 2s infinite;
+}
+
+.result-message {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  padding: 1rem;
+  border-radius: 5px;
+  animation: fadeIn 1s ease-out;
+}
+
+.phase-results {
+  margin-bottom: 2rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.phase-results h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.phase-results h3 i {
+  font-size: 1.8rem;
+}
+
+.phase1-results h3 {
+  color: var(--phase1);
+}
+
+.phase2-results h3 {
+  color: var(--phase2);
+}
+
+.phase3-results h3 {
+  color: var(--phase3);
+}
+
+.answer-detail {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--secondary);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.answer-detail:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.result-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: var(--transition);
+}
+
+.result-item:hover {
+  transform: translateX(5px);
+}
+
+.news-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.answer-status {
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+}
+
+.answer-status.true {
+  background-color: rgba(46, 213, 115, 0.2);
+  color: var(--correct);
+  border-left: 4px solid var(--correct);
+}
+
+.answer-status.fake {
+  background-color: rgba(255, 107, 129, 0.2);
+  color: var(--incorrect);
+  border-left: 4px solid var(--incorrect);
+}
+
+.explanation {
+  margin: 1rem 0;
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.sources-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  animation: slideDown 0.5s ease-out;
+}
+
+.news-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+  cursor: pointer; /* Adicione esta linha */
+}
+
+.source-item {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.source-link {
+  color: var(--primary);
+  text-decoration: none;
+  transition: opacity 0.3s;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+.source-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.source-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+}
+
+.show-sources-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    display: block;
+    width: 100%;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.show-sources-btn:hover {
+    background: #ff3342;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.show-sources-btn i {
+    margin-right: 0.5rem;
+}
+
+.share-btn {
+  background: #1da1f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.share-btn:hover {
+  background: #1991db;
+}
+
+/* Cor do título (h3) nos botões */
+.mode-btn h3 {
+    color: #FF5733; /* Substitua pela cor desejada */
+}
+
+/* Cor do texto de descrição (p) nos botões */
+.mode-btn p {
+    color: #A0A0A0; /* Substitua pela cor desejada */
+}
+
+
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 600px) {
+  .game-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .game-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+  }
+  
+  .nav-btn {
+    max-width: 100%;
+  }
+  
+  .result-item {
+    flex-direction: column;
+  }
+  
+  .thumbnail {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+  }
+}
+</style>
 </head>
 <body>
     <div class="container">
@@ -55,20 +948,6 @@
             </button>
         </div>
 
-        <!-- Phase 3 Screen -->
-        <div class="screen phase-screen" id="phase3Screen">
-            <div class="phase-icon" style="color: var(--phase3)">
-                <i class="fas fa-robot"></i>
-            </div>
-            <h2 class="phase-title" style="color: var(--phase3)">FASE 3: DESAFIO IA</h2>
-            <p class="phase-description">
-                O teste final! Identifique imagens geradas por inteligência artificial.
-            </p>
-            <button class="nav-btn" onclick="startPhase('phase3')" style="background-color: var(--phase3); color: #333;">
-                INICIAR FASE 3
-            </button>
-        </div>
-
         <!-- Game Screen -->
         <div class="screen" id="gameScreen">
             <div class="game-header">
@@ -97,9 +976,7 @@
                         </button>
                     </div>
 
-                    <button class="hint-btn" onclick="showHint()" id="hintBtn">
-                        <i class="fas fa-lightbulb"></i> PEDIR DICA (-10s)
-                    </button>
+                    
 
                     <div class="feedback" id="feedback">
                         Feedback será mostrado aqui após sua resposta.
@@ -145,12 +1022,6 @@
                     <div id="answersDetails2"></div>
                 </div>
                 
-                <!-- Phase 3 Results -->
-                <div class="phase-results phase3-results" id="phase3Results">
-                    <h3><i class="fas fa-robot"></i> FASE 3: DESAFIO IA</h3>
-                    <div id="answersDetails3"></div>
-                </div>
-                
                 <div class="nav-buttons" style="margin-top: 2rem;">
                     <button class="nav-btn" onclick="restartGame()">
                         <i class="fas fa-redo"></i> JOGAR NOVAMENTE
@@ -161,6 +1032,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal para imagem ampliada -->
+        <div id="imageModal" class="image-modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+        </div>
+
     </div>
 
     <script>
@@ -177,11 +1055,11 @@
                         description: "Fonte original da fake news"
                     },
                     {
-                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
+                        url: "https://news.cornell.edu/stories/2021/10/more-999-studies-agree-humans-caused-climate-change",
                         description: "Análise científica desmentindo a petição"
                     },
                     {
-                        url: "https://www.nap.edu/read/12782/chapter/1",
+                        url: "https://www.nationalacademies.org/news/1998/04/statement-of-the-council-of-the-nas-regarding-global-change-petition",
                         description: "Relatório da Academia Nacional de Ciências dos EUA"
                     }
                 ],
@@ -198,8 +1076,17 @@
                     },
                     {
                         url: "https://www.publico.pt/2025/03/21/ciencia/ensaio/vacinas-nao-causam-autismo-nao-sao-precisos-estudos-2126533",
-                        description: "Análise científica desmentindo a declaração"
+                        description: "Notícia desmentindo a declaração"
+                    },
+                    {
+                        url: "https://www.gov.br/saude./pt-br/assuntos/saude-com-ciencia/noticias/2025/janeiro/vacinas-infantis-nao-causam-autismo?utm_source=chatgpt.com",
+                        description: "Declaração do Ministério da Saúde brasileiro"
+                    },
+                    {
+                        url: "https://pubmed.ncbi.nlm.nih.gov/24814559/",
+                        description: "Estudo desmentindo a ligação entre vacinas e autismo"
                     }
+
                 ],
                     explanation: "A informação de que há uma ligação entre autismo e o DNA de bebês abortados presente em vacinas é falsa porque não há evidências científicas que sustentem essa afirmação. Estudos amplamente reconhecidos e revisados por pares demonstram que o autismo é um distúrbio do desenvolvimento neurológico com causas multifatoriais, incluindo genética e fatores ambientais, mas nenhuma pesquisa confiável associa vacinas ao autismo. Além disso, vacinas passam por rigorosos testes de segurança antes de serem aprovadas, e organizações de saúde global, como a OMS e o CDC, rejeitam categoricamente essa ligação. A alegação é parte de teorias da conspiração sem fundamento científico."
                 },
@@ -212,6 +1099,9 @@
                         url: "https://arquivo.pt/wayback/20191007012658/http://noticias.terra.com.br/mundo/europa/papa-renuncia-diz-nao-ter-mais-forcas-para-o-ministerio,4a0c368d4a5cc310VgnCLD2000000ec6eb0aRCRD.html",
                         description: "Fonte original"
                     }
+
+                    ],
+                    explanation: "."
                
                 },
                 {
@@ -222,21 +1112,25 @@
                     {
                         url: "https://arquivo.pt/wayback/20191211153508/https://www.jornaldenegocios.pt/economia/politica/eleicoes/presidenciais/detalhe/_marcelo_rebelo_de_sousa_e_presidente_da_republica",
                         description: "Fonte original"
+                    }
+                    ],
+                    explanation: "."
                 }
             ],
-            phase2: [ // Análise técnica (suas sugestões)
+            phase2: 
+            [ // Análise técnica (suas sugestões)
                 {
                     title: "José Saramago ",
-                    image: "https://exemplo.com/frase-saramago-fake.jpg",
+                    image: "https://static.wixstatic.com/media/73a840_a7395ff432524c568316c2c76ee19630~mv2.jpg",
                     isFake: true,
                     sources: [
                     {
                         url: "https://arquivo.pt/wayback/20141002173620/http://perguntasparvas.blogs.sapo.pt/frases-do-facebook-portugal-nao-tem-1006522",
                         description: "Fonte original da fake news"
                     },
-                         {
+                    {
                         url: "https://brasil.elpais.com/brasil/2018/08/11/cultura/1533999794_151053.html",
-                        description: "Reportagem sobre falsas atribuições"
+                        description: "Reportagem sobre outras falsas atribuições"
                     },
                     {
                         url: "https://observador.pt/factchecks/fact-check-saramago-disse-que-nao-havia-esquerda-ou-direita-em-portugal-mas-apenas-um-bando-de-salafrarios/",
@@ -246,40 +1140,54 @@
                     explanation: "A frase é falsa porque não há nenhuma fonte confiável que comprove que José Saramago a tenha dito ou escrito, e seu conteúdo é incompatível com a visão política bem estruturada e engajada que o autor sempre demonstrou. Atribuí-la a ele é uma forma de desinformação que desrespeita sua trajetória intelectual e política."
                 },
                 {
-                    title: "Macacos e Nasa",
-                    image: "https://static.wixstatic.com/media/73a840_28a11c0d5bac43ce926b8b14b1aec7b4~mv2.png",
-                    isFake: False,
+                    title: "banco 10 bilhões",
+                    image: "https://static.wixstatic.com/media/73a840_4895d729aef5494190e69abda61b395c~mv2.png",
+                    isFake: false,
                     sources: [
                     {
-                        url: "https://arquivo.pt/wayback/20201229213103/https://zap.aeiou.pt/nasa-matou-macacos-unico-dia-367911",
+                        url: "https://arquivo.pt/wayback/20200930063511/http://mercosulcplp.blogspot.com/2009/03/banco-do-sul-tera-capital-de-10-bilhoes.html",
                         description: "Fonte original"
-                              },
-                    {
-                        url: "https://arquivo.pt/wayback/20201222210329/https://www.theguardian.com/world/2020/dec/22/nasa-killed-all-monkeys-on-single-day",
-                        description: "Fonte Primária"
-                    }
-                {
-                    title: "F",
-                    image: "https://exemplo.com/vacina-autismo.jpg",
-                    isFake: true,
-                    sources: [
-                    {
-                        url: "https://arquivo.pt/wayback/20090711032516/http://agfdag.wordpress.com/",
-                        description: "Fonte original da fake news"
-                    },
-                    {
-                        url: "https://www.skepticalscience.com/OISM-Petition-Project-intermediate.htm",
-                        description: "Análise científica desmentindo a petição"
-                    },
-                    {
-                        url: "https://www.nap.edu/read/12782/chapter/1",
-                        description: "Relatório da Academia Nacional de Ciências dos EUA"
                     }
                 ],
-                    explanation: "Nenhuma pesquisa confiável associa vacinas ao autismo. A alegação foi criada por estudo fraudulento e rejeitada pela comunidade científica."
-                }
-            ],
-         
+                    explanation: "Banco 10 milhoes"
+                },
+                            
+                {
+                    title: "Poluição Tejo",
+                    image: "https://static.wixstatic.com/media/73a840_bf3ba13906f94da099c765c649ed8ceb~mv2.png",
+                    isFake: false,
+                    sources: [
+                    {
+                        url: "https://arquivo.pt/wayback/20131117104313/http://greensavers.sapo.pt/2010/12/29/tejo-poluicao-ameaca-pesca-e-gastronomia-regional/",
+                        description: "Fonte original"
+                              }
+                    ],
+                    explanation: "."
+                },
+                {
+                   
+    title: "5G e saúde",
+    image: "https://static.wixstatic.com/media/73a840_8758fffafa904c729a49f5065d20cf71~mv2.jpg",
+    isFake: true,
+    sources: [
+        {
+            url: "https://arquivo.pt/wayback/20181016070506/http://filosofiaimortal.blogspot.com/search/label/Sa%C3%BAde",
+            description: "Fonte original da fake news"
+        },
+        {
+            url: "https://www.who.int/news-room/questions-and-answers/item/radiation-5g-mobile-networks-and-health",
+            description: "Organização Mundial da Saúde (OMS) – FAQ sobre campos eletromagnéticos e 5G"
+        },
+        {
+            url: "https://www.icnirp.org/en/applications/5g/index.html",
+            description: "ICNIRP (Comissão Internacional de Proteção contra Radiações Não-Ionizantes) – Diretrizes de exposição a campos eletromagnéticos:"
+        }
+    ],
+    explanation: "Apesar das preocupações levantadas por algumas pessoas, não há evidências científicas confiáveis de que a tecnologia 5G cause câncer ou outros problemas de saúde. As frequências usadas pelo 5G estão dentro dos limites seguros definidos por órgãos reguladores internacionais, como a Organização Mundial da Saúde (OMS) e a Comissão Internacional de Proteção contra Radiações Não-Ionizantes (ICNIRP). A radiação emitida pelas redes 5G é não-ionizante, ou seja, não tem energia suficiente para danificar o DNA ou causar câncer, ao contrário da radiação ionizante (como raios-X). Afirmações de bombeiros ou outras pessoas que relatam confusão mental ou perda de memória não têm respaldo científico e geralmente são anecdóticas, não sendo validadas por estudos rigorosos."
+
+                },
+            ]
+        };
 
         // Variáveis do jogo
         let currentPhase = '';
@@ -291,13 +1199,12 @@
         let timerInterval;
         let hasAnswered = false;
         let shuffledQuestions = [];
-        let phaseScores = { phase1: 0, phase2: 0, phase3: 0 };
+        let phaseScores = { phase1: 0, phase2: 0 };
 
         // Elementos DOM
         const startScreen = document.getElementById('startScreen');
         const phase1Screen = document.getElementById('phase1Screen');
         const phase2Screen = document.getElementById('phase2Screen');
-        const phase3Screen = document.getElementById('phase3Screen');
         const gameScreen = document.getElementById('gameScreen');
         const resultsScreen = document.getElementById('resultsScreen');
         const startBtn = document.getElementById('startBtn');
@@ -306,7 +1213,6 @@
         const imageLoading = document.getElementById('imageLoading');
         const optionTrue = document.getElementById('optionTrue');
         const optionFalse = document.getElementById('optionFalse');
-        const hintBtn = document.getElementById('hintBtn');
         const feedback = document.getElementById('feedback');
         const progressText = document.getElementById('progressText');
         const progressFill = document.getElementById('progressFill');
@@ -318,10 +1224,8 @@
         const resultMessage = document.getElementById('resultMessage');
         const answersDetails1 = document.getElementById('answersDetails1');
         const answersDetails2 = document.getElementById('answersDetails2');
-        const answersDetails3 = document.getElementById('answersDetails3');
         const phase1Results = document.getElementById('phase1Results');
         const phase2Results = document.getElementById('phase2Results');
-        const phase3Results = document.getElementById('phase3Results');
 
         // Funções do jogo
 
@@ -332,14 +1236,13 @@
             progressText.textContent = `QUESTÃO ${currentQuestion + 1} DE ${shuffledQuestions.length}`;
         }
 
-        // Adicione esta função no seu script
         function restartGame() {
             // Reseta todas as variáveis do jogo
             currentPhase = '';
             currentQuestion = 0;
             score = 0;
             userAnswers = [];
-            phaseScores = { phase1: 0, phase2: 0, phase3: 0 };
+            phaseScores = { phase1: 0, phase2: 0 };
             
             // Para o timer se estiver ativo
             if (timerInterval) {
@@ -357,7 +1260,6 @@
             startBtn.style.display = 'none';
         }
 
-        // Seleciona o modo de jogo
         function selectMode(mode, event) {
             gameMode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -368,12 +1270,10 @@
             startBtn.style.display = 'block';
         }
 
-        // Inicia o jogo (mostra a primeira fase)
         function startGame() {
             switchScreen('phase1Screen');
         }
 
-        // Inicia uma fase específica
         function startPhase(phase) {
             currentPhase = phase;
             currentQuestion = 0;
@@ -396,11 +1296,6 @@
                     phaseTag.className = 'phase-tag phase2';
                     progressFill.className = 'progress-fill phase2';
                     break;
-                case 'phase3':
-                    phaseTag.textContent = 'FASE 3: DESAFIO IA';
-                    phaseTag.className = 'phase-tag phase3';
-                    progressFill.className = 'progress-fill phase3';
-                    break;
             }
             
             switchScreen('gameScreen');
@@ -419,7 +1314,6 @@
             updateProgress();
         }
 
-        // Alterna entre telas
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
@@ -427,7 +1321,6 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Inicia o cronômetro
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -440,7 +1333,6 @@
             }, 1000);
         }
 
-        // Atualiza o display do cronômetro
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
@@ -455,52 +1347,40 @@
             }
         }
 
-        // Finaliza o jogo por tempo
         function endTimedGame() {
             showResults();
         }
 
-        // Função para ajustar o contêiner da imagem
         function adjustImageContainer(imgWidth, imgHeight) {
             const container = document.querySelector('.image-container');
             const maxWidth = document.querySelector('.game-card').clientWidth;
-            const maxHeight = window.innerHeight * 0.6; // 60% da altura da janela
+            const maxHeight = window.innerHeight * 0.6;
             
-            // Calcula a proporção
             const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
             
-            // Define as novas dimensões mantendo a proporção
             const newWidth = imgWidth * ratio;
             const newHeight = imgHeight * ratio;
             
-            // Aplica as dimensões
             container.style.width = `${newWidth}px`;
             container.style.height = `${newHeight}px`;
             container.style.maxWidth = '100%';
         }
-        
 
-        // Carrega a questão atual
-        // Modifique a função loadQuestion para incluir o ajuste de tamanho
         function loadQuestion() {
             hasAnswered = false;
             
             if (currentQuestion < shuffledQuestions.length) {
                 const question = shuffledQuestions[currentQuestion];
                 
-                // Mostra loading
                 newsImage.style.opacity = 0;
                 imageLoading.style.display = 'flex';
                 
-                // Carrega a imagem
                 const img = new Image();
                 img.src = question.image;
                 
                 img.onload = function() {
-                    // Ajusta o tamanho do contêiner com base na imagem
                     adjustImageContainer(this.width, this.height);
                     
-                    // Atribui a imagem ao elemento
                     newsImage.src = question.image;
                     newsImage.onload = () => {
                         imageLoading.style.display = 'none';
@@ -509,27 +1389,23 @@
                 };
                 
                 img.onerror = function() {
-                    // Caso a imagem não carregue, usa tamanho padrão
                     adjustImageContainer(800, 600);
                     newsImage.src = question.image;
                     imageLoading.style.display = 'none';
                     newsImage.style.opacity = 1;
                 };
                 
-                // Reseta os botões
                 optionTrue.classList.remove('selected-true', 'selected-false');
                 optionFalse.classList.remove('selected-true', 'selected-false');
                 optionTrue.disabled = false;
                 optionFalse.disabled = false;
-                hintBtn.disabled = false;
                 feedback.style.display = 'none';
                 
-                // Atualiza navegação
                 prevBtn.disabled = currentQuestion === 0;
                 nextBtn.disabled = true;
                 
                 if (currentQuestion === shuffledQuestions.length - 1) {
-                    nextBtn.textContent = currentPhase === 'phase3' ? 'VER RESULTADO' : 'PRÓXIMA FASE';
+                    nextBtn.textContent = 'VER RESULTADO';
                 } else {
                     nextBtn.textContent = 'PRÓXIMA';
                 }
@@ -539,35 +1415,34 @@
             }
         }
 
-        
-        // Seleciona uma opção
         function selectOption(userChoice) {
             if (hasAnswered || (gameMode === 'timed' && timeLeft <= 0)) return;
             
             hasAnswered = true;
             const question = shuffledQuestions[currentQuestion];
-            const isCorrect = (userChoice === question.isFake);
+            const isCorrect = (userChoice === !question.isFake); // Correção aqui - invertida a lógica
             
-            // Marca a resposta do usuário
+            if (isCorrect) {
+                score++;
+            }
+
+            // Correção na marcação dos botões
             if (userChoice) {
-                optionTrue.classList.add('selected-true');
-                optionFalse.classList.add('selected-false');
+                optionTrue.classList.add(isCorrect ? 'selected-true' : 'selected-false');
+                optionFalse.classList.add(isCorrect ? 'selected-false' : 'selected-true');
             } else {
-                optionFalse.classList.add('selected-false');
-                optionTrue.classList.add('selected-true');
+                optionFalse.classList.add(isCorrect ? 'selected-true' : 'selected-false');
+                optionTrue.classList.add(isCorrect ? 'selected-false' : 'selected-true');
             }
             
-            // Desabilita os botões
             optionTrue.disabled = true;
             optionFalse.disabled = true;
-            hintBtn.disabled = true;
 
-                // Cria o HTML das fontes
             let sourcesHTML = '';
             if (question.sources && question.sources.length > 0) {
                 sourcesHTML = `
                     <div class="sources-container" id="sourcesContainer" style="display: none;">
-                        <h4>Fontes que desmentem:</h4>
+                        <h4>Fontes:</h4>
                         ${question.sources.map(source => `
                             <div class="source-item">
                                 <a href="${source.url}" target="_blank" class="source-link">${source.url}</a>
@@ -576,13 +1451,11 @@
                         `).join('')}
                     </div>
                     <button class="show-sources-btn" onclick="document.getElementById('sourcesContainer').style.display = 'block'; this.style.display = 'none'">
-                        Mostrar fontes que desmentem esta fake news
+                        Mostrar fontes 
                     </button>
                 `;
             }
-
             
-            // Mostra feedback baseado no gabarito real (isFake) em vez da resposta do usuário
             if (question.isFake) {
                 feedback.innerHTML = `❌ É FAKE! ${question.explanation} ${sourcesHTML}`;
                 feedback.className = 'feedback feedback-incorrect';
@@ -593,7 +1466,6 @@
             
             feedback.style.display = 'block';
             
-            // Armazena a resposta
             userAnswers.push({
                 userChoice,
                 isCorrect,
@@ -602,10 +1474,8 @@
                 sources: question.sources || []
             });
             
-            // Habilita o próximo botão
             nextBtn.disabled = false;
             
-            // No modo cronômetro, avança automaticamente
             if (gameMode === 'timed' && timeLeft > 0) {
                 setTimeout(() => {
                     if (!nextBtn.disabled) {
@@ -615,48 +1485,19 @@
             }
         }
 
-        // Mostra dica
-        function showHint() {
-            if (hasAnswered || (gameMode === 'timed' && timeLeft <= 0)) return;
-            
-            const question = shuffledQuestions[currentQuestion];
-            
-            const hint = question.isFake 
-                ? "Dica: Esta notícia mostra sinais de desinformação..."
-                : "Dica: Esta notícia parece ser autêntica e verificável...";
-            
-            feedback.textContent = hint;
-            feedback.className = 'feedback';
-            feedback.style.display = 'block';
-            
-            // Penalização no modo cronômetro
-            if (gameMode === 'timed') {
-                timeLeft = Math.max(5, timeLeft - 10);
-                updateTimerDisplay();
-            }
-            
-            hintBtn.disabled = true;
-        }
 
-        // Navega para próxima questão ou fase
         function nextQuestion() {
             if (currentQuestion === shuffledQuestions.length - 1) {
-                // Salva a pontuação da fase
                 phaseScores[currentPhase] = score;
                 
-                // Verifica se é a última fase
-                if (currentPhase === 'phase3') {
+                if (currentPhase === 'phase2') {
                     showResults();
                     return;
                 }
                 
-                // Avança para a próxima fase
                 switch (currentPhase) {
                     case 'phase1':
                         switchScreen('phase2Screen');
-                        break;
-                    case 'phase2':
-                        switchScreen('phase3Screen');
                         break;
                 }
                 return;
@@ -667,13 +1508,13 @@
             updateProgress();
         }
 
-        // Volta para questão anterior
         function prevQuestion() {
             if (currentQuestion > 0) {
-                // Remove a última resposta se existir
                 if (userAnswers.length > currentQuestion - 1) {
-                    const lastAnswer = userAnswers.pop();
-                    if (lastAnswer.isCorrect) score--;
+                    const lastAnswer = userAnswers[currentQuestion - 1];
+                    if (lastAnswer.isCorrect) {
+                        score--;
+                    }
                 }
                 
                 currentQuestion--;
@@ -682,26 +1523,31 @@
             }
         }
 
-        // Mostra resultados finais
         function showResults() {
             if (gameMode === 'timed') {
                 clearInterval(timerInterval);
             }
             
-            // Salva a pontuação da fase final
             phaseScores[currentPhase] = score;
             
-            // Calcula totais
-            const totalQuestions = Object.values(newsDatabase).reduce((acc, phase) => acc + phase.length, 0);
-            const totalScore = Object.values(phaseScores).reduce((acc, score) => acc + score, 0);
-            const percentage = Math.round((totalScore / totalQuestions) * 100);
+            // Calcular total de questões jogadas (apenas fases completadas)
+            const totalQuestionsPlayed = Object.keys(phaseScores)
+                .filter(phase => phaseScores[phase] !== undefined)
+                .reduce((acc, phase) => acc + newsDatabase[phase].length, 0);
+
+            // Soma os scores das fases jogadas
+            const totalScore = Object.values(phaseScores)
+                .filter(score => score !== undefined)
+                .reduce((acc, score) => acc + score, 0);
+
+            const percentage = totalQuestionsPlayed > 0 
+                ? Math.round((totalScore / totalQuestionsPlayed) * 100) 
+                : 0;
             
             switchScreen('resultsScreen');
             
-            // Atualiza resultados gerais
-            scoreDisplay.textContent = `${totalScore} acertos de ${totalQuestions} (${percentage}%)`;
+            scoreDisplay.textContent = `${totalScore} acertos de ${totalQuestionsPlayed} (${percentage}%)`;
             
-            // Mensagem personalizada
             if (percentage >= 80) {
                 resultMessage.textContent = "🏆 Excelente! Você é um verdadeiro detetive de notícias!";
                 resultMessage.style.backgroundColor = "rgba(46, 213, 115, 0.1)";
@@ -713,25 +1559,19 @@
                 resultMessage.style.backgroundColor = "rgba(255, 71, 87, 0.1)";
             }
             
-            // Mostra/oculta seções de resultados por fase
             phase1Results.style.display = phaseScores.phase1 !== undefined ? 'block' : 'none';
             phase2Results.style.display = phaseScores.phase2 !== undefined ? 'block' : 'none';
-            phase3Results.style.display = phaseScores.phase3 !== undefined ? 'block' : 'none';
             
-            // Detalhes das respostas por fase
             renderPhaseResults('phase1', answersDetails1);
             renderPhaseResults('phase2', answersDetails2);
-            renderPhaseResults('phase3', answersDetails3);
         }
 
-        // Renderiza os resultados de uma fase específica
         function renderPhaseResults(phase, container) {
             container.innerHTML = '';
             
             if (!phaseScores[phase]) return;
             
             newsDatabase[phase].forEach((q, i) => {
-                // Cria o HTML das fontes para a tela de resultados
                 let sourcesHTML = '';
                 if (q.sources && q.sources.length > 0) {
                     sourcesHTML = `
@@ -767,32 +1607,29 @@
                 container.appendChild(answerDiv);
             });
         }
-        // Atualize a função shareResults
-function shareResults() {
-    const totalQuestions = Object.values(newsDatabase).reduce((acc, phase) => acc + phase.length, 0);
-    const totalScore = Object.values(phaseScores).reduce((acc, score) => acc + score, 0);
-    const percentage = Math.round((totalScore / totalQuestions) * 100);
-    
-    const shareText = `Acabei de jogar "Caça Fakes" e acertei ${totalScore} de ${totalQuestions} notícias (${percentage}%)! 🕵️‍♂️ Tente você também:  https://felipecb2511.wixsite.com/my-site-1`;
-    const shareTitle = 'Meu resultado no jogo "Caça Fakes"';
-    
-    // Tenta usar a API Web Share se disponível
-    if (navigator.share) {
-        navigator.share({
-            title: shareTitle,
-            text: shareText
-        }).catch(err => {
-            console.error('Erro ao compartilhar:', err);
-            fallbackShare(shareText);
-        });
-    } else {
-        fallbackShare(shareText);
-    }
-}
 
-        // Função de fallback para navegadores sem API de compartilhamento
+        function shareResults() {
+            const totalQuestions = Object.values(newsDatabase).reduce((acc, phase) => acc + phase.length, 0);
+            const totalScore = Object.values(phaseScores).reduce((acc, score) => acc + score, 0);
+            const percentage = Math.round((totalScore / totalQuestions) * 100);
+            
+            const shareText = `Acabei de jogar "Caça Fakes" e acertei ${totalScore} de ${totalQuestions} notícias (${percentage}%)! 🕵️‍♂️ Tente você também:  https://www.olharcritico.org/`;
+            const shareTitle = 'Meu resultado no jogo "Caça Fakes"';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: shareTitle,
+                    text: shareText
+                }).catch(err => {
+                    console.error('Erro ao compartilhar:', err);
+                    fallbackShare(shareText);
+                });
+            } else {
+                fallbackShare(shareText);
+            }
+        }
+
         function fallbackShare(text) {
-            // Tenta copiar para a área de transferência
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
                     alert('Resultado copiado para a área de transferência! Cole nas redes sociais.');
@@ -801,7 +1638,6 @@ function shareResults() {
                     prompt('Copie o texto abaixo para compartilhar:', text);
                 });
             } else {
-                // Fallback mais antigo para navegadores muito antigos
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 document.body.appendChild(textarea);
@@ -816,7 +1652,6 @@ function shareResults() {
             }
         }
 
-        // Copia para área de transferência
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 alert('Resultado copiado para a área de transferência! Cole nas redes sociais.');
@@ -826,7 +1661,6 @@ function shareResults() {
             });
         }
 
-        // Embaralha as questões
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -835,7 +1669,6 @@ function shareResults() {
             return array;
         }
 
-        // Inicializa o jogo quando a página carrega
         window.addEventListener('DOMContentLoaded', () => {
             startScreen.classList.add('active');
         });
@@ -848,6 +1681,51 @@ function shareResults() {
                     adjustImageContainer(this.width, this.height);
                 };
             }
+        });
+
+
+        // Funções para o modal de imagem
+        function setupImageModal() {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        const closeModal = document.querySelector(".close-modal");
+        
+        // Quando a imagem da notícia é clicada
+        newsImage.addEventListener('click', function() {
+            if (this.src && this.src !== '') {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            document.body.style.overflow = "hidden"; // Desabilita scroll
+            }
+        });
+        
+        // Quando o botão de fechar é clicado
+        closeModal.addEventListener('click', function() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto"; // Habilita scroll novamente
+        });
+        
+        // Fechar modal ao clicar fora da imagem
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+            }
+        });
+        
+        // Fechar modal com tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape" && modal.style.display === "block") {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+            }
+        });
+        }
+
+        // No final do seu código, adicione a inicialização do modal
+        window.addEventListener('DOMContentLoaded', () => {
+        startScreen.classList.add('active');
+        setupImageModal(); // Adicione esta linha
         });
     </script>
 </body>
