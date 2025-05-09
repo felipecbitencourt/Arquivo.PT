@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caça Fake - Desafio IA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --secondary: #2f3542;
+            --correct: #2ed573;
+            --incorrect: #ff6b81;
+            --background: #1e272e;
+            --text: #f1f2f6;
+            --card-bg: #2f3542;
+            --phase3: #9acd32;
+            --hint-color: #ffa502;
+            --timer-warning: #ff6348;
+            --timer-critical: #ff0000;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Start Screen */
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .mode-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+            border-color: var(--primary);
+        }
+
+        .mode-btn:hover::after {
+            opacity: 1;
+        }
+
+        .mode-btn.selected {
+            border-color: var(--primary);
+            background: rgba(255, 71, 87, 0.1);
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .mode-btn i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            transition: transform 0.3s;
+        }
+
+        .mode-btn:hover i {
+            transform: scale(1.1);
+        }
+
+        .mode-btn h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Phase Screen */
+        .phase-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .phase-screen.active {
+            display: block;
+        }
+
+        .phase-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .phase-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-description {
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Game Screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .phase-tag {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--phase3) 0%, #7cb518 100%);
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .timer-container {
+            font-size: 1.2rem;
+            background: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timer {
+            font-weight: bold;
+            color: var(--primary);
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.3rem;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .image-container {
+            position: relative;
+            max-height: 30vh;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .news-image {
+            max-width: 100%;
+            max-height: 30vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+       
+}
+
+        .news-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10;
+            transition: opacity 0.5s ease;
+        }
+
+        .options-container {
+            padding: 1.5rem;
+        }
+
+        .game-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sources-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .source-item {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .source-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.3s;
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .source-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .source-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: block;
+        }
+
+        .show-sources-btn {
+            background: transparent;
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .show-sources-btn:hover {
+            text-decoration: underline;
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 600px) {
+            .game-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .option-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn.selected-true {
+            background: var(--correct);
+            color: white;
+            box-shadow: 0 0 15px rgba(46, 213, 115, 0.4);
+        }
+
+        .option-btn.selected-false {
+            background: var(--incorrect);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 107, 129, 0.4);
+        }
+
+        .hint-btn {
+            background: var(--secondary);
+            color: var(--text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            transition: var(--transition);
+            border: 1px solid var(--hint-color);
+        }
+
+        .hint-btn:hover:not(:disabled) {
+            background: var(--hint-color);
+            color: #333;
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+
+        .hint-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 1.5rem 0;
+            font-weight: 600;
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .feedback-correct {
+            background: rgba(46, 213, 115, 0.1);
+            border-left: 4px solid var(--correct);
+            color: var(--correct);
+        }
+
+        .feedback-incorrect {
+            background: rgba(255, 107, 129, 0.1);
+            border-left: 4px solid var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .progress-container {
+            margin-top: 2rem;
+        }
+
+        .progress-text {
+            margin-bottom: 0.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease-out, background 0.3s;
+            background: linear-gradient(90deg, var(--phase3), #7cb518);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            flex: 1;
+            max-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #ff3342;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover:not(:disabled)::after {
+            opacity: 1;
+        }
+
+        .nav-btn:disabled {
+            background: var(--secondary);
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Results Screen */
+        .results-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .results-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .results-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-display {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .result-message {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 5px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .phase-results {
+            margin-bottom: 2rem;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .phase-results h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .phase-results h3 i {
+            font-size: 1.8rem;
+        }
+
+        .phase3-results h3 {
+            color: var(--phase3);
+        }
+
+        .answer-detail {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--secondary);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .answer-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .answer-image {
+            width: 100%;
+            border-radius: 5px;
+            margin: 1rem 0;
+            max-height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .answer-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-btn {
+            background: #1da1f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .share-btn:hover {
+            background: #1991db;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        .result-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid var(--secondary);
+            transition: var(--transition);
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        /* Estilos para a tela de resultados */
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .answer-status {
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: inline-block;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .answer-status.true {
+            background-color: rgba(46, 213, 115, 0.2);
+            color: var(--correct);
+            border-left: 4px solid var(--correct);
+        }
+
+        .answer-status.fake {
+            background-color: rgba(255, 107, 129, 0.2);
+            color: var(--incorrect);
+            border-left: 4px solid var(--incorrect);
+        }
+
+        .explanation {
+            margin: 1rem 0;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        .source-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+            transition: opacity 0.3s;
+            font-weight: 600;
+        }
+
+        .source-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Floating particles for background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 1000;
+            animation: confetti 3s ease-out;
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        :root {
+        --phase1: #ff7f50;  /* Cor da Fase 1 */
+        --phase2: #4682b4;  /* Cor da Fase 2 */
+        /* Mantenha as outras variáveis existentes */
+        }
+
+                /* Modal para imagem ampliada */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            object-fit: contain;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Adicione cursor pointer na imagem do jogo */
+        .news-image {
+            cursor: pointer;
+            /* Mantenha as outras propriedades existentes */
+        }
+      
+      /* Cor do título (h3) nos botões */
+      .mode-btn h3 {
+          color: #FF5733; /* Substitua pela cor desejada */
+      }
+
+      /* Cor do texto de descrição (p) nos botões */
+      .mode-btn p {
+          color: #A0A0A0; /* Substitua pela cor desejada */
+      }
+
+
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="screen active" id="startScreen">
+            <header>
+                <h1 style="color: var(--primary)">DESAFIO IA</h1>
+                <p class="subtitle">Você consegue identificar imagens e notícias geradas por inteligência artificial? Teste suas habilidades neste desafio contra a máquina!</p>
+            </header>
+
+            <div class="mode-selector">
+                <button class="mode-btn" onclick="selectMode('normal', event)">
+                    <i class="fas fa-play-circle" style="color: var(--primary)"></i>
+                    <h3>Modo Normal</h3>
+                    <p>Jogue no seu ritmo e aprenda a identificar imagens IA</p>
+                </button>
+                <button class="mode-btn" onclick="selectMode('timed', event)">
+                    <i class="fas fa-clock" style="color: var(--primary)"></i>
+                    <h3>Modo Cronômetro</h3>
+                    <p>1 minuto para desafiar seus reflexos (+5s por acerto)</p>
+                </button>
+            </div>
+            
+            <button class="nav-btn pulse" id="startBtn" onclick="startGame()" style="display: none; margin: 0 auto;">
+                <i class="fas fa-play"></i> COMEÇAR JOGO
+            </button>
+        </div>
+
+
+        <!-- Adicione esta nova tela de fase após a tela inicial -->
+        <!-- Phase 1 Screen -->
+        <div class="screen phase-screen" id="phase1Screen">
+            <div class="phase-icon" style="color: var(--phase1)">
+                <i class="fas fa-images"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase1)">FASE 1: IMAGEM REAL OU IMAGEM DE IA?</h2>
+            <p class="phase-description">
+                Identifique se as imagens são reais ou geradas por Inteligência Artificial. Esta fase ajuda a desenvolver a atenção para imagens potencialmente enganadoras, criadas através de IA. 
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase1')" style="background-color: var(--phase1)">
+                INICIAR FASE 1
+            </button>
+        </div>
+
+        <!-- Phase 2 Screen -->
+        <div class="screen phase-screen" id="phase2Screen">
+            <div class="phase-icon" style="color: var(--phase2)">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase2)">FASE 2: DESAFIO NOTÍCIA IA</h2>
+            <p class="phase-description">
+                Agora o desafio aumenta! Identifique se estas notícias foram geradas por Inteligência Artificial ou se são notícias reais retiradas do Arquivo.pt.
+            </p>
+            <button class="nav-btn" onclick="startPhase('phase2')" style="background-color: var(--phase2)">
+                INICIAR FASE 2
+            </button>
+        </div>
+
+        <!-- Phase 3 Screen -->
+        <div class="screen phase-screen" id="phase3Screen">
+            <div class="phase-icon" style="color: var(--phase3)">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h2 class="phase-title" style="color: var(--phase3)">DESAFIO IA</h2>
+            <p class="phase-description">
+                O teste final! Identifique imagens geradas por inteligência artificial versus fotografias reais. Preste atenção nos detalhes que revelam a origem das imagens.
+            </p>
+            <button class="nav-btn pulse" onclick="startPhase('phase3')" style="background-color: var(--phase3); color: #333;">
+                <i class="fas fa-play"></i> INICIAR DESAFIO
+            </button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="game-header">
+                <h1 style="color: var(--primary)">DESAFIO IA</h1>
+                <div class="phase-tag phase3" id="phaseTag">DESAFIO IA</div>
+                <div class="timer-container" id="timerContainer" style="display: none;">
+                    <i class="fas fa-clock"></i> <span class="timer" id="timer">01:00</span>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div class="image-container">
+                    <img src="" alt="Imagem para classificar" class="news-image" id="newsImage">
+                    <div class="image-loading" id="imageLoading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    </div>
+                </div>
+                
+                <div class="options-container">
+                    <div class="game-options">
+                        <button class="option-btn" onclick="selectOption(false)" id="optionTrue">
+                            <i class="fas fa-check"></i> REAL
+                        </button>
+                        <button class="option-btn" onclick="selectOption(true)" id="optionFalse">
+                            <i class="fas fa-times"></i> GERADA POR IA
+                        </button>
+                    </div>
+
+
+                    <div class="feedback" id="feedback">
+                        Feedback será mostrado aqui após sua resposta.
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-text" id="progressText">QUESTÃO 1 DE X</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill phase3" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>
+                    <i class="fas fa-arrow-left"></i> ANTERIOR
+                </button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                    PRÓXIMO <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <div class="results-container">
+                <h2 class="results-title" style="color: var(--primary)">RESULTADO FINAL</h2>
+                <div class="score-display" id="scoreDisplay">0 acertos de 0 (0%)</div>
+                <div class="result-message" id="resultMessage"></div>
+                
+                <!-- Phase 1 Results -->
+                <div class="phase-results phase1-results" id="phase1Results">
+                    <h3><i class="fas fa-images"></i> FASE 1: IMAGEM REAL OU IMAGEM DE IA?</h3>
+                    <div id="answersDetails1"></div>
+                </div>
+                
+                <!-- Phase 2 Results -->
+                <div class="phase-results phase2-results" id="phase2Results">
+                    <h3><i class="fas fa-robot"></i> FASE 2: DESAFIO NOTÍCIA IA</h3>
+                    <div id="answersDetails2"></div>
+                </div>
+                
+                <div class="nav-buttons" style="margin-top: 2rem;">
+                    <button class="nav-btn" onclick="restartGame()">
+                        <i class="fas fa-redo"></i> JOGAR NOVAMENTE
+                    </button>
+                    <button class="nav-btn share-btn" onclick="shareResults()">
+                        <i class="fas fa-share-alt"></i> COMPARTILHAR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+                <!-- Modal para imagem ampliada -->
+        <div id="imageModal" class="image-modal">
+            <span class="close-modal">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+    </div>
+
+   
+    <script>
+        // Referências a elementos DOM
+        const phaseTag = document.getElementById('phaseTag');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const timerElement = document.getElementById('timer');
+        const answersDetails3 = document.getElementById('answersDetails3');
+        const startScreen = document.getElementById('startScreen');
+        const startBtn = document.getElementById('startBtn');
+        const optionTrue = document.getElementById('optionTrue');
+        const optionFalse = document.getElementById('optionFalse');
+        const feedback = document.getElementById('feedback');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const timerContainer = document.getElementById('timerContainer');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const resultMessage = document.getElementById('resultMessage');
+        const newsImage = document.getElementById('newsImage');
+        const imageLoading = document.getElementById('imageLoading');
+
+        let selectedQuestionsPhase1 = [];
+        let selectedQuestionsPhase2 = [];
+
+        // Banco de dados de imagens
+        const newsDatabase = {
+            phase1: [
+                // Imagens geradas por IA (12)
+            {
+                title: "Cachorro em Jacaré",
+                image: "https://static.wixstatic.com/media/73a840_6bd25038f251472c9e526639ea7b8696~mv2.jpg",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Imagem gerada por IA - Detalhes inconsistentes"
+                    }
+                ],
+                explanation: "Gerada por LeonardoAI - Prompt: 'imagem hiper realista de um cachorro em cima de um jacaré'.",
+                tool: "LeonardoAI"
+            },
+            {
+                title: "Samurai Histórico",
+                image: "https://static.wixstatic.com/media/73a840_004c15c92489411fa4e49df5b70146a3~mv2.jpg",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Representação histórica fictícia"
+                    }
+                ],
+                explanation: "Criada por LeonardoAI - Prompt: '17h the year 1800. japan. 20 year old japanese man holding a sword'.",
+                tool: "LeonardoAI"
+            },
+            {
+                title: "Protesto em Times Square",
+                image: "https://static.wixstatic.com/media/73a840_e7623b51578c4dec8af928deefd357e9~mv2.jpg",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Cena montada digitalmente"
+                    }
+                ],
+                explanation: "Produzida por LeonardoAI - Prompt: 'fotografia aérea de um protesto gigante na times square nova york'.",
+                tool: "LeonardoAI"
+            },
+            {
+                title: "Cachorro Carente",
+                image: "https://static.wixstatic.com/media/73a840_acf932e8d84a412d84ba45ba403aad1e~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Cena emocional fabricada"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: 'a dog on the streets that is sad holding a sign that says I'm starving, press the heart to give me a treat'.",
+                tool: "Sora"
+            },
+            {
+                title: "San Pietro",
+                image: "https://static.wixstatic.com/media/73a840_5e714f62d80f4028a2b17ddd12b96428~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "San Pietro"
+                    }
+                ],
+                explanation: "Criada por Sora - Prompt: 'A realistic photo of San Pietro (Rome), surrounded by crowds of tourists, resolution 400px x 400px.",
+                tool: "Sora"
+            },
+            {
+                title: "Mercado",
+                image: "https://static.wixstatic.com/media/73a840_df54e49eb4dc4263bc70099d7bdf3fbf~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Supermecado vazio"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: 'supermarket hallway with empty shelves.",
+                tool: "Sora"
+            },
+            {
+                title: "Marx e Freud",
+                image: "https://static.wixstatic.com/media/73a840_7ae4b58c4a2f485788788aa7d8dadc2d~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Montagem histórica"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: 'old photo, black and white, low resolution, karl marx with sigmund freud, both are standing, looking at the camera and shaking hands, dirt paper, buildings in the background'.",
+                tool: "Sora"
+            },
+            {
+                title: "Prato de Risoto",
+                image: "https://static.wixstatic.com/media/73a840_017cdb3f06cb4550a0254556a367e4d7~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Alimento simulado"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: Um prato gourmet de risoto de cogumelos silvestres, servido em um prato de cerâmica rústica sobre uma mesa de madeira envelhecida. A apresentação inclui uma guarnição de folhas de tomilho fresco e lascas de parmesão, com iluminação suave e difusa, capturada em estilo fotográfico realista, foco nítido, profundidade de campo rasa.",
+                tool: "Sora"
+            },
+            {
+                title: "Natureza Morta",
+                image: "https://static.wixstatic.com/media/73a840_db0b670cf5e84dc9a77520982a1fc2e7~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Natureza morta artificial"
+                    }
+                ],
+                explanation: "Criada por Sora - Prompt: cactus em vaso.",
+                tool: "Sora"
+            },
+            {
+                title: "Torre Eiffel Anos 70",
+                image: "https://static.wixstatic.com/media/73a840_236100062da94487a180b0ae9f788bdd~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Cena histórica reconstruída"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: 'photo realistic image from 70-s of Eiffel tower...'.",
+                tool: "Sora"
+            },
+            {
+                title: "Gatos no Telhado",
+                image: "https://static.wixstatic.com/media/73a840_64b9407bd2b345ab89dda6a583f83722~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Cena urbana surreal"
+                    }
+                ],
+                explanation: "Produzida por Sora - Prompt: 'A rooftop of a high rise building at blue hour...'.",
+                tool: "Sora"
+            },
+            {
+                title: "Incêndio",
+                image: "https://static.wixstatic.com/media/73a840_dc8098d13f504c4a980c4a2339d6a72f~mv2.png",
+                isFake: true,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Floresta em chamas"
+                    }
+                ],
+                explanation: "Gerada por Sora - Prompt: aero photo of a rainforest burning, low resolution.",
+                tool: "Sora"
+            },
+            // Imagens reais (9)
+            {
+                title: "Fotojornalismo Real",
+                image: "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                isFake: false,
+                sources: [
+                    {
+                        url: "https://unsplash.com/photos/black-and-white-photo-of-people-walking-on-street-during-daytime-ZiQkhI7417A",
+                        description: "Foto jornalística autêntica tirada por um fotógrafo profissional"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Paisagem Urbana",
+                image: "https://static.wixstatic.com/media/73a840_6a95c88a1111464bbaae0c6a5be50f03~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Fotografia real de paisagem urbana"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Retrato de Rua",
+                image: "https://static.wixstatic.com/media/73a840_441f5ca5c9f84afeaa42d4c5194b5d04~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Retrato fotográfico autêntico"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Cena de Mercado",
+                image: "https://static.wixstatic.com/media/73a840_ba405de3e59540febef551359d372b44~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Documentário fotográfico"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Paisagem Natural",
+                image: "https://static.wixstatic.com/media/73a840_969acabb6a814dfcbfd6ed7f52dfe2c9~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Fotografia de natureza"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Evento Cultural",
+                image: "https://static.wixstatic.com/media/73a840_be8a6247c15c4908b1bdf016b268f79c~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Registro fotográfico de evento"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Arquitetura Histórica",
+                image: "https://static.wixstatic.com/media/73a840_36474c61914c4a3994d2942aaf6fdce9~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Fotografia arquitetônica"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Retrato em Estúdio",
+                image: "https://static.wixstatic.com/media/73a840_47cd93ebe1484cd18da4e48424cf4d08~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Retrato profissional em estúdio"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Cena Urbana Noturna",
+                image: "https://static.wixstatic.com/media/73a840_c032374eb87f4cfc8269c7911cda9d91~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Fotografia urbana noturna"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            },
+            {
+                title: "Paisagem Marinha",
+                image: "https://static.wixstatic.com/media/73a840_a52a9c475c604a4eae7b9d325b58a41b~mv2.jpg",
+                isFake: false,
+                sources: [
+                    {
+                        url: "#",
+                        description: "Fotografia de paisagem marinha"
+                    }
+                ],
+                explanation: "Retrato real.",
+                tool: "Câmera fotográfica"
+            }
+        ], 
+
+        phase2: [ // Fase 2 - IA vs Real
+        {
+            title: "Notícia 1",
+            image: "https://static.wixstatic.com/media/73a840_b0b94dc510694a169297d2f0d78c8792~mv2.png",
+            isFake: true,
+            explanation: "Noticia gerada com IA.",
+            tool: "Midjourney"
+        },
+        {
+            title: "Notícia 2",
+            image: "https://static.wixstatic.com/media/73a840_bb13d6b3eba54d879e6816457edce29f~mv2.png",
+            isFake: true,
+            explanation: "Notícia gerada por IA.",
+            tool: "Câmera DSLR"
+        },
+        {
+            title: "Notícia 3",
+            image: "https://static.wixstatic.com/media/73a840_3b7788391bc54ef789c1ee936b41ed4f~mv2.png",
+            isFake: true,
+            explanation: "Notícia gerada por IA.",
+            tool: "Câmera DSLR"
+        },
+        {
+            title: "Notícia 4",
+            image: "https://static.wixstatic.com/media/73a840_28a11c0d5bac43ce926b8b14b1aec7b4~mv2.png",
+            isFake: false,
+            explanation: "Notícia real.Fonte: https://arquivo.pt/wayback/20201229213103/https://zap.aeiou.pt/nasa-matou-macacos-unico-dia-367911",
+            tool: "Câmera DSLR"
+        },
+          {
+            title: "Notícia 5",
+            image: "https://static.wixstatic.com/media/73a840_f83b202fd4e9429fb22e3e38e099cfa2~mv2.jpg",
+            isFake: false,
+            explanation: "Notícia real. Fonte:https://arquivo.pt/wayback/20191205143448/https://observador.pt/2018/01/09/nevou-no-sahara-pela-terceira-vez-em-37-anos-as-fotos-do-fenomeno-raro/",
+            tool: "Câmera DSLR"
+        },
+               {
+            title: "Notícia 6",
+            image: "https://static.wixstatic.com/media/73a840_d6af6edd36904ef68789db5a86374be3~mv2.png",
+            isFake: false,
+            explanation: "Notícia real. Fonte:https://arquivo.pt/wayback/20171220195631/http://visao.sapo.pt/actualidade/sociedade/2017-12-16-Ilhas-de-lixo-e-plastico-podem-vir-a-ser-consideradas-pais",
+            tool: "Câmera DSLR"
+        }
+        
+        
+        // Adicione mais imagens para a fase 2
+        ]
+
+        };
+
+        // Variáveis do jogo
+        let currentPhase = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let gameMode = 'normal';
+        let timeLeft = 60;
+        let timerInterval;
+        let hasAnswered = false;
+        let shuffledQuestions = [];
+        let phaseScores = { phase3: 0 };
+        let currentLevel = 1;
+        const TOTAL_LEVELS = 10;
+        const QUESTIONS_PER_LEVEL = 10;
+
+        
+
+        // Função para alternar entre telas
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Função para selecionar perguntas para o nível atual
+        function getQuestionsForLevel(level) {
+            const iaImages = newsDatabase.phase3.filter(img => img.isFake);
+            const realImages = newsDatabase.phase3.filter(img => !img.isFake);
+            
+            const iaCount = Math.floor(Math.random() * 3) + 4; // 4-6
+            const realCount = 10 - iaCount;
+            
+            const selectedIa = shuffleArray([...iaImages]).slice(0, iaCount);
+            const selectedReal = shuffleArray([...realImages]).slice(0, realCount);
+            
+            return shuffleArray([...selectedIa, ...selectedReal]);
+        }
+
+        // Função para iniciar uma fase
+            function startPhase(phase) {
+        currentPhase = phase;
+        currentQuestion = 0;
+        score = 0;
+        userAnswers = [];
+        hasAnswered = false;
+        
+        if (phase === 'phase1') {
+            const fakeImages = newsDatabase.phase1.filter(img => img.isFake);
+            const realImages = newsDatabase.phase1.filter(img => !img.isFake);
+            
+            const fakeCount = Math.floor(Math.random() * 3) + 4; // 4-6
+            const realCount = 10 - fakeCount;
+            
+            const selectedFakes = shuffleArray([...fakeImages]).slice(0, fakeCount);
+            const selectedReals = shuffleArray([...realImages]).slice(0, realCount);
+            
+            shuffledQuestions = shuffleArray([...selectedFakes, ...selectedReals]);
+            selectedQuestionsPhase1 = [...shuffledQuestions]; // Armazena as questões selecionadas
+            
+            phaseTag.textContent = 'FASE 1';
+            phaseTag.className = 'phase-tag phase1';
+            progressFill.className = 'progress-fill phase1';
+            optionTrue.innerHTML = '<i class="fas fa-camera"></i> IMAGEM REAL';
+            optionFalse.innerHTML = '<i class="fas fa-robot"></i> GERADA POR IA';
+        } 
+        else if (phase === 'phase2') {
+            shuffledQuestions = shuffleArray([...newsDatabase.phase2]);
+            selectedQuestionsPhase2 = [...shuffledQuestions]; // Armazena as questões selecionadas
+            
+            phaseTag.textContent = 'FASE 2';
+            phaseTag.className = 'phase-tag phase2';
+            progressFill.className = 'progress-fill phase2';
+            optionTrue.innerHTML = '<i class="fas fa-check"></i> NOTÍCIA REAL';
+            optionFalse.innerHTML = '<i class="fas fa-times"></i> GERADA POR IA';
+        }
+        
+        switchScreen('gameScreen');
+        
+        if (gameMode === 'timed') {
+            timeLeft = 60;
+            updateTimerDisplay();
+            if (timerInterval) clearInterval(timerInterval);
+            timerContainer.style.display = 'block';
+            startTimer();
+        } else {
+            timerContainer.style.display = 'none';
+        }
+        
+        loadQuestion();
+        updateProgress();
+    }
+
+        // Função principal do jogo
+        function selectOption(userChoice) {
+            if (hasAnswered || (gameMode === 'timed' && timeLeft <= 0)) return;
+            
+            hasAnswered = true;
+            const question = shuffledQuestions[currentQuestion];
+            const isCorrect = (userChoice === question.isFake);
+            
+            if (isCorrect) {
+                score++;
+                if (gameMode === 'timed') {
+                    timeLeft += 5;
+                    updateTimerDisplay();
+                }
+                
+                if (score % 3 === 0) {
+                    createConfetti();
+                }
+            }
+            
+            // Atualiza visual dos botões
+            if (userChoice) {
+                optionFalse.classList.add('selected-false');
+                optionTrue.classList.add('selected-true');
+            } else {
+                optionTrue.classList.add('selected-true');
+                optionFalse.classList.add('selected-false');
+            }
+            
+            optionTrue.disabled = true;
+            optionFalse.disabled = true;
+
+
+            // Mostra feedback
+          
+            
+            if (question.isFake) {
+                feedback.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-robot fa-lg"></i>
+                        <h4 style="margin: 0;">IMAGEM GERADA POR IA!</h4>
+                    </div>
+                    <p>${question.explanation}</p>
+                `;
+                feedback.className = 'feedback feedback-incorrect';
+            } else {
+                feedback.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-camera fa-lg"></i>
+                        <h4 style="margin: 0;">IMAGEM REAL!</h4>
+                    </div>
+                    <p>${question.explanation}</p>
+                `;
+                feedback.className = 'feedback feedback-correct';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Armazena resposta do usuário
+            userAnswers.push({
+                userChoice,
+                isCorrect,
+                image: question.image,
+                explanation: question.explanation,
+                sources: question.sources || [],
+                tool: question.tool
+            });
+            
+            nextBtn.disabled = false;
+            
+            // Avança automaticamente no modo cronômetro
+            if (gameMode === 'timed' && timeLeft > 0) {
+                setTimeout(() => {
+                    if (!nextBtn.disabled) {
+                        nextQuestion();
+                    }
+                }, 2000);
+            }
+        }
+
+        // Função para avançar para próxima questão
+        function nextQuestion() {
+            if (currentQuestion === shuffledQuestions.length - 1) {
+                phaseScores[currentPhase] = score;
+                
+                if (currentPhase === 'phase1') {
+                    // Vai para a Fase 2 após completar a Fase 1
+                    switchScreen('phase2Screen');
+                    return;
+                }
+                
+                // Se completou a Fase 2, mostra os resultados
+                showResults();
+                return;
+            }
+            
+            currentQuestion++;
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Função para carregar questão
+        function loadQuestion() {
+            hasAnswered = false;
+            
+            if (currentQuestion < shuffledQuestions.length) {
+                const question = shuffledQuestions[currentQuestion];
+                
+                newsImage.style.opacity = 0;
+                imageLoading.style.display = 'flex';
+                
+                const img = new Image();
+                img.src = question.image;
+                
+                img.onload = function() {
+                    newsImage.src = question.image;
+                    newsImage.onload = () => {
+                        imageLoading.style.display = 'none';
+                        newsImage.style.opacity = 1;
+                        // Configura o evento de clique para a nova imagem
+                        setupImageModal();
+                    };
+                };
+                
+                img.onerror = function() {
+                    newsImage.src = question.image;
+                    imageLoading.style.display = 'none';
+                    newsImage.style.opacity = 1;
+                    // Configura o evento de clique para a nova imagem
+                    setupImageModal();
+                };
+                
+                // Restante da função permanece igual
+                optionTrue.classList.remove('selected-true', 'selected-false');
+                optionFalse.classList.remove('selected-true', 'selected-false');
+                optionTrue.disabled = false;
+                optionFalse.disabled = false;
+                feedback.style.display = 'none';
+                
+                prevBtn.disabled = currentQuestion === 0;
+                nextBtn.disabled = true;
+                
+                if (currentQuestion === shuffledQuestions.length - 1) {
+                    nextBtn.textContent = 'VER RESULTADO';
+                } else {
+                    nextBtn.textContent = 'PRÓXIMA';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        // Função para mostrar resultados finais
+                function showResults() {
+            if (gameMode === 'timed') {
+                clearInterval(timerInterval);
+            }
+            
+            phaseScores[currentPhase] = score;
+            
+            // Calcular total de questões jogadas (considerando as selecionadas)
+            const totalQuestionsPlayed = 
+                (phaseScores.phase1 !== undefined ? selectedQuestionsPhase1.length : 0) + 
+                (phaseScores.phase2 !== undefined ? selectedQuestionsPhase2.length : 0);
+            
+            // Soma os scores das fases jogadas
+            const totalScore = 
+                (phaseScores.phase1 || 0) + 
+                (phaseScores.phase2 || 0);
+            
+            const percentage = totalQuestionsPlayed > 0 
+                ? Math.round((totalScore / totalQuestionsPlayed) * 100) 
+                : 0;
+            
+            switchScreen('resultsScreen');
+            scoreDisplay.textContent = `${totalScore} acertos de ${totalQuestionsPlayed} (${percentage}%)`;
+            
+            if (percentage >= 80) {
+                resultMessage.textContent = "🏆 Excelente! Você é um verdadeiro detetive de imagens!";
+                resultMessage.style.backgroundColor = "rgba(46, 213, 115, 0.1)";
+            } else if (percentage >= 50) {
+                resultMessage.textContent = "👍 Bom trabalho! Continue praticando para melhorar.";
+                resultMessage.style.backgroundColor = "rgba(255, 165, 0, 0.1)";
+            } else {
+                resultMessage.textContent = "🤔 Precisa praticar mais! Tente novamente para melhorar.";
+                resultMessage.style.backgroundColor = "rgba(255, 71, 87, 0.1)";
+            }
+            
+            renderPhaseResults('phase1', document.getElementById('answersDetails1'));
+            renderPhaseResults('phase2', document.getElementById('answersDetails2'));
+        }
+
+        // Funções auxiliares
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / shuffledQuestions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `QUESTÃO ${currentQuestion + 1} DE ${shuffledQuestions.length}`;
+        }
+
+        function shuffleArray(array) {
+            // Cria uma cópia do array para não modificar o original
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                if (userAnswers.length > currentQuestion - 1) {
+                    const lastAnswer = userAnswers.pop();
+                    if (lastAnswer.isCorrect) score--;
+                }
+                
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        function renderPhaseResults(phase, container) {
+            container.innerHTML = '';
+            
+            if (!phaseScores[phase]) return;
+            
+            const questionsToShow = phase === 'phase1' ? selectedQuestionsPhase1 : selectedQuestionsPhase2;
+            
+            questionsToShow.forEach((q, i) => {
+                const answerDiv = document.createElement('div');
+                answerDiv.className = "answer-detail";
+                
+                answerDiv.innerHTML = `
+                    <div class="result-item">
+                        <img src="${q.image}" class="thumbnail" alt="Miniatura">
+                        <div class="result-content">
+                            <h4 class="news-title">${q.title}</h4>
+                            <div class="answer-status ${q.isFake ? 'fake' : 'true'}">
+                                ${phase === 'phase1' 
+                                    ? (q.isFake ? '❌ GERADA POR IA' : '✅ IMAGEM REAL') 
+                                    : (q.isFake ? '❌ NOTÍCIA FALSA' : '✅ NOTÍCIA REAL')}
+                            </div>
+                            <p class="explanation">${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(answerDiv);
+            });
+        }
+
+        function startGame() {
+            switchScreen('phase1Screen');
+        }
+
+        function selectMode(mode, event) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            startBtn.style.display = 'block';
+            startBtn.classList.add('pulse');
+        }
+
+        function restartGame() {
+            currentPhase = '';
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            phaseScores = { phase1: 0, phase2: 0 };
+            selectedQuestionsPhase1 = [];
+            selectedQuestionsPhase2 = [];
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            switchScreen('startScreen');
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            startBtn.style.display = 'none';
+        }
+
+        // Funções do cronômetro
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endTimedGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 10) {
+                timerElement.classList.add('pulse');
+                if (timeLeft <= 5) {
+                    timerElement.style.color = 'var(--timer-critical)';
+                    timerContainer.classList.add('shake');
+                } else {
+                    timerElement.style.color = 'var(--timer-warning)';
+                    timerContainer.classList.remove('shake');
+                }
+            } else {
+                timerElement.classList.remove('pulse');
+                timerElement.style.color = 'var(--primary)';
+                timerContainer.classList.remove('shake');
+            }
+        }
+
+        function endTimedGame() {
+            showResults();
+        }
+
+        // Funções de efeitos visuais
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 2 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `float ${duration}s linear infinite`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9acd32'];
+            const confettiCount = 100;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                } else {
+                    confetti.style.borderRadius = '0';
+                }
+                
+                confetti.style.left = `${Math.random() * 100}%`;
+                const duration = Math.random() * 2 + 2;
+                confetti.style.animationDuration = `${duration}s`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, duration * 1000);
+            }
+        }
+
+        // Função para embaralhar array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Inicialização do jogo
+        window.addEventListener('DOMContentLoaded', () => {
+            startScreen.classList.add('active');
+            createParticles();
+            
+            // Adiciona animação de partículas
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% { transform: translateY(0) translateX(0); }
+                    50% { transform: translateY(-20px) translateX(10px); }
+                    100% { transform: translateY(0) translateX(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+
+                // Funções para o modal de imagem
+        function setupImageModal() {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImage");
+            const closeModal = document.querySelector(".close-modal");
+            
+            // Quando a imagem da notícia é clicada
+            newsImage.addEventListener('click', function() {
+                if (this.src && this.src !== '') {
+                    modal.style.display = "block";
+                    modalImg.src = this.src;
+                    document.body.style.overflow = "hidden"; // Desabilita scroll
+                }
+            });
+            
+            // Quando o botão de fechar é clicado
+            closeModal.addEventListener('click', function() {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto"; // Habilita scroll novamente
+            });
+            
+            // Fechar modal ao clicar fora da imagem
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = "none";
+                    document.body.style.overflow = "auto";
+                }
+            });
+            
+            // Fechar modal com tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "Escape" && modal.style.display === "block") {
+                    modal.style.display = "none";
+                    document.body.style.overflow = "auto";
+                }
+            });
+        }
+
+        // No final do seu código, adicione a inicialização do modal
+        window.addEventListener('DOMContentLoaded', () => {
+            startScreen.classList.add('active');
+            createParticles();
+            setupImageModal(); // Adicione esta linha
+            
+            // Adiciona animação de partículas
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% { transform: translateY(0) translateX(0); }
+                    50% { transform: translateY(-20px) translateX(10px); }
+                    100% { transform: translateY(0) translateX(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
