@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pesquisa de Termos no Arquivo.pt</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica', sans-serif;
+      background-color: black;
+      color: white;
+      padding: 20px;
+      margin: 0;
+    }
+    
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #FF4040;
+      font-family: 'Helvetica Bold', sans-serif;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .dashboard-container {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .content-container {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .selection-panel {
+      flex: 1;
+      min-width: 300px;
+      max-width: 400px;
+    }
+    
+    .chart-panel {
+      flex: 2;
+      min-width: 700px;
+      position: relative;
+    }
+    
+    .control-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #FF4040;
+      font-family: 'Helvetica Bold', sans-serif;
+    }
+    
+    .term-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .term-input-container {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .term-input-container input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #333;
+      color: white;
+    }
+    
+    .term-input-container button {
+      background-color: #FF4040;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    
+    .term-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    
+    .term-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px;
+      margin-bottom: 5px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    .term-color {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      margin-right: 8px;
+    }
+    
+    .term-item button {
+      background: none;
+      border: none;
+      color: #FF4040;
+      cursor: pointer;
+    }
+    
+    .chart-wrapper {
+      position: relative;
+      height: 500px;
+      width: 100%;
+    }
+    
+    .info-note {
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .scale-options {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .scale-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    #searchBtn {
+      background-color: #FF4040;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: 'Helvetica', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    #searchBtn:hover {
+      background-color: #ff6b6b;
+      transform: scale(1.02);
+    }
+    
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      display: none;
+    }
+    
+    .eye-container {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      margin-bottom: 30px;
+    }
+    
+    .eye {
+      position: absolute;
+      width: 120px;
+      height: 60px;
+      background: white;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      overflow: hidden;
+      animation: blink 6s infinite;
+    }
+    
+    .pupil {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #FF4040;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: look-around 8s infinite alternate;
+    }
+    
+    .progress-container {
+      width: 80%;
+      height: 15px;
+      background-color: #333;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background-color: #FF4040;
+      width: 0%;
+      transition: width 0.3s;
+      border-radius: 10px;
+    }
+    
+    .loading-text {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+    
+    @keyframes blink {
+      0%, 45%, 55%, 100% {
+        height: 60px;
+        top: 0;
+      }
+      50% {
+        height: 10px;
+        top: 25px;
+      }
+    }
+    
+    @keyframes look-around {
+      0% {
+        transform: translate(-30%, -50%);
+      }
+      25% {
+        transform: translate(-70%, -50%);
+      }
+      50% {
+        transform: translate(-50%, -30%);
+      }
+      75% {
+        transform: translate(-50%, -70%);
+      }
+      100% {
+        transform: translate(-30%, -50%);
+      }
+    }
+    
+    #error {
+      color: #FF4040;
+      margin: 10px 0;
+      text-align: center;
+    }
+    
+    .year-range {
+      margin: 15px 0;
+    }
+    
+    .year-range label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .year-range input {
+      width: 80px;
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #333;
+      color: white;
+    }
+    
+    .year-range span {
+      margin: 0 5px;
+      color: white;
+    }
+    
+    .search-options {
+      margin: 15px 0;
+    }
+    
+    .search-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #FF4040;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .footer-note {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #aaa;
+      border-top: 1px solid #333;
+      padding-top: 15px;
+    }
+    
+    @media (max-width: 1200px) {
+      .content-container {
+        flex-direction: column;
+      }
+      .selection-panel, .chart-panel {
+        min-width: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    
+    <div class="dashboard-container">
+      <div class="content-container">
+        <div class="selection-panel">
+          <div class="control-title">Adicione termos para pesquisar (máx. 5):</div>
+          <div class="term-selector">
+            <div class="term-input-container">
+              <input type="text" id="searchTerm" placeholder="Digite um termo">
+              <button id="addTermBtn">+</button>
+            </div>
+            <div class="term-list" id="termList"></div>
+          </div>
+          
+          <div class="year-range">
+            <div class="control-title">Intervalo de anos:</div>
+            <div>
+              <input type="number" id="startYear" min="1996" max="2023" value="2000">
+              <span>a</span>
+              <input type="number" id="endYear" min="1996" max="2023" value="2020">
+            </div>
+          </div>
+          
+          <div class="search-options">
+            <div class="control-title">Opções de Busca:</div>
+            <label class="search-option">
+              <span>Buscar apenas em títulos</span>
+              <label class="switch">
+                <input type="checkbox" id="searchInTitles">
+                <span class="slider"></span>
+              </label>
+            </label>
+          </div>
+          
+          <div class="control-title">Opções de Visualização:</div>
+          <div class="scale-options">
+            <label class="scale-option">
+              <input type="radio" name="scale" value="linear" checked>
+              <span>Escala Linear</span>
+            </label>
+            <label class="scale-option">
+              <input type="radio" name="scale" value="logarithmic">
+              <span>Escala Logarítmica (valores em potências de 10)</span>
+            </label>
+          </div>
+          
+          <button id="searchBtn">Pesquisar</button>
+          
+          <div id="error"></div>
+          
+          <div class="footer-note">
+            <p>Dados coletados do Arquivo.pt</p>
+            <p>Passe o mouse sobre as linhas para ver os valores exatos</p>
+          </div>
+        </div>
+        
+        <div class="chart-panel">
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="eye-container">
+              <div class="eye">
+                <div class="pupil"></div>
+              </div>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="loading-text">
+              <div>Processando dados do Arquivo.pt...</div>
+              <div>Isso pode levar alguns minutos</div>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="correlationChart"></canvas>
+          </div>
+          <div class="info-note">
+            <p>Clique na legenda para mostrar/esconder termos específicos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cores para os termos
+    const COLORS = [
+      '#FF4040', '#00A0E3', '#0055A4', '#E31C79', '#00BC8C',
+      '#FFA500', '#800080', '#008000', '#FF69B4', '#00FFFF'
+    ];
+    
+    let chart;
+    let terms = [];
+    let termData = {};
+    
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('addTermBtn').addEventListener('click', addTerm);
+      document.getElementById('searchTerm').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addTerm();
+      });
+      document.getElementById('searchBtn').addEventListener('click', search);
+      document.querySelectorAll('input[name="scale"]').forEach(radio => {
+        radio.addEventListener('change', updateChart);
+      });
+      
+      // Definir ano atual como valor padrão para o ano final
+      const currentYear = new Date().getFullYear();
+      document.getElementById('endYear').value = Math.min(2023, currentYear - 1);
+    });
+    
+    // Adicionar termo à lista
+    function addTerm() {
+      const termInput = document.getElementById('searchTerm');
+      const term = termInput.value.trim();
+      
+      if (!term) {
+        showError("Por favor, insira um termo.");
+        return;
+      }
+      
+      if (terms.length >= 5) {
+        showError("Você pode adicionar no máximo 5 termos.");
+        return;
+      }
+      
+      if (terms.includes(term)) {
+        showError("Este termo já foi adicionado.");
+        return;
+      }
+      
+      terms.push(term);
+      termInput.value = '';
+      showError('');
+      renderTermList();
+    }
+    
+    // Remover termo da lista
+    function removeTerm(term) {
+      terms = terms.filter(t => t !== term);
+      delete termData[term];
+      renderTermList();
+      if (chart && terms.length === 0) {
+        chart.destroy();
+        chart = null;
+      } else if (chart) {
+        updateChart();
+      }
+    }
+    
+    // Renderizar lista de termos
+    function renderTermList() {
+      const termList = document.getElementById('termList');
+      termList.innerHTML = '';
+      
+      terms.forEach((term, index) => {
+        const termItem = document.createElement('div');
+        termItem.className = 'term-item';
+        termItem.innerHTML = `
+          <div>
+            <span class="term-color" style="background-color: ${COLORS[index % COLORS.length]}"></span>
+            <span>${term}</span>
+          </div>
+          <button onclick="removeTerm('${term}')">×</button>
+        `;
+        termList.appendChild(termItem);
+      });
+    }
+    
+    // Pesquisar termos
+    async function search() {
+      if (terms.length === 0) {
+        showError("Adicione pelo menos um termo para pesquisar.");
+        return;
+      }
+      
+      const startYear = parseInt(document.getElementById('startYear').value);
+      const endYear = parseInt(document.getElementById('endYear').value);
+      const searchInTitles = document.getElementById('searchInTitles').checked;
+      
+      if (startYear > endYear) {
+        showError("O ano inicial deve ser menor ou igual ao ano final.");
+        return;
+      }
+      
+      if (startYear < 1996 || endYear > 2023) {
+        showError("O Arquivo.pt possui dados apenas de 1996 a 2023.");
+        return;
+      }
+      
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const progressBar = document.getElementById('progressBar');
+      loadingOverlay.style.display = 'flex';
+      showError('');
+      
+      const totalYears = endYear - startYear + 1;
+      const totalTerms = terms.length;
+      const totalRequests = totalYears * totalTerms;
+      
+      let completedRequests = 0;
+      
+      // Processar cada termo
+      for (const term of terms) {
+        if (termData[term] && termData[term].startYear === startYear && 
+            termData[term].endYear === endYear && termData[term].searchInTitles === searchInTitles) {
+          completedRequests += totalYears;
+          progressBar.style.width = `${Math.round((completedRequests / totalRequests) * 100)}%`;
+          continue;
+        }
+        
+        const results = [];
+        
+        // Processar cada ano no intervalo
+        for (let year = startYear; year <= endYear; year++) {
+          const from = `${year}0101000000`;
+          const to = `${year}1231235959`;
+          // MODIFICAÇÃO AQUI: Adiciona prefixo title: se searchInTitles estiver ativo
+          const query = searchInTitles ? `title:"${term}"` : `"${term}"`;
+          const url = `https://arquivo.pt/textsearch?q=${encodeURIComponent(query)}&from=${from}&to=${to}&maxItems=1`;
+          
+          try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Erro ${response.status}`);
+            const data = await response.json();
+            results.push({ year, count: data.estimated_nr_results || 0 });
+          } catch (e) {
+            console.error(`Erro no ano ${year} para o termo ${term}`, e);
+            results.push({ year, count: 0 });
+          }
+          
+          // Atualizar barra de progresso
+          completedRequests++;
+          const progress = Math.round((completedRequests / totalRequests) * 100);
+          progressBar.style.width = `${progress}%`;
+        }
+        
+        // Armazenar dados com metadados do intervalo e opção de busca
+        termData[term] = {
+          results,
+          startYear,
+          endYear,
+          searchInTitles
+        };
+      }
+      
+      loadingOverlay.style.display = 'none';
+      renderChart();
+    }
+    
+    // Renderizar gráfico
+    function renderChart() {
+      const ctx = document.getElementById('correlationChart').getContext('2d');
+      const scaleType = document.querySelector('input[name="scale"]:checked').value;
+      
+      // Preparar dados
+      const startYear = parseInt(document.getElementById('startYear').value);
+      const endYear = parseInt(document.getElementById('endYear').value);
+      const years = Array.from({length: endYear - startYear + 1}, (_, i) => startYear + i);
+      
+      const datasets = [];
+      
+      terms.forEach((term, index) => {
+        if (!termData[term]) return;
+        
+        // Ordenar resultados por ano e extrair contagens
+        const sortedResults = termData[term].results.sort((a, b) => a.year - b.year);
+        let counts = sortedResults.map(r => r.count);
+        
+        if (scaleType === 'logarithmic') {
+          counts = counts.map(count => count > 0 ? Math.log10(count + 1) : 0);
+        }
+        
+        datasets.push({
+          label: term,
+          data: counts,
+          borderColor: COLORS[index % COLORS.length],
+          backgroundColor: `${COLORS[index % COLORS.length]}20`,
+          borderWidth: 3,
+          pointRadius: 4,
+          pointBackgroundColor: COLORS[index % COLORS.length],
+          fill: false,
+          tension: 0.3
+        });
+      });
+      
+      // Criar ou atualizar gráfico
+      if (chart) {
+        chart.data.labels = years;
+        chart.data.datasets = datasets;
+        chart.options.scales.y.type = scaleType;
+        
+        // Configurar ticks diferentes para cada escala
+        if (scaleType === 'logarithmic') {
+          chart.options.scales.y.ticks.callback = function(value) {
+            return Math.pow(10, value).toLocaleString();
+          };
+        } else {
+          chart.options.scales.y.ticks.callback = function(value) {
+            return value.toLocaleString();
+          };
+        }
+        
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: years,
+            datasets: datasets
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  color: 'white',
+                  font: {
+                    family: 'Helvetica'
+                  },
+                  usePointStyle: true,
+                  pointStyle: 'circle'
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleFont: {
+                  family: 'Helvetica Bold',
+                  size: 14
+                },
+                bodyFont: {
+                  family: 'Helvetica',
+                  size: 12
+                },
+                callbacks: {
+                  label: function(context) {
+                    let value = context.raw;
+                    if (scaleType === 'logarithmic') {
+                      value = Math.pow(10, value) - 1;
+                    }
+                    return `${context.dataset.label}: ${Math.round(value).toLocaleString()}`;
+                  }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Ocorrências de Termos por Ano no Arquivo.pt',
+                font: {
+                  size: 18,
+                  family: 'Helvetica Bold'
+                },
+                color: 'white',
+                padding: {
+                  top: 10,
+                  bottom: 30
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                type: scaleType,
+                ticks: {
+                  color: 'white',
+                  callback: function(value) {
+                    if (scaleType === 'logarithmic') {
+                      return Math.pow(10, value).toLocaleString();
+                    }
+                    return value.toLocaleString();
+                  }
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.1)'
+                },
+                title: {
+                  display: true,
+                  text: 'Número de Ocorrências',
+                  color: 'white',
+                  font: {
+                    family: 'Helvetica',
+                    size: 14
+                  }
+                }
+              },
+              x: {
+                ticks: {
+                  color: 'white'
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.1)'
+                },
+                title: {
+                  display: true,
+                  text: 'Ano',
+                  color: 'white',
+                  font: {
+                    family: 'Helvetica',
+                    size: 14
+                  }
+                }
+              }
+            },
+            interaction: {
+              mode: 'nearest',
+              intersect: false
+            }
+          }
+        });
+      }
+    }
+    
+    // Atualizar gráfico quando a escala muda
+    function updateChart() {
+      if (chart) {
+        renderChart();
+      }
+    }
+    
+    // Mostrar mensagem de erro
+    function showError(msg) {
+      document.getElementById('error').textContent = msg;
+    }
+    
+    // Funções globais para chamadas do HTML
+    window.removeTerm = removeTerm;
+  </script>
+</body>
+</html>
