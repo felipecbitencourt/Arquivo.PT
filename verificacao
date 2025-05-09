@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Notícias | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #ff0000;
+            --vermelho-escuro: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #111;
+            --preto-claro: #1a1a1a;
+            --cinza-escuro: #333;
+            --cinza-medio: #666;
+            --cinza-claro: #ccc;
+            --branco: #fff;
+            --destaque: #ffcc00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--preto);
+            color: var(--branco);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 5px;
+            color: var(--vermelho);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            color: var(--branco);
+            font-weight: 500;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--vermelho);
+            color: var(--branco);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero {
+    height: 8vh; /* Reduzindo de 100vh para 80vh */
+    min-height: 50px; /* Mantendo uma altura mínima */
+    /* resto do código permanece igual */
+}
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .btn:hover:after {
+            transform: translateX(100%);
+        }
+        
+        .btn:hover {
+            background: var(--vermelho-escuro);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+        }
+        
+        .btn i {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--branco);
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-20px) translateX(-50%);}
+            60% {transform: translateY(-10px) translateX(-50%);}
+        }
+        
+        /* Warning Section */
+        .warning {
+            background: var(--preto-claro);
+            padding: 4rem 2rem;
+            border-bottom: 3px solid var(--vermelho);
+        }
+        
+        .warning-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            color: var(--vermelho);
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--vermelho);
+        }
+        
+        .warning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .warning-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            border-left: 4px solid var(--vermelho);
+        }
+        
+        .warning-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.1);
+        }
+        
+        .warning-icon {
+            font-size: 2rem;
+            color: var(--vermelho);
+            min-width: 40px;
+        }
+        
+        .warning-content h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            color: var(--branco);
+        }
+        
+        .warning-content p {
+            color: var(--cinza-claro);
+            line-height: 1.7;
+        }
+        
+        /* Steps Section */
+        .steps {
+            padding: 6rem 2rem;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+        
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+        }
+        
+        .steps-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .step-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s;
+            border-top: 4px solid var(--vermelho);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(255, 0, 0, 0.2);
+        }
+        
+        .step-icon {
+            font-size: 3rem;
+            color: var(--vermelho);
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .step-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--branco);
+        }
+        
+        .step-card p {
+            color: var(--cinza-claro);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        
+        /* Tools Section */
+        .tools {
+            padding: 6rem 2rem;
+            background: var(--preto);
+        }
+        
+        .tools-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tools-table {
+            background: var(--preto-claro);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: var(--vermelho);
+            color: var(--branco);
+            padding: 1.5rem;
+            text-align: left;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+        
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--cinza-claro);
+        }
+        
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.03);
+        }
+        
+        tr:hover {
+            background: rgba(255,0,0,0.05);
+        }
+        
+        .copy-btn {
+            background: var(--vermelho);
+            color: var(--branco);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn:hover {
+            background: var(--vermelho-escuro);
+            transform: translateY(-2px);
+        }
+        
+        /* Forensic Section */
+        .forensic {
+            padding: 6rem 2rem;
+            background: url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+        
+        .forensic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+        }
+        
+        .forensic-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .accordion {
+            margin-top: 3rem;
+        }
+        
+        .accordion-item {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--vermelho);
+        }
+        
+        .accordion-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 1.5rem;
+        }
+        
+        .accordion-number {
+            background: var(--vermelho);
+            color: var(--branco);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .accordion-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--branco);
+        }
+        
+        .accordion-icon {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        
+        .accordion-item.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        
+        .accordion-item.open .accordion-content {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 1000px;
+        }
+        
+        .warning-box {
+            background: rgba(255,0,0,0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--vermelho);
+        }
+        
+        .warning-box h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: var(--vermelho);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .warning-box ul {
+            padding-left: 1.5rem;
+        }
+        
+        .warning-box li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .tool-icon {
+            font-size: 1.8rem;
+            color: var(--destaque);
+        }
+        
+        .tool-info h5 {
+            font-family: 'Playfair Display', serif;
+            color: var(--branco);
+            margin-bottom: 0.5rem;
+        }
+        
+        .verification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .verification-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .verification-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .verification-icon {
+            font-size: 2.5rem;
+            color: var(--vermelho);
+            margin-bottom: 1rem;
+        }
+        
+        .technical-check {
+            background: rgba(0,170,0,0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid #00aa00;
+            margin: 1.5rem 0;
+        }
+        
+        .check-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--vermelho);
+        }
+        
+        /* Quiz Section */
+        .quiz {
+            padding: 6rem 2rem;
+            background: var(--preto-claro);
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quiz-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-left: 5px solid var(--vermelho);
+        }
+        
+        .quiz-question {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--branco);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        
+        .quiz-options {
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-option {
+            display: block;
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--branco);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: var(--vermelho);
+        }
+        
+        .quiz-option.selected {
+            background: var(--vermelho);
+            color: white;
+            border-color: var(--vermelho);
+        }
+        
+        .quiz-option.correct {
+            background: #00aa00;
+            color: white;
+            border-color: #00aa00;
+        }
+        
+        .quiz-option.incorrect {
+            background: var(--vermelho);
+            color: white;
+            border-color: var(--vermelho);
+        }
+        
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            font-weight: 600;
+            display: none;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .quiz-feedback.correct {
+            color: #00ff00;
+            border-left: 3px solid #00ff00;
+        }
+        
+        .quiz-feedback.incorrect {
+            color: var(--vermelho);
+            border-left: 3px solid var(--vermelho);
+        }
+        
+        .quiz-progress {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            margin-top: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .quiz-progress-bar {
+            height: 100%;
+            background: var(--vermelho);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--preto);
+            color: var(--branco);
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--vermelho);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--branco);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        
+        .footer-links a:hover {
+            color: var(--vermelho);
+        }
+        
+        .social-icons {
+            margin-top: 2rem;
+        }
+        
+        .social-icons a {
+            color: var(--branco);
+            margin: 0 1rem;
+            font-size: 1.8rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--vermelho);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            color: var(--cinza-medio);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .warning-grid,
+            .steps-grid,
+            .verification-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .quiz-card {
+                padding: 1.5rem;
+            }
+            
+            .quiz-question {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Verificação de Notícias</h1>
+            <p>Aprenda a identificar e combater a desinformação </p>
+         
+        </div>
+        <div class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Warning Section -->
+    <section id="warning" class="warning">
+        <div class="warning-container">
+            <h2 class="section-title">Atenção ao Consumir Informações Online</h2>
+            <div class="warning-grid">
+                <div class="warning-card">
+                    <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="warning-content">
+                        <h3>Conteúdos Polémicos</h3>
+                        <p>Esteja atento a notícias sobre pessoas famosas ou temas sensíveis - são alvos frequentes de desinformação.</p>
+                    </div>
+                </div>
+                <div class="warning-card">
+                    <div class="warning-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="warning-content">
+                        <h3>Sensacionalismo</h3>
+                        <p>Notícias muito emotivas ou exageradas merecem verificação extra antes de serem partilhadas.</p>
+                    </div>
+                </div>
+                <div class="warning-card">
+                    <div class="warning-icon"><i class="fas fa-clock"></i></div>
+                    <div class="warning-content">
+                        <h3>Urgência Artificial</h3>
+                        <p>Desconfie de informações que pedem ação imediata ou criam um senso de urgência exagerado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps">
+        <div class="steps-container">
+            <h2 class="section-title">Como Verificar uma Notícia</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-archive"></i></div>
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="step-img" alt="Arquivo.pt">
+                    <h3>Use o Arquivo.pt</h3>
+                    <p>Pesquise versões antigas da página para ver se o conteúdo foi alterado ao longo do tempo.</p>
+                    <a href="https://arquivo.pt/" target="_blank" class="btn">Pesquisar no Arquivo.pt</a>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-camera"></i></div>
+                    <img src="https://static.wixstatic.com/media/73a840_70011d47a49540d58a0601076b3454d6~mv2.png" class="step-img" alt="Verificação de imagens">
+                    <h3>Verifique Imagens</h3>
+                    <p>Use ferramentas de busca reversa para descobrir a origem e o contexto real de fotos e vídeos.</p>
+                    <a href="https://lens.google//" target="_blank" class="btn">Testar Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="tools">
+        <div class="tools-container">
+            <h2 class="section-title">Ferramentas de Verificação</h2>
+            <div class="tools-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ferramenta</th>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Prova dos Factos</td>
+                            <td>Fact-checking do grupo de jornalismo Público </td>
+                            <td>
+  <a href="https://www.publico.pt/prova-dos-factos" class="copy-btn" target="_blank" rel="noopener noreferrer">
+    Aceder <i class="fas fa-external-link-alt"></i>
+  </a>
+</td>
+                        </tr>
+                        <tr>
+                            <td>Lupa</td>
+                            <td>Agência de verificação de notícias</td>
+                        
+                           <td>
+  <a href="https://lupa.uol.com.br/" class="copy-btn" target="_blank" rel="noopener noreferrer">
+    Aceder  <i class="fas  fa-external-link-alt"></i>
+  </a>
+</td>
+                        </tr>
+                        <tr>
+                            <td>Google Fact Check</td>
+                            <td>Verificador global de factos</td>
+                        
+                           <td>
+  <a href="https://toolbox.google.com/factcheck" class="copy-btn" target="_blank" rel="noopener noreferrer">
+    Aceder  <i class="fas  fa-external-link-alt"></i>
+  </a>
+</td>
+                        
+                        </tr>
+                        <tr>
+                            <td>TinEye</td>
+                            <td>Busca reversa de imagens</td>
+                             <td>
+  <a href="https://tineye.com" class="copy-btn" target="_blank" rel="noopener noreferrer">
+    Aceder  <i class="fas  fa-external-link-alt"></i>
+  </a>
+</td>
+                        </tr>
+                        <tr>
+                            <td>NewsGuard</td>
+                            <td>Avaliação de credibilidade de sites</td>
+                           
+  
+                          <td>
+  <a href="https://www.newsguardtech.com" class="copy-btn" target="_blank" rel="noopener noreferrer">
+    Aceder  <i class="fas  fa-external-link-alt"></i>
+  </a>
+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forensic Section -->
+    <section class="forensic">
+        <div class="forensic-container">
+            <h2 class="section-title">Anatomia de uma Página Suspeita</h2>
+            <p style="text-align: center; color: var(--cinza-claro); margin-bottom: 2rem;">Checklist de Investigação Digital</p>
+
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <div class="accordion-header">
+                        <div class="accordion-number">1</div>
+                        <h3 class="accordion-title">Arqueologia da URL</h3>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="warning-box">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Sinais de Alerta:</h4>
+                            <ul>
+                                <li>Domínios disfarçados (.com.co em vez de .com)</li>
+                                <li>Subdomínios excessivos (ex: "noticias.portal.atualizações.com")</li>
+                                <li>Uso excessivo de hífens ou números</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <div class="tool-icon"><i class="fas fa-globe"></i></div>
+                            <div class="tool-info">
+                                <h5>Whois Domain Lookup</h5>
+                                <p>Verifique o registo do domínio: <a href="https://www.whois.com/whois/" class="copy-btn" target="_blank">Verificar Whois</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-number">2</div>
+                        <h3 class="accordion-title">Biografia do Autor</h3>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="verification-grid">
+                            <div class="verification-item">
+                                <div class="verification-icon"><i class="fas fa-id-badge"></i></div>
+                                <p>Busca reversa no Google Scholar por publicações académicas</p>
+                            </div>
+                            <div class="verification-item">
+                                <div class="verification-icon"><i class="fab fa-linkedin"></i></div>
+                                <p>Perfil LinkedIn com histórico profissional consistente</p>
+                            </div>
+                            <div class="verification-item">
+                                <div class="verification-icon"><i class="fas fa-crosshairs"></i></div>
+                                <p>Verificar agenda política/financiamento de think tanks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-number">3</div>
+                        <h3 class="accordion-title">Rastros de Edição</h3>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="technical-check">
+                            <h4><i class="fas fa-search"></i> Técnicas de Inspeção:</h4>
+                            <div class="check-item">
+                                <input type="checkbox" id="metadata">
+                                <label for="metadata">Metadados de arquivos (ExifTool)</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="wayback">
+                                <label for="wayback">Comparar versões históricas no Arquivo.pt</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="code-inspect">
+                                <label for="code-inspect">Inspecionar código-fonte (Ctrl+U) por scripts suspeitos</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section class="quiz">
+        <div class="quiz-container">
+            <h2 class="section-title">Teste o Seu Conhecimento</h2>
+            
+            <!-- Questão 1 -->
+            <div class="quiz-card" id="quiz1">
+                <div class="quiz-question">1. Ao encontrar uma notícia sobre um novo imposto governamental, qual é a primeira ação que deve tomar para verificar sua veracidade?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this, 1, 0)">Consultar apenas o portal de notícias onde a informação foi publicada</div>
+                    <div class="quiz-option" onclick="selectOption(this, 1, 1)">Verificar a informação no Diário da República e sites oficiais do governo</div>
+                    <div class="quiz-option" onclick="selectOption(this, 1, 2)">Pesquisar opiniões sobre o assunto em fóruns e redes sociais</div>
+                </div>
+                <div class="quiz-feedback correct" id="feedback1-correct">
+                    ✅ Correto! Informações oficiais sobre legislação devem sempre ser verificadas em fontes governamentais primárias.
+                </div>
+                <div class="quiz-feedback incorrect" id="feedback1-incorrect">
+                    ❌ Atenção! Fontes oficiais são essenciais para confirmar informações sobre medidas governamentais.
+                </div>
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="progress1" style="width: 0%;"></div>
+                </div>
+            </div>
+            
+            <!-- Questão 2 -->
+            <div class="quiz-card" id="quiz2">
+                <div class="quiz-question">2. Qual destas técnicas é mais eficaz para identificar uma imagem manipulada?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this, 2, 0)">Comparar a resolução da imagem com outras do mesmo evento</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2, 1)">Usar ferramentas de deteção de edições</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2, 2)">Verificar se a imagem parece natural ao olho humano</div>
+                </div>
+                <div class="quiz-feedback correct" id="feedback2-correct">
+                    ✅ Excelente! A análise técnica dos metadados e o uso de ferramentas especializadas são os métodos mais confiáveis.
+                </div>
+                <div class="quiz-feedback incorrect" id="feedback2-incorrect">
+                    ❌ Cuidado! Imagens manipuladas podem ser muito convincentes visualmente, exigindo análise técnica aprofundada.
+                </div>
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="progress2" style="width: 0%;"></div>
+                </div>
+            </div>
+            
+            <!-- Questão 3 -->
+            <div class="quiz-card" id="quiz3">
+                <div class="quiz-question">3. Ao avaliar um site desconhecido, qual destes elementos NÃO é um indicador confiável de credibilidade?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this, 3, 0)">Design profissional e aparência moderna</div>
+                    <div class="quiz-option" onclick="selectOption(this, 3, 1)">Existência de política de privacidade e termos de serviço</div>
+                    <div class="quiz-option" onclick="selectOption(this, 3, 2)">Informações de contacto verificáveis e endereço físico</div>
+                </div>
+                <div class="quiz-feedback correct" id="feedback3-correct">
+                    ✅ Certo! O design profissional pode ser facilmente replicado e não garante a veracidade do conteúdo.
+                </div>
+                <div class="quiz-feedback incorrect" id="feedback3-incorrect">
+                    ❌ Importante! Sites falsos podem investir em aparência profissional para enganar os leitores.
+                </div>
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="progress3" style="width: 0%;"></div>
+                </div>
+            </div>
+            
+            <!-- Questão 4 -->
+            <div class="quiz-card" id="quiz4">
+                <div class="quiz-question">4. Qual destas abordagens é mais eficaz para verificar uma informação viral nas redes sociais?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this, 4, 0)">Verificar se foi partilhada por pessoas influentes</div>
+                    <div class="quiz-option" onclick="selectOption(this, 4, 1)">Procurar a informação primária em fontes oficiais e especializadas</div>
+                    <div class="quiz-option" onclick="selectOption(this, 4, 2)">Avaliar o número de partilhas e reações que a publicação recebeu</div>
+                </div>
+                <div class="quiz-feedback correct" id="feedback4-correct">
+                    ✅ Perfeito! A verificação deve sempre começar pela busca da fonte primária da informação.
+                </div>
+                <div class="quiz-feedback incorrect" id="feedback4-incorrect">
+                    ❌ Atenção! Popularidade nas redes sociais não é indicador de veracidade.
+                </div>
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="progress4" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+    <script>
+        // Função para copiar links
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Link copiado: " + text);
+            });
+        }
+
+        // Função para copiar texto
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Texto copiado: " + text);
+            });
+        }
+
+        // Quiz Interativo
+        function selectOption(option, questionId, optionIndex) {
+            const quizCard = option.closest('.quiz-card');
+            
+            // Remove seleção anterior
+            quizCard.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Esconde todos os feedbacks
+            quizCard.querySelectorAll('.quiz-feedback').forEach(fb => {
+                fb.style.display = 'none';
+            });
+            
+            // Marca como selecionado
+            option.classList.add('selected');
+            
+            // Verifica resposta correta (agora variada entre as opções)
+            const correctAnswers = {
+                1: 1, // Questão 1: segunda opção correta
+                2: 1, // Questão 2: segunda opção correta
+                3: 0, // Questão 3: primeira opção correta
+                4: 1  // Questão 4: segunda opção correta
+            };
+            
+            const isCorrect = (optionIndex === correctAnswers[questionId]);
+            
+            if (isCorrect) {
+                option.classList.add('correct');
+                document.getElementById(`feedback${questionId}-correct`).style.display = 'block';
+                quizCard.querySelector('.quiz-progress-bar').style.width = '100%';
+                quizCard.querySelector('.quiz-progress-bar').style.background = '#00aa00';
+            } else {
+                option.classList.add('incorrect');
+                document.getElementById(`feedback${questionId}-incorrect`).style.display = 'block';
+                quizCard.querySelector('.quiz-progress-bar').style.width = '50%';
+                quizCard.querySelector('.quiz-progress-bar').style.background = '#ff0000';
+            }
+        }
+
+        // Accordion para análise forense
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordionItem = header.parentElement;
+                const accordion = accordionItem.parentElement;
+                
+                // Fecha todos os outros itens primeiro
+                accordion.querySelectorAll('.accordion-item').forEach(item => {
+                    if (item !== accordionItem) {
+                        item.classList.remove('open');
+                    }
+                });
+                
+                // Alterna o item clicado
+                accordionItem.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
