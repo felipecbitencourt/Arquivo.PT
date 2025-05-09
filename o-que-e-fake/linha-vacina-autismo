@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Vacinação e Autismo: Linha do Tempo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --primary: #e63946;
+  --secondary: #1d3557;
+  --accent: #457b9d;
+  --light: #f1faee;
+  --dark: #1a1a1a;
+  --gray: #6c757d;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--white);
+  color: var(--dark);
+  font-family: 'Raleway', sans-serif;
+  line-height: 1.6;
+  padding: 0;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--secondary), var(--dark));
+  color: white;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #f4a261, var(--primary));
+  animation: rainbow 8s linear infinite;
+  background-size: 400% 100%;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0.8rem;
+  color: var(--white);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.9;
+  font-weight: 400;
+  padding: 0 10px;
+}
+
+.timeline-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.timeline {
+  position: relative;
+  padding: 30px 0;
+}
+
+/* Linha só aparece no desktop */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  display: none;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.timeline-year {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  box-shadow: var(--shadow);
+  margin: 0 auto 15px;
+  z-index: 2;
+}
+
+.timeline-content {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border-top: 3px solid var(--primary);
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+  border-top-color: var(--accent);
+}
+
+.timeline-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  margin-bottom: 0.8rem;
+  color: var(--secondary);
+  text-align: center;
+}
+
+.timeline-text {
+  color: var(--gray);
+  margin-bottom: 1rem;
+  font-size: clamp(0.95rem, 3vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.timeline-source {
+  display: block;
+  text-align: center;
+  background: var(--light);
+  color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-top: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  margin: 1rem 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  margin: 0 5px 8px 0;
+  background-color: var(--light);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
+.timeline-item:nth-child(4) { animation-delay: 0.4s; }
+.timeline-item:nth-child(5) { animation-delay: 0.5s; }
+.timeline-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Versão Desktop */
+@media (min-width: 768px) {
+  .hero {
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    padding: 0;
+  }
+
+  .timeline-container {
+    padding: 0 2rem 4rem;
+  }
+
+  .timeline {
+    padding: 40px 0;
+  }
+
+  .timeline::before {
+    display: block;
+  }
+
+  .timeline-item {
+    width: 50%;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+  }
+
+  .timeline-item:nth-child(odd) {
+    left: 0;
+  }
+
+  .timeline-item:nth-child(even) {
+    left: 50%;
+  }
+
+  .timeline-year {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+    top: 20px;
+    margin: 0;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-year {
+    right: -40px;
+  }
+
+  .timeline-item:nth-child(even) .timeline-year {
+    left: -40px;
+  }
+
+  .timeline-content {
+    padding: 30px;
+    border-radius: 12px;
+    border-top-width: 4px;
+  }
+
+  .timeline-title {
+    font-size: 1.6rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .timeline-text {
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-source {
+    display: inline-flex;
+    width: auto;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    margin-top: 0;
+  }
+
+  .timeline-divider {
+    margin: 1.5rem 0;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    margin-right: 8px;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .timeline-item {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .timeline-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1><i class="fas fa-syringe"></i> Vacinação e Autismo</h1>
+    <p class="subtitle">Linha do tempo da desinformação e dos fatos científicos que desmentem a falsa relação entre vacinas e autismo</p>
+  </section>
+
+  <div class="timeline-container">
+    <div class="timeline">
+      <!-- 1998 -->
+      <div class="timeline-item">
+        <div class="timeline-year">1998</div>
+        <div class="timeline-content">
+          <span class="tag">Fraude</span>
+          <span class="tag">Origem</span>
+          <h3 class="timeline-title">Estudo fraudulento de Wakefield</h3>
+          <p class="timeline-text">Andrew Wakefield publica estudo no The Lancet ligando a vacina tríplice viral ao autismo, posteriormente revelado como fraude científica.</p>
+          <div class="timeline-divider"></div>
+      
+          <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/fulltext" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> The Lancet
+          </a>
+        </div>
+      </div>
+
+      <!-- 2004 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2004</div>
+        <div class="timeline-content">
+          <span class="tag">Investigação</span>
+    
+          <h3 class="timeline-title">Conflitos de interesse revelados</h3>
+          <p class="timeline-text">Investigação do jornalista Brian Deer revela que Wakefield recebeu pagamentos de advogados que buscavam processar fabricantes de vacinas.</p>
+          <a href="https://arquivo.pt/wayback/20191114183154/https://briandeer.com/mmr/st-dec-2006.htm" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Site de Brian Deer (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2010 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2010</div>
+        <div class="timeline-content">
+          <span class="tag">Retratação</span>
+          <span class="tag">The Lancet</span>
+          <h3 class="timeline-title">Estudo oficialmente retratado</h3>
+          <p class="timeline-text">The Lancet se retrata formalmente sobre o estudo após provas conclusivas de má conduta científica e manipulação de dados.</p>
+          <div class="timeline-divider"></div>
+          <p><strong>Impacto:</strong> Wakefield foi banido da prática médica no Reino Unido.</p>
+          <a href="https://arquivo.pt/wayback/20230123152558/https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(10)60175-4/fulltext" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Retratação oficial (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2015 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-content">
+          <span class="tag">Consequência</span>
+          <span class="tag">Sarampo</span>
+          <h3 class="timeline-title">Surto de sarampo na Disney</h3>
+          <p class="timeline-text">Epidemia de sarampo originada na Disneylandia mostra as consequências do movimento antivacina.</p>
+          <div class="timeline-divider"></div>
+          <p><strong>Dado:</strong> 110 casos confirmados, maioria em pessoas não vacinadas.</p>
+          <a href="https://pubmed.ncbi.nlm.nih.gov/34495822/" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Estudo sobre o surto de sarampo
+          </a>
+        </div>
+      </div>
+
+      <!-- 2018 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-content">
+          <span class="tag">Política</span>
+          <span class="tag">Itália</span>
+          <h3 class="timeline-title">Itália proíbe crianças não vacinadas das escolas</h3>
+          <p class="timeline-text">Resposta política ao surto de doenças evitáveis por vacinação na Europa, com leis mais rígidas sobre imunização.</p>
+          <a href="https://arquivo.pt/wayback/20210410202720/https://www.bbc.com/news/world-europe-47536981" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Reportagem BBC (arquivado)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2020 -->
+      <div class="timeline-item">
+        <div class="timeline-year">2020</div>
+        <div class="timeline-content">
+          <span class="tag">Ciência</span>
+          <span class="tag">Estudo</span>
+          <h3 class="timeline-title">Estudo definitivo com 650 mil crianças</h3>
+          <p class="timeline-text">Pesquisa abrangente publicada no Annals of Internal Medicine confirma definitivamente que não há ligação entre vacinas e autismo.</p>
+          <div class="timeline-divider"></div>
+          <p><strong>Escopo:</strong> 657.461 crianças dinamarquesas acompanhadas entre 1999-2010.</p>
+          <a href="https://arquivo.pt/wayback/20220124081954/https://www.acpjournals.org/doi/10.7326/m18-2101" class="timeline-source" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Annals of Internal Medicine (arquivado)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
