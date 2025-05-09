@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Menção conjunta entre 'Fake News' e tópicos de diferentes áreas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #FF4040;
+            font-family: 'Helvetica Bold', sans-serif;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dashboard-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        .area-selector-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background-color: rgba(255, 64, 64, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .area-selector {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .area-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Helvetica', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .area-btn:hover {
+            background-color: #FF4040;
+        }
+        .area-btn.active {
+            background-color: #FF4040;
+            font-weight: bold;
+        }
+        .content-container {
+            display: flex;
+            gap: 30px;
+        }
+        .selection-panel {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        .chart-panel {
+            flex: 2;
+            min-width: 700px;
+        }
+        .control-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #FF4040;
+            font-family: 'Helvetica Bold', sans-serif;
+        }
+        .topic-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+        .topic-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .topic-checkbox:hover {
+            background-color: rgba(255, 64, 64, 0.1);
+        }
+        .topic-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .selected-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            min-height: 60px;
+            align-items: flex-start;
+        }
+        .selected-topic {
+            background-color: rgba(255, 64, 64, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .remove-topic {
+            cursor: pointer;
+            color: #FF4040;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .scale-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .scale-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #applyBtn {
+            background-color: #FF4040;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Helvetica', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        #applyBtn:hover {
+            background-color: #ff6b6b;
+            transform: scale(1.02);
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+        .info-note {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .no-selection {
+            color: #777;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 1200px) {
+            .content-container {
+                flex-direction: column;
+            }
+            .selection-panel, .chart-panel {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            .topic-selector {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .area-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            .area-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            .topic-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        
+        
+        <div class="dashboard-container">
+            <div class="area-selector-container">
+                <div class="area-selector">
+                    <button class="area-btn active" data-area="saude">Saúde</button>
+                    <button class="area-btn" data-area="politica">Política</button>
+                    <button class="area-btn" data-area="pais">Países</button>
+                  <button class="area-btn" data-area="tecnologia">Tecnologia</button>
+                  <button class="area-btn" data-area="religiao">Religião</button>
+                  <button class="area-btn" data-area="meio_ambiente">Meio Ambiente</button>
+                     <button class="area-btn" data-area="criminalidade">Criminalidade</button>
+                  <button class="area-btn" data-area="minorias">Minorias Sociais</button>
+                    <button class="area-btn" data-area="economia">Economia</button>
+                  <button class="area-btn" data-area="politicos">Políticos</button>
+                </div>
+            </div>
+            
+            <div class="content-container">
+                <div class="selection-panel">
+                    <div class="control-title">Tópicos Disponíveis:</div>
+                    <div class="topic-selector" id="topicSelector">
+                        <!-- Tópicos serão carregados dinamicamente -->
+                    </div>
+                    
+                    <div class="control-title">Tópicos Selecionados:</div>
+                    <div class="selected-topics" id="selectedTopics">
+                        <div class="no-selection">Nenhum tópico selecionado</div>
+                    </div>
+                    
+                    <div class="control-title">Opções de Visualização:</div>
+                    <div class="scale-options">
+                        <label class="scale-option">
+                            <input type="radio" name="scaleType" value="linear" checked>
+                            <span>Escala Linear</span>
+                        </label>
+                        <label class="scale-option">
+                            <input type="radio" name="scaleType" value="logarithmic">
+                            <span>Escala Logarítmica (valores em potências de 10)</span>
+                        </label>
+                    </div>
+                    
+                    <button id="applyBtn">Visualizar Gráfico</button>
+                </div>
+                
+                <div class="chart-panel">
+                    <div class="chart-wrapper">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                    <div class="info-note">
+                        <p>Passe o mouse sobre as linhas para ver os valores exatos. Dados retirados de Arquivo.pt.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados completos organizados por área e tópico
+        const data = {
+            years: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+            
+            areas: {
+                saude: {
+                    label: "Saúde",
+                    topics: {
+                        vacina: {
+                            label: "Vacina",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 149, 142, 97, 0, 0, 1, 4, 9, 209, 446, 1187, 808],
+                            color: "#00A0E3"
+                        },
+                        covid: {
+                            label: "Covid-19",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 302184],
+                            color: "#E31C79"
+                        },
+                        autismo: {
+                            label: "Autismo",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5, 91, 244, 1303, 785],
+                            color: "#00BC8C"
+                        },
+                        hidroxicloroquina: {
+                            label: "Hidroxicloroquina",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 412],
+                            color: "#FF7F00"
+                        },
+                        virus: {
+                            label: "Vírus",
+                            data: [0, 0, 0, 0, 0, 1, 1, 2, 1, 6, 331, 225, 205, 1, 2, 11, 17, 249, 672, 1674, 2424],
+                            color: "#E31937"
+                        },
+                        oms: {
+                            label: "OMS",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 7, 10, 0, 1, 6, 9, 103, 293, 1248, 1857],
+                            color: "#9B59B6"
+                        },
+                        dieta: {
+                            label: "Dieta",
+                            data: [0, 0, 0, 0, 0, 0, 2, 1, 1, 25, 29, 24, 22, 2, 6, 19, 28, 269, 379, 1510, 1606],
+                            color: "#3498DB"
+                        }
+                    }
+                },
+                politica: {
+                    label: "Política",
+                    topics: {
+                        eleicoes: {
+                            label: "Eleições",
+                            data: [0, 0, 0, 0, 0, 0, 1, 2, 4, 86, 24, 23, 62, 3, 29, 128, 125, 1291, 4737, 11105, 5763],
+                            color: "#1ABC9C"
+                        },
+                        governo: {
+                            label: "Governo",
+                            data: [0, 0, 0, 0, 0, 2, 3, 2, 6, 381, 49, 79, 55, 13, 49, 143, 156, 1569, 6516, 16110, 9700],
+                            color: "#2ECC71"
+                        },
+                        presidente: {
+                            label: "Presidente",
+                            data: [0, 0, 0, 0, 0, 3, 4, 2, 4, 226, 60, 94, 67, 7, 33, 128, 141, 1612, 7782, 6424, 11563],
+                            color: "#F1C40F"
+                        },
+                        corrupcao: {
+                            label: "Corrupção",
+                            data: [0, 0, 0, 0, 0, 0, 1, 1, 5, 21, 113, 107, 59, 2, 16, 72, 86, 829, 2025, 3521, 2751],
+                            color: "#E74C3C"
+                        },
+                        partido: {
+                            label: "Partido",
+                            data: [0, 0, 0, 0, 0, 1, 2, 2, 4, 77, 42, 217, 52, 5, 22, 38, 66, 973, 2642, 7099, 3765],
+                            color: "#34495E"
+                        },
+                        esquerda: {
+                            label: "Esquerda",
+                            data: [0, 0, 0, 0, 0, 0, 3, 2, 7, 497, 25, 40, 236, 3, 10, 80, 79, 1140, 2896, 6113, 3414],
+                            color: "#E67E22"
+                        },
+                        direita: {
+                            label: "Direita",
+                            data: [0, 0, 0, 0, 0, 1, 4, 1, 3, 39, 12, 25, 27, 4, 19, 54, 94, 967, 2433, 6500, 2974],
+                            color: "#16A085"
+                        },
+                        censura: {
+                            label: "Censura",
+                            data: [0, 0, 0, 0, 0, 1, 3, 1, 6, 76, 55, 57, 100, 1, 6, 34, 34, 747, 1631, 1720, 1828],
+                            color: "#8E44AD"
+                        },
+                        golpe: {
+                            label: "Golpe",
+                            data: [0, 0, 0, 0, 0, 0, 2, 2, 1, 28, 39, 23, 36, 3, 319, 14, 41, 526, 1402, 2262, 1471],
+                            color: "#C0392B"
+                        },
+                        democracia: {
+                            label: "Democracia",
+                            data: [0, 0, 0, 0, 0, 2, 3, 2, 6, 36, 43, 95, 59, 3, 24, 64, 94, 1203, 3338, 4254, 4736],
+                            color: "#7F8C8D"
+                        }
+                    }
+                },
+                pais: {
+                    label: "País",
+                    topics: {
+                        brasil: {
+                            label: "Brasil",
+                            data: [1, 2, 4, 2, 2, 3, 3, 2, 8, 319, 305, 194, 177, 14, 85, 272, 508, 1596, 6168, 19788, 16772],
+                            color: "#009C3B"
+                        },
+                        estados_unidos: {
+                            label: "Estados Unidos",
+                            data: [0, 0, 0, 0, 0, 3, 6, 2, 3, 18369, 26384, 34693, 11394, 14, 35, 315, 841, 113560, 122229, 110543, 157931],
+                            color: "#3C3B6E"
+                        },
+                        china: {
+                            label: "China",
+                            data: [0, 1, 0, 0, 0, 5, 11, 3, 56, 1130, 425, 675, 127, 133, 1479, 2490, 4318, 8131, 10483, 14312, 18647],
+                            color: "#DE2910"
+                        },
+                        russia: {
+                            label: "Rússia",
+                            data: [0, 0, 0, 0, 0, 1, 1, 2, 1, 10, 8, 45, 37, 3, 15, 39, 65, 1222, 2118, 1583, 2535],
+                            color: "#D52B1E"
+                        },
+                        reino_unido: {
+                            label: "Reino Unido",
+                            data: [0, 0, 0, 0, 0, 2, 5, 2, 8, 1539, 106, 146, 55, 22, 12, 45, 180, 52570, 73124, 101215, 148584],
+                            color: "#012169"
+                        },
+                        alemanha: {
+                            label: "Alemanha",
+                            data: [0, 0, 0, 0, 0, 1, 2, 2, 4, 36, 30, 41, 17, 5, 17, 94, 123, 1409, 2135, 1603, 3228],
+                            color: "#000000"
+                        },
+                        italia: {
+                            label: "Itália",
+                            data: [0, 0, 0, 0, 0, 1, 1, 1, 4, 170, 207, 547, 19, 1, 7, 36, 70, 503, 2495, 4561, 3919],
+                            color: "#009246"
+                        },
+                        israel: {
+                            label: "Israel",
+                            data: [0, 0, 0, 0, 1, 3, 4, 0, 19, 619, 235, 362, 45, 63, 1087, 1797, 3269, 3790, 4893, 14748, 7700],
+                            color: "#0038B8"
+                        },
+                        venezuela: {
+                            label: "Venezuela",
+                            data: [0, 0, 0, 0, 0, 1, 2, 1, 21, 262, 18, 78, 71, 10, 28, 740, 389, 3213, 3248, 10060, 5339],
+                            color: "#FCD116"
+                        },
+                        argentina: {
+                            label: "Argentina",
+                            data: [0, 0, 0, 0, 0, 1, 2, 1, 3, 370, 28, 216, 53, 18, 759, 1124, 1599, 1911, 3601, 6287, 4380],
+                            color: "#75AADB"
+                        },
+                        portugal: {
+                            label: "Portugal",
+                            data: [1, 2, 4, 2, 3, 5, 10, 3, 35, 740, 359, 398, 197, 61, 366, 1178, 2222, 5586, 7210, 8378, 36467],
+                            color: "#046A38"
+                        },
+                        coreia_norte: {
+                            label: "Coreia do Norte",
+                            data: [0, 0, 0, 0, 0, 0, 0, 1, 1, 13, 77, 54, 8, 11, 7, 16, 19, 63096, 60002, 68618, 70552],
+                            color: "#024FA2"
+                        }
+                    }
+                },
+              
+              tecnologia: {
+    label: "Tecnologia",
+        topics: {
+            inteligencia_artificial: {
+                label: "Inteligência Artificial",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 9, 6, 1, 0, 0, 0, 40, 17014, 37658, 50523, 65828],
+                color: "#FF5733"
+            },
+            cinco_g: {
+                label: "5G",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 5, 0, 2, 5, 9, 16, 130, 890, 4721, 4258],
+                color: "#33FF57"
+            },
+            microchip: {
+                label: "Microchip",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 2, 7, 2, 0, 4, 23, 42, 90, 192, 204, 211],
+                color: "#3357FF"
+            },
+            big_data: {
+                label: "Big Data",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 23, 3, 22, 35, 112, 3201, 30006, 19337, 56964],
+                color: "#F033FF"
+            },
+            algoritmo: {
+                label: "Algoritmo",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 9, 19, 252, 362, 696, 492],
+                color: "#FF33F0"
+            },
+            criptomoeda: {
+                label: "Criptomoeda",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 66, 123, 229, 131],
+                color: "#33FFF0"
+            },
+            redes_sociais: {
+                label: "Redes sociais",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 43, 8646, 131, 42, 7, 75, 676, 980, 133235, 163823, 89385, 150750],
+                color: "#F0FF33"
+            },
+            robos: {
+                label: "Robôs",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 4, 1, 0, 4, 9, 310, 605, 625, 480],
+                color: "#8A2BE2"
+            }
+        }
+	},
+    religiao: {
+    label: "Religião",
+    topics: {
+        papa: {
+            label: "Papa",
+            data: [0, 0, 0, 0, 0, 1, 5, 3, 8, 73, 322, 961, 1, 15, 108, 192, 533, 2225, 2313, 5461, 3296],
+            color: "#FFFFFF"
+        },
+        biblia: {
+            label: "Bíblia",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 140, 51, 84, 25, 1, 1, 18, 40, 281, 765, 1730, 1135],
+            color: "#FFD700"
+        },
+        alcorao: {
+            label: "Alcorão",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1, 6, 3, 0, 0, 3, 3, 148, 237, 418, 338],
+            color: "#006400"
+        },
+        tora: {
+            label: "Torá",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 32, 117, 215, 75],
+            color: "#000080"
+        },
+        milagre: {
+            label: "Milagre",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 153, 101, 56, 1, 4, 19, 29, 283, 484, 1089, 1166],
+            color: "#FF6347"
+        },
+        islamismo: {
+            label: "Islamismo",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 4, 7, 0, 1, 3, 10, 39, 145, 806, 684, 501],
+            color: "#228B22"
+        },
+        profecia: {
+            label: "Profecia",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 18, 19, 0, 0, 0, 2, 8, 72, 144, 471, 317],
+            color: "#9370DB"
+        },
+        cristianismo: {
+            label: "Cristianismo",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 13, 8, 5, 12, 0, 0, 22, 26, 182, 762, 1205, 652],
+            color: "#4169E1"
+        },
+        judaismo: {
+            label: "Judaismo",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 4, 1, 0, 0, 1, 4, 23, 36, 48, 25],
+            color: "#0000FF"
+        }, 
+      dalai_lama: {
+    label: "Dalai Lama",
+    data: [0, 0, 0, 0, 0, 0, 1, 0, 1, 1511, 15, 52, 3, 2, 16, 18, 248, 24292, 24469, 53922, 45333],
+    color: "#FFA500"  // Laranja, cor associada ao budismo tibetano
+}
+    }
+}, 
+              meio_ambiente: {
+    label: "Meio Ambiente",
+    topics: {
+        aquecimento_global: {
+            label: "Aquecimento global",
+            data: [0, 0, 0, 0, 0, 0, 4, 1, 2, 3052, 1008, 2838, 296, 2, 6, 236, 345, 53706, 46932, 74725, 58412],
+            color: "#FF4500"  // Laranja avermelhado
+        },
+        desmatamento: {
+            label: "Desmatamento",
+            data: [0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 0, 482, 439, 0, 0, 6, 7, 151, 647, 911, 695],
+            color: "#228B22"  // Verde floresta
+        },
+        incendio: {
+            label: "Incêndio",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 24, 25, 3, 0, 0, 10, 13, 332, 970, 3768, 1158],
+            color: "#DC143C"  // Vermelho fogo
+        },
+        amazonia: {
+            label: "Amazônia",
+            data: [0, 0, 0, 0, 0, 0, 0, 1, 1, 4, 1, 3, 0, 0, 1, 24, 23, 180, 851, 1119, 879],
+            color: "#2E8B57"  // Verde marinho
+        },
+        secas: {
+            label: "Secas",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 37, 32, 5, 0, 0, 3, 7, 175, 280, 441, 315],
+            color: "#DAA520"  // Dourado terra
+        },
+        inundacao: {
+            label: "Inundação",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 24, 15, 0, 0, 0, 2, 52, 112, 167, 100],
+            color: "#1E90FF"  // Azul água
+        }
+    }
+}, 
+              criminalidade: {
+    label: "Criminalidade",
+    topics: {
+        terrorismo: {
+            label: "Terrorismo",
+            data: [0, 0, 0, 0, 0, 2, 4, 1, 3, 13, 11, 28, 10, 2, 14, 37, 69, 850, 1459, 2889, 1773],
+            color: "#8B0000"  // Vermelho escuro
+        },
+        crime: {
+            label: "Crime",
+            data: [0, 0, 0, 0, 1, 5, 2, 24, 20, 692, 143, 608, 96, 103, 808, 1812, 3537, 6066, 6382, 10767, 10271],
+            color: "#B22222"  // Vermelho fogo
+        },
+        policia: {
+            label: "Polícia",
+            data: [0, 0, 0, 0, 0, 0, 1, 1, 4, 84, 219, 49, 37, 9, 33, 73, 129, 800, 3332, 6301, 4370],
+            color: "#000080"  // Azul marinho
+        },
+        milicia: {
+            label: "Milícia",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4, 0, 0, 0, 1, 87, 138, 480, 296],
+            color: "#696969"  // Cinza escuro
+        },
+        armas: {
+            label: "Armas",
+            data: [0, 0, 0, 0, 0, 1, 3, 2, 4, 43, 10, 23, 20, 3, 12, 64, 84, 576, 2214, 3379, 2091],
+            color: "#D2691E"  // Chocolate
+        },
+        prisao: {
+            label: "Prisão",
+            data: [0, 0, 0, 0, 0, 1, 2, 1, 4, 16, 0, 33, 15, 2, 8, 34, 34, 733, 2172, 4543, 2313],
+            color: "#2F4F4F"  // Cinza ardósia escuro
+        },
+        feminicidio: {
+            label: "Feminicídio",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 38, 360, 153],
+            color: "#FF69B4"  // Rosa quente
+        },
+        sequestro: {
+            label: "Sequestro",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 1, 1, 2, 3, 4, 63, 248, 819, 379],
+            color: "#9932CC"  // Orquídea escura
+        },
+        trafico: {
+            label: "Tráfico",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 35, 34, 8, 1, 12, 29, 25, 357, 1201, 3181, 1620],
+            color: "#556B2F"  // Verde oliva escuro
+        },
+        assassinato: {
+            label: "Assassinato",
+            data: [0, 0, 0, 0, 0, 0, 2, 1, 3, 26, 31, 34, 4, 0, 3, 15, 15, 314, 668, 1604, 848],
+            color: "#800000"  // Marrom avermelhado
+        }
+    }
+},
+              minorias: {
+    label: "Minorias Sociais",
+    topics: {
+        refugiado: {
+            label: "Refugiado",
+            data: [0, 0, 0, 0, 0, 1, 0, 0, 0, 12, 6, 9, 0, 0, 0, 8, 12, 138, 465, 760, 539],
+            color: "#4682B4"  // Azul aço
+        },
+        racismo: {
+            label: "Racismo",
+            data: [0, 0, 0, 0, 0, 0, 2, 1, 1, 133, 535, 527, 30, 3, 3, 15, 33, 493, 1253, 2292, 1931],
+            color: "#556B2F" 
+        },
+        xenofobia: {
+            label: "Xenofobia",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 18, 58, 28, 0, 3, 7, 27, 198, 341, 987, 639],
+            color: "#8B4513"  // Marrom
+        },
+        lgbt: {
+            label: "LGBT",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 2, 30, 20, 50, 5, 2, 79, 355, 703, 1583, 1209, 2699, 2294],
+            color: "#FF69B4"  // Rosa quente
+        },
+        feminismo: {
+            label: "Feminismo",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 6, 97, 0, 1, 18, 11, 251, 481, 1685, 1552],
+            color: "#FF1493"  // Rosa profundo
+        },
+        cotas: {
+            label: "Cotas",
+            data: [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 8, 14, 10, 0, 0, 0, 7, 278, 151, 332, 398],
+            color: "#9370DB"  // Roxo médio
+        },
+        imigrante: {
+            label: "Imigrante",
+            data: [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 5, 2, 0, 0, 0, 3, 7, 147, 128, 447, 265],
+            color: "#32CD32"  // Verde lima
+        }
+    }
+},
+              economia: {
+    label: "Economia",
+    topics: {
+        crise: {
+            label: "Crise",
+            data: [0, 0, 0, 0, 0, 2, 2, 2, 4, 12, 42, 221, 479, 11, 56, 129, 154, 1076, 2482, 6592, 5282],
+            color: "#FF0000"  // Vermelho
+        },
+        desemprego: {
+            label: "Desemprego",
+            data: [0, 0, 0, 0, 0, 0, 1, 0, 2, 369, 392, 483, 74, 3, 2, 16, 10, 544, 1023, 2003, 1588],
+            color: "#FF8C00"  // Laranja escuro
+        },
+        inflacao: {
+            label: "Inflação",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 4, 17, 13, 0, 1, 14, 29, 207, 529, 1367, 829],
+            color: "#FFD700"  // Dourado
+        },
+        salario: {
+            label: "Salário",
+            data: [0, 0, 0, 0, 0, 0, 1, 1, 4, 23, 68, 83, 12, 3, 5, 29, 23, 215, 1101, 1592, 2057],
+            color: "#32CD32"  // Verde lima
+        },
+        reforma: {
+            label: "Reforma",
+            data: [0, 0, 0, 0, 0, 0, 2, 1, 3, 234, 22, 224, 35, 1, 16, 39, 129, 572, 1610, 3465, 2566],
+            color: "#9370DB"  // Roxo médio
+        },
+        pib: {
+            label: "PIB",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 2, 6, 9, 18, 10, 1, 9, 24, 47, 166, 805, 2220, 1683],
+            color: "#1E90FF"  // Azul dodger
+        },
+        bolsa: {
+            label: "Bolsa",
+            data: [1, 2, 3, 2, 2, 3, 0, 0, 3, 38, 37, 202, 4, 4, 25, 49, 90, 602, 2735, 11244, 9656],
+            color: "#008000"  // Verde
+        },
+        divida: {
+            label: "Dívida",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 11, 23, 38, 2, 6, 59, 40, 339, 1222, 2572, 1864],
+            color: "#B22222"  // Vermelho fogo
+        },
+        imposto: {
+            label: "Imposto",
+            data: [0, 0, 0, 0, 0, 0, 2, 1, 4, 4, 33, 12, 30, 2, 3, 12, 14, 282, 1020, 1882, 1807],
+            color: "#8B0000"  // Vermelho escuro
+        },
+        auxilio: {
+            label: "Auxílio",
+            data: [0, 0, 0, 0, 0, 1, 1, 0, 0, 15, 13, 55, 27, 1, 0, 12, 13, 163, 431, 937, 954],
+            color: "#4169E1"  // Azul real
+        }
+    }
+},
+              politicos: {
+    label: "Políticos",
+    topics: {
+        donald_trump: {
+            label: "Donald Trump",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 91, 22, 36, 2, 1, 29, 2280, 7678, 299780, 184163, 147334, 103336],
+            color: "#FF5733"
+        },
+        jair_bolsonaro: {
+            label: "Jair Bolsonaro",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1161, 3, 24, 0, 0, 1, 0, 0, 8188, 34284, 83800, 80002],
+            color: "#C70039"
+        },
+        lula: {
+            label: "Luiz Inácio Lula da Silva",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 21, 4, 0, 0, 0, 5, 3390, 11250, 30025, 23960],
+            color: "#900C3F"
+        },
+        nicolas_maduro: {
+            label: "Nicolás Maduro",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13538, 22308, 75154, 47392],
+            color: "#581845"
+        },
+        vladimir_putin: {
+            label: "Vladimir Putin",
+            data: [0, 0, 0, 0, 0, 2, 0, 0, 3, 119, 24, 48, 12, 6, 73, 3639, 3378, 85168, 68555, 63546, 49826],
+            color: "#1F618D"
+        },
+        emmanuel_macron: {
+            label: "Emmanuel Macron",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 106, 17326, 42531, 76171, 66356],
+            color: "#117A65"
+        },
+        marcelo_rebelo: {
+            label: "Marcelo Rebelo de Sousa",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 82, 53, 0, 15, 43, 57, 221, 25165, 50376, 81272, 69411],
+            color: "#884EA0"
+        },
+      luis_montenegro: {
+            label: "Luís Montenegro",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5030, 3053, 29760, 18360],
+            color: "#5D3FD3"  // Roxo - cor sugerida para diferenciar
+        },
+        xi_jinping: {
+            label: "Xi Jinping",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 7, 58, 655, 13155, 36963, 36735, 30637],
+            color: "#2E86C1"
+        },
+        kim_jong_un: {
+            label: "Kim Jong-un",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 8, 7, 7, 18, 63, 93, 37994, 62701, 70946, 53683],
+            color: "#CA6F1E"
+        },
+        benjamin_netanyahu: {
+            label: "Benjamin Netanyahu",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 3, 2, 1, 0, 14, 289, 1150, 55281, 45162, 77300, 53607],
+            color: "#2471A3"
+        }
+    }
+}
+
+  }
+};
+
+        // Configuração inicial do gráfico
+        const ctx = document.getElementById('correlationChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.years,
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: 'white',
+                            font: {
+                                family: 'Helvetica',
+                                size: 12
+                            },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        },
+                        onClick: (e, legendItem, legend) => {
+                            const index = legendItem.datasetIndex;
+                            const ci = legend.chart;
+                            const meta = ci.getDatasetMeta(index);
+                            
+                            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                            ci.update();
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.9)',
+                        titleFont: {
+                            family: 'Helvetica Bold',
+                            size: 14
+                        },
+                        bodyFont: {
+                            family: 'Helvetica',
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'white',
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
+                }
+            }
+        });
+
+// Estado atual da aplicação
+// Estado atual da aplicação
+let currentArea = 'saude'; // Área atualmente sendo visualizada
+let selectedAreas = ['saude']; // Áreas com seleção ativa (para os botões)
+let selectedTopics = []; // Tópicos selecionados (agora com informação de área)
+
+// Função para renderizar o seletor de tópicos
+function renderTopicSelector() {
+    const topicSelector = document.getElementById('topicSelector');
+    topicSelector.innerHTML = '';
+    
+    const topics = data.areas[currentArea].topics;
+    
+    for (const [key, topic] of Object.entries(topics)) {
+        const isSelected = selectedTopics.some(t => t.id === key && t.area === currentArea);
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `topic-${key}`;
+        checkbox.dataset.topic = key;
+        checkbox.checked = isSelected;
+        
+        const label = document.createElement('label');
+        label.className = 'topic-checkbox';
+        label.htmlFor = `topic-${key}`;
+        
+        const colorBox = document.createElement('span');
+        colorBox.className = 'topic-color';
+        colorBox.style.backgroundColor = topic.color;
+        
+        const text = document.createTextNode(topic.label);
+        
+        label.appendChild(checkbox);
+        label.appendChild(colorBox);
+        label.appendChild(text);
+        topicSelector.appendChild(label);
+        
+        checkbox.addEventListener('change', function() {
+            const topicId = this.dataset.topic;
+            
+            if (this.checked) {
+                if (!selectedTopics.some(t => t.id === topicId && t.area === currentArea)) {
+                    selectedTopics.push({ id: topicId, area: currentArea });
+                }
+            } else {
+                selectedTopics = selectedTopics.filter(t => !(t.id === topicId && t.area === currentArea));
+            }
+            renderSelectedTopics();
+        });
+    }
+}
+
+function renderSelectedTopics() {
+    const selectedTopicsContainer = document.getElementById('selectedTopics');
+    selectedTopicsContainer.innerHTML = '';
+    
+    if (selectedTopics.length === 0) {
+        selectedTopicsContainer.innerHTML = '<div class="no-selection">Nenhum tópico selecionado</div>';
+        return;
+    }
+    
+    selectedTopics.forEach(topic => {
+        const topicData = data.areas[topic.area].topics[topic.id];
+        
+        const topicElement = document.createElement('div');
+        topicElement.className = 'selected-topic';
+        
+        const colorBox = document.createElement('span');
+        colorBox.className = 'topic-color';
+        colorBox.style.backgroundColor = topicData.color;
+        
+        const text = document.createTextNode(`${data.areas[topic.area].label}: ${topicData.label}`);
+        
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'remove-topic';
+        removeBtn.innerHTML = '×';
+        removeBtn.title = 'Remover tópico';
+        removeBtn.addEventListener('click', () => {
+            selectedTopics = selectedTopics.filter(t => !(t.id === topic.id && t.area === topic.area));
+            renderSelectedTopics();
+            // Não precisamos mais desmarcar o checkbox aqui pois ele será atualizado quando a área for selecionada novamente
+        });
+        
+        topicElement.appendChild(colorBox);
+        topicElement.appendChild(text);
+        topicElement.appendChild(removeBtn);
+        selectedTopicsContainer.appendChild(topicElement);
+    });
+}
+        function applyLogScale(dataArray) {
+            return dataArray.map(value => value > 0 ? Math.log10(value + 1) : 0);
+        }
+
+        function updateChart() {
+    const scaleType = document.querySelector('input[name="scaleType"]:checked').value;
+    
+    // Preparar datasets para o gráfico
+    const chartDatasets = [];
+    
+    selectedTopics.forEach(topic => {
+        const topicData = data.areas[topic.area].topics[topic.id];
+        let chartData = [...topicData.data];
+        
+        if (scaleType === 'logarithmic') {
+            chartData = applyLogScale(chartData);
+        }
+        
+        chartDatasets.push({
+            label: `${data.areas[topic.area].label}: ${topicData.label}`,
+            data: chartData,
+            borderColor: topicData.color,
+            backgroundColor: `${topicData.color}40`,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: topicData.color,
+            fill: false,
+            tension: 0.3,
+            hidden: false
+        });
+    });
+    
+    // Atualizar gráfico
+    chart.data.datasets = chartDatasets;
+    chart.options.scales.y.type = scaleType;
+    chart.update();
+}
+        // Event Listeners
+        document.querySelectorAll('.area-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const area = this.dataset.area;
+            
+            // Atualiza a área atual (mostrada no seletor)
+            currentArea = area;
+            
+            // Mantém o estado de quais áreas estão ativas (para os botões)
+            if (!selectedAreas.includes(area)) {
+                selectedAreas.push(area);
+            }
+            
+            // Atualiza a classe active apenas para a área atual
+            document.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            renderTopicSelector();
+            renderSelectedTopics();
+        });
+    });
+
+        document.getElementById('applyBtn').addEventListener('click', function() {
+            if (selectedTopics.length === 0) {
+                alert('Por favor, selecione pelo menos um tópico para visualizar.');
+                return;
+            }
+            updateChart();
+        });
+
+        // Inicialização
+        document.querySelector('.area-btn[data-area="saude"]').classList.add('active');
+        renderTopicSelector();
+        renderSelectedTopics();
+
+        // Adicionar alguns tópicos por padrão
+        selectedTopics = [
+            { id: 'marcelo_rebelo', area: 'politicos' },
+            { id: 'crime', area: 'criminalidade' },
+            { id: 'inteligencia_artificial', area: 'tecnologia'}
+        ];
+        renderSelectedTopics();
+        updateChart();
+    </script>
+</body>
+</html>
