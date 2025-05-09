@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Olhar Crítico | Combatendo a Desinformação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Raleway:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #ff0000;
+            --vermelho-escuro: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #111;
+            --preto-claro: #1a1a1a;
+            --cinza-escuro: #333;
+            --cinza-medio: #666;
+            --cinza-claro: #ccc;
+            --branco: #fff;
+            --destaque: #ffcc00;
+        }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--branco);
+            color: var(--preto);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Cabeçalho Hero */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            color: var(--branco);
+            text-align: center;
+            padding: 6rem 1.5rem 4rem;
+            position: relative;
+            border-bottom: 5px solid var(--vermelho);
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+        }
+        
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            margin: 0;
+            color: var(--vermelho);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            color: var(--branco);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 600;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--branco);
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-15px) translateX(-50%);}
+            60% {transform: translateY(-7px) translateX(-50%);}
+        }
+        
+        /* Seções */
+        section {
+            padding: 3rem 1.5rem;
+            position: relative;
+        }
+        
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            color: var(--vermelho);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--vermelho);
+        }
+        
+        .section-dark {
+            background-color: var(--preto);
+            color: var(--branco);
+        }
+        
+        .section-accent {
+            background-color: var(--vermelho);
+            color: var(--branco);
+        }
+        
+        .section-pattern {
+            background-color: var(--branco);
+            background-image: radial-gradient(var(--cinza-claro) 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+        
+        /* Cards e Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+        
+        .content-card {
+            background: var(--branco);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--vermelho);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--vermelho);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .content-card:hover:before {
+            transform: scaleX(1);
+        }
+        
+        .section-dark .content-card {
+            background: var(--preto-claro);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 2.2rem;
+            color: var(--vermelho);
+            margin-bottom: 1rem;
+        }
+        
+        .section-dark .card-icon {
+            color: var(--destaque);
+        }
+        
+        .content-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--preto);
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .content-card h3:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 5px;
+            height: 1px;
+            background: var(--vermelho);
+        }
+        
+        .section-dark .content-card h3 {
+            color: var(--branco);
+        }
+        
+        .section-dark .content-card h3:after {
+            background: var(--destaque);
+        }
+        
+        .content-card p {
+            color: var(--cinza-escuro);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .section-dark .content-card p {
+            color: var(--cinza-claro);
+        }
+        
+        /* Botões */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--vermelho);
+            color: var(--branco);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            box-shadow: 0 3px 10px rgba(255, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .btn:hover:after {
+            transform: translateX(100%);
+        }
+        
+        .btn:hover {
+            background: var(--vermelho-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .btn i {
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .btn:hover i {
+            transform: translateX(3px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--branco);
+            color: var(--branco);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: var(--branco);
+            color: var(--vermelho);
+        }
+        
+        /* Equipe */
+        .team-members {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+        
+        .team-card {
+            background: var(--branco);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--vermelho);
+        }
+        
+        .section-dark .team-card {
+            background: var(--preto-claro);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .team-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--branco);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            margin: 0 auto 1rem;
+            display: block;
+        }
+        
+        .section-dark .team-img {
+            border-color: var(--preto-claro);
+        }
+        
+        .team-card h3 {
+            color: var(--vermelho);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .section-dark .team-card h3 {
+            color: var(--destaque);
+        }
+        
+        .credentials {
+            font-style: italic;
+            color: var(--cinza-escuro);
+            margin-bottom: 1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .section-dark .credentials {
+            color: var(--cinza-claro);
+        }
+        
+        .contact {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--vermelho);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid var(--vermelho);
+            padding-bottom: 2px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        
+        .section-dark .contact {
+            color: var(--destaque);
+            border-bottom-color: var(--destaque);
+        }
+        
+        .contact:hover {
+            color: var(--vermelho-escuro);
+            border-bottom-color: transparent;
+        }
+        
+        .section-dark .contact:hover {
+            color: var(--branco);
+        }
+        
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, var(--preto) 0%, var(--preto-claro) 100%);
+            color: var(--branco);
+            border-top: 4px solid var(--vermelho);
+            border-bottom: 4px solid var(--vermelho);
+            clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 95%);
+        }
+        
+        .cta blockquote {
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--branco);
+            position: relative;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        
+        .cta blockquote:before,
+        .cta blockquote:after {
+            content: '"';
+            font-size: 2.5rem;
+            color: var(--vermelho);
+            opacity: 0.5;
+            position: absolute;
+        }
+        
+        .cta blockquote:before {
+            top: -15px;
+            left: -5px;
+        }
+        
+        .cta blockquote:after {
+            bottom: -30px;
+            right: -5px;
+        }
+        
+        /* Ajustes específicos para mobile */
+        @media (min-width: 768px) {
+            .hero {
+                padding: 8rem 2rem 6rem;
+                clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            }
+            
+            .hero h1 {
+                font-size: 5rem;
+                letter-spacing: 5px;
+            }
+            
+            .tagline {
+                font-size: 1.8rem;
+                margin-top: 1.5rem;
+            }
+            
+            section {
+                padding: 6rem 2rem;
+            }
+            
+            .section-title {
+                font-size: 3.5rem;
+                letter-spacing: 3px;
+            }
+            
+            .section-title:after {
+                width: 80px;
+                height: 4px;
+                bottom: -10px;
+            }
+            
+            .content-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 3rem;
+                margin-top: 4rem;
+            }
+            
+            .content-card {
+                padding: 2.5rem;
+                border-radius: 12px;
+            }
+            
+            .card-icon {
+                font-size: 3rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .content-card h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1.2rem;
+                width: auto;
+            }
+            
+            .team-members {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 3rem;
+                margin-top: 4rem;
+            }
+            
+            .team-img {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .team-card h3 {
+                font-size: 1.8rem;
+            }
+            
+            .cta {
+                padding: 8rem 2rem;
+                clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+            }
+            
+            .cta blockquote {
+                font-size: 2.5rem;
+            }
+            
+            .cta blockquote:before,
+            .cta blockquote:after {
+                font-size: 4rem;
+            }
+            
+            .cta blockquote:before {
+                top: -20px;
+                left: -10px;
+            }
+            
+            .cta blockquote:after {
+                bottom: -40px;
+                right: -10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="hero">
+        <h1>OLHAR CRÍTICO</h1>
+        <p class="tagline">Letramento digital para o empoderamento civil</p>
+        <div class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- Sobre o Projeto -->
+    <section class="section-dark">
+        <div class="timeline-container">
+            <h2 class="section-title">O QUE É O OLHAR CRÍTICO?</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Nossa Missão</h3>
+                    <p>Em um cenário digital cada vez mais marcado pela sobrecarga informacional e pela circulação de conteúdos distorcidos, o Olhar Crítico propõe-se como uma iniciativa de educação midiática voltada à esfera civil além de uma ferramenta de investigação para interessados na área. Nosso objetivo é promover o letramento midiático como uma ferramenta de autonomia e responsabilidade social, por meio da análise crítica da informações.</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Por Que Isso Importa?</h3>
+                    <p>A desinformação não é apenas um fenômeno acidental — trata-se, em muitos casos, de uma prática estruturada, com impactos reais sobre a esfera pública. A partir do uso de bases históricas, como o Arquivo.pt, buscamos demonstrar como determinadas narrativas são construídas, disseminadas e, eventualmente, naturalizadas no debate social.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metodologia -->
+    <section class="section-pattern">
+        <div class="timeline-container">
+            <h2 class="section-title">COMO FAZEMOS ISSO?</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <h3>O Arquivo.pt: Nossa Memória Coletiva</h3>
+                    <p>Nosso trabalho fundamenta-se na análise de conteúdos arquivados digitalmente. Utilizando a API do Arquivo.pt, realizamos cruzamentos de dados jornalísticos ao longo do tempo, com o objetivo de identificar padrões recorrentes e estratégias discursivas.</p>
+                    <a href="https://www.olharcritico.org/dados" class="btn">EXPLORAR DADOS <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Tecnologia a Serviço da Verdade</h3>
+                    <p>Desenvolvemos ferramentas algorítmicas para mineração e análise de dados históricos, mas mantemos o foco na interpretação crítica e contextual. Aliamos ciência de dados a métodos das ciências humanas, em uma abordagem interdisciplinar.</p>
+                    <a href="https://73a84097-4ed7-4cf1-ba21-3fb2e66129bc.usrfiles.com/ugd/73a840_d7ddfa124ff643668cfc7e0a4f8a2052.pdf" class="btn">VER METODOLOGIA <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultados Esperados -->
+    <section>
+        <div class="timeline-container">
+            <h2 class="section-title">O QUE ESPERAMOS ALCANÇAR?</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Gerar Reflexão</h3>
+                    <p>Narrativas falsas não desaparecem com o tempo — elas se transformam. Nosso trabalho visa despertar o senso crítico para identificar como ideias persistem e se atualizam, moldando percepções coletivas.</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Criar Autonomia</h3>
+                    <p>Mais do que indicar o que é verdadeiro ou falso, queremos fortalecer a capacidade de análise individual. Por isso, investimos em estratégias que capacitam o público a realizar suas próprias verificações de informação</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipe -->
+    <section class="section-accent">
+        <div class="timeline-container">
+            <h2 class="section-title">QUEM SUSTENTA ESTE OLHAR?</h2>
+            <div class="team-members">
+                <div class="team-card">
+                    <img src="https://static.wixstatic.com/media/73a840_f7a760a291e04fa9b2b2dc7331e7dc99~mv2.jpg" class="team-img">
+                    <h3>Felipe Correa Bitencourt</h3>
+                    <p class="credentials">Estudante de Psicologia (UFCSPA/Universidade de Coimbra)</p>
+                    <a href="mailto:felipe.bitencourt@ufcspa.edu.br" class="contact">felipe.bitencourt@ufcspa.edu.br</a>
+                </div>
+                
+                <div class="team-card">
+                    <img src="https://static.wixstatic.com/media/73a840_bf25dd1547e7461aaead27ac5e22a536~mv2.jpg" class="team-img">
+                    <h3>Eduarda Tessari Pereira</h3>
+                    <p class="credentials">Estudante de Ciência da Computação (UFRGS/Universidade de Coimbra)</p>
+                    <a href="mailto:eduarda.tessari@ufrgs.br" class="contact">eduarda.tessari@ufrgs.br</a>
+                </div>
+            </div>
+            
+            <div class="content-card" style="margin-top: 2.5rem; text-align: center; background: rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
+                <h3>Nossa Aliança com o Arquivo.pt</h3>
+                <p>Sem esse acervo, estaríamos condenados a repetir o passado sem compreendê-lo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chamada para Ação -->
+    <section class="cta">
+        <blockquote>
+            A verdade não é óbvia - ela exige um Olhar Crítico.
+        </blockquote>
+        <a href="olharcritico.org" class="btn btn-outline">EXPLORAR O PROJETO <i class="fas fa-arrow-right"></i></a>
+    </section>
+</body>
+</html>
