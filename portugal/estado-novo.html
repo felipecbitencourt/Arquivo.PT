@@ -1,1 +1,474 @@
 
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo - Estado Novo Português (1926-1974)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vermelho: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #1a1a1a;
+            --branco: #ffffff;
+            --cinza-escuro: #2d2d2d;
+            --cinza-medio: #4a4a4a;
+            --cinza-claro: #e0e0e0;
+            --fundo-claro: #f9f9f9;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sombra-destaque: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--branco);
+            color: var(--preto);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* SEÇÃO */
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            color: var(--vermelho);
+            letter-spacing: 2px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--vermelho);
+        }
+
+        /* LINHA DO TEMPO - VERSÃO CORRIGIDA */
+        .timeline-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 5rem 0 3rem; /* Mais espaço no topo para os anos */
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: calc(50% - 2px);
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--vermelho);
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 6rem; /* Mais espaço entre itens */
+            padding-top: 60px; /* Espaço reservado para o ano */
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+        }
+
+        .timeline-item:nth-child(odd) {
+            transform: translateX(-50px);
+        }
+
+        .timeline-item:nth-child(even) {
+            transform: translateX(50px);
+        }
+
+        .timeline-item.visible:nth-child(odd),
+        .timeline-item.visible:nth-child(even) {
+            transform: translateX(0);
+        }
+
+        /* ANOS - POSICIONAMENTO CORRIGIDO */
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--vermelho);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--branco);
+            z-index: 3;
+            border: 6px solid var(--branco);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-year:hover {
+            transform: translateX(-50%) scale(1.1);
+            background: var(--vermelho-claro);
+        }
+
+        /* CONTEÚDO - AJUSTES DE POSICIONAMENTO */
+        .timeline-content {
+            background: var(--branco);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: calc(50% - 80px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 6px solid var(--vermelho);
+            margin-top: 20px; /* Espaço entre o ano e o conteúdo */
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: calc(50% + 80px);
+            border-left: none;
+            border-right: 6px solid var(--vermelho);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(204,0,0,0.1) 0%, rgba(255,255,255,0) 100%);
+            z-index: -1;
+        }
+
+        .timeline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--vermelho);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .timeline-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--vermelho);
+        }
+
+        .timeline-text {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--preto);
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--vermelho);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--cinza-medio);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-image:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-source {
+            font-size: 0.9rem;
+            color: var(--cinza-medio);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .timeline-source a {
+            color: var(--vermelho);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--vermelho);
+        }
+
+        .timeline-source a:hover {
+            color: var(--vermelho-claro);
+            border-bottom: 1px solid var(--vermelho-claro);
+        }
+
+        /* RESPONSIVIDADE - AJUSTES PARA DISPOSITIVOS MENORES */
+        @media (max-width: 992px) {
+            .timeline::before {
+                left: 40px;
+            }
+            
+            .timeline-item, 
+            .timeline-item:nth-child(even) {
+                transform: none !important;
+                padding-top: 50px;
+            }
+            
+            .timeline-year {
+                left: 40px;
+                transform: translateX(0);
+                width: 80px;
+                height: 80px;
+                font-size: 1.6rem;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 100px);
+                margin-left: 100px !important;
+                border-left: 6px solid var(--vermelho) !important;
+                border-right: none !important;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 4rem 1.5rem;
+            }
+            
+            .timeline-title {
+                font-size: 1.6rem;
+            }
+            
+            .timeline-text {
+                font-size: 1rem;
+            }
+            
+            .timeline-year {
+                width: 70px;
+                height: 70px;
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .timeline-content {
+                padding: 1.5rem;
+                width: calc(100% - 80px);
+                margin-left: 80px !important;
+            }
+            
+            .timeline-year {
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+                left: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+   <!-- SEÇÃO DE LINHA DO TEMPO - VERSÃO ATUALIZADA -->
+<section class="section">
+    <div class="timeline-container">
+        <h2 class="section-title">Estado Novo Português (1922-1974)</h2>
+        
+        <div class="intro-container">
+            <p class="intro-text">O Estado Novo (1933-1974) foi um regime autoritário português liderado por António de Oliveira Salazar, influenciado pelo contexto europeu de ascensão do autoritarismo nas décadas de 1920-1930. Esta linha do tempo destaca os principais eventos que marcaram este período da história portuguesa.</p>
+        </div>
+        
+        <div class="timeline">
+            <!-- Contexto Europeu - Mussolini -->
+            <div class="timeline-item">
+                <div class="timeline-year">1922</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">Outubro 1922</div>
+                    <h3 class="timeline-title">Mussolini toma o poder na Itália</h3>
+                    <p class="timeline-text">A Marcha sobre Roma coloca Benito Mussolini no poder, estabelecendo o regime fascista italiano. Salazar mantinha uma fotografia de Mussolini sobre sua secretária como inspiração.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_b542b4e838a24c8a9fb5af3a4f1bb598~mv2.jpeg" alt="Salazar com foto de Mussolini" class="timeline-image">
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20190406172611/https://www.dn.pt/edicao-do-dia/30-mar-2019/interior/mussolini-era-um-paradigma-para-hitler-e-salazar-10741147.html" target="_blank">DN - Mussolini era paradigma para Salazar (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- Golpe de 1926 -->
+            <div class="timeline-item">
+                <div class="timeline-year">1926</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">28 Maio 1926</div>
+                    <h3 class="timeline-title">Golpe Militar e Início da Ditadura</h3>
+                    <p class="timeline-text">O golpe militar liderado pelo General Gomes da Costa derruba a Primeira República, instaurando uma ditadura militar que prepararia o terreno para o Estado Novo.</p>
+                    <div class="image-grid">
+                      
+                        <img src="https://static.wixstatic.com/media/73a840_74a5a8d5b1334b5d8fb82a69b130c173~mv2.jpeg" alt="Gomes da Costa em Coimbra" class="timeline-image">
+                    </div>
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20170701203947/http://expresso.sapo.pt/politica/2017-05-28-A-historia-do-dia-que-em-48-anos-so-foi-feriado-duas-vezes" target="_blank">Expresso - História do 28 de Maio (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- Estado Novo 1933 -->
+            <div class="timeline-item">
+                <div class="timeline-year">1933</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1933</div>
+                    <h3 class="timeline-title">Constituição do Estado Novo</h3>
+                    <p class="timeline-text">É aprovada a Constituição que estabelece formalmente o Estado Novo, regime autoritário de inspiração corporativa e nacionalista, com Salazar como líder.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_361f7aa25cb44540be2359d31615d7d8~mv2.jpeg" alt="Cartoon Diário de Lisboa 1933" class="timeline-image">
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20170708021300/http://expresso.sapo.pt/sociedade/2017-02-04-O-que-a-historia-dos-jornais-portugueses-nos-ensina-sobre-politicos-que-assustaram-o-mundo-1" target="_blank">Expresso - História dos jornais</a></p>
+                </div>
+            </div>
+            
+            <!-- Propaganda e Censura -->
+            <div class="timeline-item">
+                <div class="timeline-year">1936</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1936</div>
+                    <h3 class="timeline-title">Culto ao Líder e Propaganda</h3>
+                    <p class="timeline-text">António Ferro, diretor do Secretariado de Propaganda Nacional, desenvolve intensa campanha de culto à personalidade de Salazar e comemorações do regime.</p>
+                    <div class="image-grid">
+                                     <img src="https://static.wixstatic.com/media/73a840_10022c765c234582b82c22b11a45e780~mv2.jpeg" alt="Salazar e Carmona em Braga" class="timeline-image">
+                    </div>
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20200725171250/https://www.dn.pt/edicao-do-dia/25-jul-2020/reflexo-de-salazar-no-espelho-portugues-esta-a-ficar-menos-nitido-12463662.html" target="_blank">Diário de Notícias - Reflexo de Salazar no espelho português está a ficar menos nítido (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- Relações Internacionais -->
+            <div class="timeline-item">
+                <div class="timeline-year">1940</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">Década de 1940</div>
+                    <h3 class="timeline-title">Relações com Franco e outros ditadores</h3>
+                    <p class="timeline-text">Salazar mantém estreitas relações com Francisco Franco da Espanha e outros líderes autoritários, consolidando o regime no contexto internacional.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_4ee98d6db4964095b8be65c0124d174c~mv2.jpeg" alt="Salazar e Franco" class="timeline-image">
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20190406172611/https://www.dn.pt/edicao-do-dia/30-mar-2019/interior/mussolini-era-um-paradigma-para-hitler-e-salazar-10741147.html" target="_blank">DN - Relações internacionais (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- PIDE/DGS -->
+            <div class="timeline-item">
+                <div class="timeline-year">1945</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1945</div>
+                    <h3 class="timeline-title">Criação da PIDE/DGS</h3>
+                    <p class="timeline-text">A Polícia Internacional e de Defesa do Estado (PIDE) se torna o principal organismo repressivo do regime salazarista, substituindo a PVDE.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_dec4bc0586074cb1985feac1942ca0d2~mv2.jpg" alt="Símbolo Estado Novo" class="timeline-image">
+                    <p class="timeline-source">Fonte:<a href="https://arquivo.pt/wayback/20050408094821/http://www.sis.pt/historia/pide-dgs.htm" target="_blank">
+PIDE/DGS (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- Eleição de Humberto Delgado -->
+            <div class="timeline-item">
+                <div class="timeline-year">1958</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1958</div>
+                    <h3 class="timeline-title">Eleição de Humberto Delgado</h3>
+                    <p class="timeline-text">O General Humberto Delgado desafia o regime nas eleições presidenciais, tornando-se um símbolo da oposição. A fraude eleitoral garante a vitória do candidato do regime.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_e9ad565995da4403b7f7e71e171af884~mv2.jpg" alt="Humberto Delgado" class="timeline-image">
+                    <p class="timeline-source">Fonte:<a href="https://arquivo.pt/wayback/20090925230409/http://www.humbertodelgado.pt/WebFHD/index.jsp" target="_blank"> Fundação Humberto Delgado (Arquivo.pt)</a></p>
+                </div>
+            </div>
+            
+            <!-- Marcelo Caetano -->
+            <div class="timeline-item">
+                <div class="timeline-year">1968</div>
+                <div class="timeline-content">
+                    <div class="timeline-date">1968</div>
+                    <h3 class="timeline-title">Marcelo Caetano Assume</h3>
+                    <p class="timeline-text">Salazar é afastado por doença e Marcelo Caetano assume, iniciando a chamada "Primavera Marcelista" com reformas limitadas que não evitam o colapso do regime.</p>
+                    <img src="https://static.wixstatic.com/media/73a840_909d0e6e49b742fd88d5b29aec380ab5~mv2.gif" alt="Salazar e António Ferro" class="timeline-image">
+                    <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20050617002758/http://www.uc.pt/cd25a/aedp_po/politicos/marccaet.html" target="_blank">Centro de Documentação 25 de Abril(Arquivo.pt) </a></p>
+                </div>
+            </div>
+            
+         
+
+         
+        </div>
+    </div>
+</section>
+
+
+    <script>
+        // Animação de scroll para os elementos
+        function checkScroll() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            timelineItems.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < window.innerHeight - 100) {
+                    item.classList.add('visible');
+                }
+            });
+        }
+        
+        // Verificar scroll ao carregar e ao rolar
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+        
+        // Inicializar animações
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                checkScroll();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

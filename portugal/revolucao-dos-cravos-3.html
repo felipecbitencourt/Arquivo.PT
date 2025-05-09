@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conquistas da Revolução</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --vermelho: #cc0000;
+      --vermelho-claro: #ff3333;
+      --preto: #1a1a1a;
+      --branco: #ffffff;
+      --cinza-claro: #f9f9f9;
+      --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --sombra-destaque: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background-color: var(--branco);
+      color: var(--preto);
+      line-height: 1.7;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section {
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, var(--cinza-claro) 0%, var(--branco) 100%);
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      text-align: center;
+      color: var(--vermelho);
+      margin-bottom: 4rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--vermelho);
+    }
+
+    .conquistas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .conquista-card {
+      background: var(--branco);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--sombra);
+      border-top: 4px solid var(--vermelho);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.4s ease;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .conquista-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .conquista-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: var(--sombra-destaque);
+    }
+
+    .conquista-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--vermelho);
+      color: var(--branco);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .conquista-card:hover .conquista-icon {
+      background: var(--vermelho-claro);
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .conquista-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      text-align: center;
+      color: var(--vermelho);
+      margin-bottom: 1rem;
+    }
+
+    .conquista-card p {
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .section {
+        padding: 4rem 1.5rem;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .conquista-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+
+      .conquista-card h3 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <h2 class="section-title">Conquistas da Revolução</h2>
+    <div class="conquistas-grid">
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Liberdades Democráticas</h3>
+        <p>Fim da censura, legalização dos partidos políticos, eleições livres e liberdade de expressão.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Descolonização</h3>
+        <p>Independência das colônias portuguesas em África (Angola, Moçambique, Guiné-Bissau, Cabo Verde e São Tomé e Príncipe).</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Reforma Agrária</h3>
+        <p>Ocupação de latifúndios no Alentejo e criação de cooperativas agrícolas.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Direitos Trabalhistas</h3>
+        <p>Salário mínimo nacional, férias pagas, semana de 40 horas e direito à greve.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Educação e Saúde</h3>
+        <p>Expansão do acesso à educação pública e criação do Serviço Nacional de Saúde.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Igualdade de Género</h3>
+        <p>Reconhecimento dos direitos das mulheres e igualdade perante a lei.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Ativar animação ao scroll
+    function revelarConquistas() {
+      const cards = document.querySelectorAll('.conquista-card');
+      cards.forEach(card => {
+        const top = card.getBoundingClientRect().top;
+        if (top < window.innerHeight - 100) {
+          card.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', revelarConquistas);
+    window.addEventListener('load', revelarConquistas);
+  </script>
+</body>
+</html>

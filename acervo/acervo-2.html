@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acervo de Fake News | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vermelho: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #1a1a1a;
+            --cinza-escuro: #2d2d2d;
+            --cinza-medio: #4a4a4a;
+            --cinza-claro: #e0e0e0;
+            --branco: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: var(--preto);
+            color: var(--cinza-claro);
+            line-height: 1.6;
+        }
+
+        .header-container {
+            background-color: var(--vermelho);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--branco);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            font-weight: normal;
+            color: var(--cinza-claro);
+        }
+
+        .archive-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .archive-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .archive-intro p {
+            margin-bottom: 1.5rem;
+            font-weight: normal;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .news-card {
+            background-color: var(--cinza-escuro);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--vermelho);
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(204, 0, 0, 0.4);
+        }
+
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--vermelho-claro);
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--cinza-claro);
+        }
+
+        .news-language {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: var(--cinza-medio);
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .news-date {
+            color: var(--cinza-claro);
+        }
+
+        .news-excerpt {
+            margin-bottom: 1.5rem;
+            font-weight: normal;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--vermelho);
+            color: var(--branco);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--vermelho-claro);
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            margin-left: 5px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--cinza-escuro);
+            color: var(--cinza-claro);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--vermelho);
+            color: var(--branco);
+        }
+
+        .references {
+            background-color: var(--cinza-escuro);
+            padding: 2rem;
+            margin-top: 3rem;
+            border-radius: 8px;
+        }
+
+        .references h2 {
+            color: var(--vermelho-claro);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .references-list {
+            columns: 2;
+            column-gap: 2rem;
+        }
+
+        .references-list li {
+            margin-bottom: 0.8rem;
+            break-inside: avoid;
+        }
+
+        .references-list a {
+            color: var(--cinza-claro);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .references-list a:hover {
+            color: var(--vermelho-claro);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+            }
+            
+            .archive-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .news-card {
+                padding: 1.2rem;
+            }
+
+            .references-list {
+                columns: 1;
+            }
+        }
+
+        /* Animação */
+        .news-card {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .news-card:nth-child(1) { animation-delay: 0.1s; }
+        .news-card:nth-child(2) { animation-delay: 0.2s; }
+        .news-card:nth-child(3) { animation-delay: 0.3s; }
+        .news-card:nth-child(4) { animation-delay: 0.4s; }
+        .news-card:nth-child(5) { animation-delay: 0.5s; }
+        .news-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1 class="header-title">Acervo Histórico</h1>
+        <p class="header-subtitle">Fake News preservadas pelo Arquivo.pt</p>
+    </div>
+
+    <div class="archive-container">
+        <div class="archive-intro">
+            <p>Esta coleção apresenta exemplos reais de desinformação que circularam na internet e foram preservados pelo Arquivo.pt. Cada item inclui o título original, idioma e link para a versão arquivada.</p>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="pt">Português</button>
+            <button class="filter-btn" data-filter="en">Inglês</button>
+            <button class="filter-btn" data-filter="es">Espanhol</button>
+        </div>
+
+        <div class="archive-grid">
+            <!-- Morte da Princesa Diana -->
+            <div class="news-card" data-language="en">
+                <h3 class="news-title">Evidence That Princess Diana Was Murdered</h3>
+                <div class="news-meta">
+                    <span class="news-language">EN</span>
+                    <span class="news-date">Arquivado em: 08/02/2016</span>
+                </div>
+                <p class="news-excerpt">Teoria conspiratória sobre a morte da Princesa Diana, alegando assassinato planejado.</p>
+                <a href="https://arquivo.pt/wayback/20160208175406/http://nexusilluminati.blogspot.pt/2013/10/evidence-that-princess-diana-was.html" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+
+            <!-- Aquecimento Global -->
+            <div class="news-card" data-language="pt">
+                <h3 class="news-title">Aquecimento Global: Uma Mentira Conveniente</h3>
+                <div class="news-meta">
+                    <span class="news-language">PT</span>
+                    <span class="news-date">Arquivado em: 14/10/2018</span>
+                </div>
+                <p class="news-excerpt">Artigo negacionista sobre mudanças climáticas, alegando que o aquecimento global é uma farsa.</p>
+                <a href="https://arquivo.pt/wayback/20181014182927/http://resistir.info/climatologia/uma_mentira_conveniente.html" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+
+            <!-- Vacinação e Autismo -->
+            <div class="news-card" data-language="pt">
+                <h3 class="news-title">Autismo Feito nos EUA: Vacinas Contaminadas</h3>
+                <div class="news-meta">
+                    <span class="news-language">PT</span>
+                    <span class="news-date">Arquivado em: 21/06/2020</span>
+                </div>
+                <p class="news-excerpt">Falsa ligação entre vacinas e autismo, baseada em informações descreditadas cientificamente.</p>
+                <a href="https://arquivo.pt/wayback/20200621114953/http://docverdade.blogspot.com/2011/04/autismo-feito-nos-eua-autism-made-in.html" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+
+            <!-- Torres Gêmeas -->
+            <div class="news-card" data-language="pt">
+                <h3 class="news-title">Ataque às Torres Gêmeas foi feito por Israel</h3>
+                <div class="news-meta">
+                    <span class="news-language">PT</span>
+                    <span class="news-date">Arquivado em: 21/04/2015</span>
+                </div>
+                <p class="news-excerpt">Teoria da conspiração sobre os ataques de 11 de setembro, acusando Israel de envolvimento.</p>
+                <a href="https://arquivo.pt/wayback/20150421212539/http://textosdeumadiva.blogspot.pt/2011/04/ataque-as-torres-gemeas-foi-feito-po.html" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+
+            <!-- Reptilianos -->
+            <div class="news-card" data-language="pt">
+                <h3 class="news-title">Reptilianos: Os Verdadeiros Governantes</h3>
+                <div class="news-meta">
+                    <span class="news-language">PT</span>
+                    <span class="news-date">Arquivado em: 11/03/2008</span>
+                </div>
+                <p class="news-excerpt">Teoria conspiratória sobre seres reptilianos controlando os governos mundiais.</p>
+                <a href="https://arquivo.pt/wayback/20080311225617/http://vidaideal.no.sapo.pt/Reptilianos.htm" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+
+            <!-- Cristiano Ronaldo -->
+            <div class="news-card" data-language="en">
+                <h3 class="news-title">Coca-Cola Loses $4 Billion After Ronaldo Moves Bottle</h3>
+                <div class="news-meta">
+                    <span class="news-language">EN</span>
+                    <span class="news-date">Arquivado em: 16/06/2021</span>
+                </div>
+                <p class="news-excerpt">Notícia exagerada sobre o impacto de um gesto de Cristiano Ronaldo no valor da Coca-Cola.</p>
+                <a href="https://arquivo.pt/wayback/20210616052220/https://www.news18.com/news/football/coca-cola-lose-usd-4-billion-after-cristiano-ronaldo-moves-bottle-and-endorses-water-3851894.html" target="_blank" class="btn">Acessar no Arquivo.pt <i class="fas fa-external-link-alt"></i></a>
+            </div>
+        </div>
+
+        <!-- Seção de Referências Adicionadas -->
+        <div class="references">
+            <h2>Mais Exemplos de Desinformação Preservados</h2>
+            <ul class="references-list">
+                <li><a href="https://arquivo.pt/wayback/20181016060934/http://filosofiaimortal.blogspot.com/2014/05/inventores-de-motores-movidos-agua-sao.html" target="_blank">Inventores de Motores MOVIDOS À ÁGUA são ASSASSINADOS ou ENCARCERADOS!</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016060507/http://filosofiaimortal.blogspot.com/2013/08/11-de-setembro-foi-uma-farsa-afirmam.html" target="_blank">11 de Setembro foi uma Farsa - Afirmam Cientistas</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016060401/http://filosofiaimortal.blogspot.com/2016/05/nikola-tesla-afirmou-ter-visto-presente.html" target="_blank">NIKOLA TESLA afirmou ter visto Presente, Passado e Futuro ao mesmo tempo, em experiência de 1895</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181102184526/http://filosofiaimortal.blogspot.com/2014/12/data-limite-segundo-chico-xavier-video.html" target="_blank">DATA LIMITE, segundo Chico Xavier - [DOCUMENTÁRIO/VÍDEO]</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016050349/http://filosofiaimortal.blogspot.com/2015/04/militares-eua-confirmam-chico-xavier-e.html" target="_blank">Militares (EUA) confirmam Chico Xavier e a Data Limite de 2019</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016055448/http://filosofiaimortal.blogspot.com/2013/05/cientistas-conseguem-filmar-sereias.html" target="_blank">Cientistas conseguem filmar Sereias durante mergulho em um mini-submarino</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016051105/http://filosofiaimortal.blogspot.com/2014/09/losna-erva-que-mata-98-das-celulas.html" target="_blank">Losna - A Erva que Mata 98% das Células Cancerígenas em 16 Horas</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181016054233/http://filosofiaimortal.blogspot.com/2010/08/causas-emocionais-das-doencas.html" target="_blank">Causas Emocionais das Doenças</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181102185305/http://filosofiaimortal.blogspot.com/2016/05/aeronautica-libera-gravacoes-de.html" target="_blank">AERONÁUTICA libera áudios entre PILOTOS e TORRES DE CONTROLE da 'NOITE OFICIAL DOS OVNIs'.</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181113050031/http://portugalmisterioso.blogspot.com/2013/10/as-fases-da-lua-e-seus-significados.html" target="_blank">As Fases da Lua e seus Significados</a></li>
+                <li><a href="https://arquivo.pt/wayback/20181113045345/http://portugalmisterioso.blogspot.com/2013/03/daniel-lutz-conta-pela-primera-vez.html" target="_blank">Daniel Lutz conta pela primera vez a historia real de Amityville</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Filtros por idioma
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const newsCards = document.querySelectorAll('.news-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove classe active de todos os botões
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Adiciona classe active ao botão clicado
+                button.classList.add('active');
+
+                const filter = button.dataset.filter;
+
+                newsCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        if (card.dataset.language === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Revolução dos Cravos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vermelho: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #1a1a1a;
+            --branco: #ffffff;
+            --sombra: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --sombra-destaque: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--preto);
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ANIMAÇÕES OTIMIZADAS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        /* CABEÇALHO HERO - MOBILE FIRST */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://static.wixstatic.com/media/73a840_8534bd43470b47489a7a12eef3cd29c0~mv2.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--branco);
+            padding: 0 1.5rem;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            max-width: 100%;
+            margin: 0 auto 1.5rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .periodo {
+            background: var(--vermelho);
+            color: var(--branco);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-top: 0.5rem;
+            border: none;
+            box-shadow: var(--sombra);
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease-out;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .periodo:hover {
+            background: var(--vermelho-claro);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-destaque);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--branco);
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--branco);
+            width: 100%;
+        }
+
+        .nav-button:hover {
+            background: var(--vermelho-claro);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-destaque);
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--branco);
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down:hover {
+            color: var(--vermelho-claro);
+        }
+
+        /* RESPONSIVIDADE PARA TELAS MAIORES */
+        @media (min-width: 480px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.3rem;
+                margin-bottom: 2rem;
+            }
+            
+            .periodo {
+                font-size: 1rem;
+                padding: 0.7rem 1.8rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                max-width: 500px;
+            }
+            
+            .nav-button {
+                width: auto;
+                padding: 0.7rem 1.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .hero h1 {
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                letter-spacing: 2px;
+            }
+            
+            .tagline {
+                font-size: 1.6rem;
+                max-width: 800px;
+                margin-bottom: 3rem;
+            }
+            
+            .periodo {
+                font-size: 1.2rem;
+                padding: 0.8rem 2rem;
+                margin-top: 1rem;
+            }
+            
+            .nav-buttons {
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+            
+            .nav-button {
+                font-size: 1rem;
+                padding: 0.8rem 1.8rem;
+            }
+            
+            .scroll-down {
+                font-size: 2rem;
+                bottom: 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero h1 {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>A Revolução dos Cravos <span>🌸</span></h1>
+        <p class="tagline">O movimento que restaurou a democracia em Portugal</p>
+        <div class="periodo">25 de Abril de 1974 • Dia da Liberdade</div>
+        
+       
+        
+        <a href="#content" class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </section>
+</body>
+</html>

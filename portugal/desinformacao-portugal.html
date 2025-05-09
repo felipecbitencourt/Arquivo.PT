@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Novo: Mecanismos de Controlo e Desinformação | Arquivo.pt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #cc0000;
+            --vermelho-claro: #ff3333;
+            --preto: #1a1a1a;
+            --cinza-escuro: #2d2d2d;
+            --cinza-medio: #4a4a4a;
+            --cinza-claro: #e0e0e0;
+            --dourado: #d4af37;
+            --verde: #2e7d32;
+            --verde-claro: #4caf50;
+            --azul-revolucao: #4169e1;
+            --bege-historia: #f5e9d9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bege-historia);
+            color: var(--preto);
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: var(--preto);
+        }
+        
+        /* Cabeçalho */
+        .header-container {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://static.wixstatic.com/media/73a840_b6a87b6e021043bf82ff7643da53d049~mv2.png');
+            background-size: cover;
+            background-position: center;
+            padding: 6rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .header-content h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-content p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            font-weight: 600;
+        }
+        
+        .periodo {
+            background: rgba(0,0,0,0.7);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            display: inline-block;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            border: 2px solid var(--azul-revolucao);
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Navegação */
+        .nav-container {
+            background-color: var(--cinza-escuro);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            max-width: 1000px;
+        }
+        
+        .nav-btn {
+            background: var(--preto);
+            color: var(--cinza-claro);
+            border: 2px solid var(--azul-revolucao);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--azul-revolucao);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(65, 105, 225, 0.3);
+        }
+        
+        /* Conteúdo Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+        
+        /* Seções Temáticas */
+        .dossier-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-left: 6px solid var(--azul-revolucao);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--azul-revolucao);
+            position: relative;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--azul-revolucao);
+        }
+        
+        .section-text {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .section-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--cinza-medio);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .image-caption {
+            font-style: italic;
+            text-align: center;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            color: var(--cinza-medio);
+            font-size: 0.9rem;
+        }
+        
+        /* Elementos de Destaque */
+        .disinformation {
+            background: rgba(204, 0, 0, 0.08);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--vermelho);
+            position: relative;
+        }
+        
+        .disinformation::before {
+            content: 'NARRATIVA FALSA';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--vermelho);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .truth {
+            background: rgba(46, 125, 50, 0.08);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--verde);
+            position: relative;
+        }
+        
+        .truth::before {
+            content: 'FATOS DOCUMENTADOS';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--verde);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .quote {
+            font-style: italic;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--dourado);
+            background: rgba(245, 233, 217, 0.5);
+        }
+        
+        .quote-source {
+            text-align: right;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        /* Cards de Documentos */
+        .document-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-top: 3px solid var(--dourado);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .document-card:hover {
+            background: white;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .document-card h4 {
+            color: var(--dourado);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+        
+        .document-card p {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        
+        .document-link {
+            display: inline-block;
+            color: var(--verde-claro);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .document-link:hover {
+            color: var(--verde);
+            text-decoration: underline;
+        }
+        
+        /* Grid de Mecanismos */
+        .mechanisms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .mechanism-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.8rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--azul-revolucao);
+        }
+        
+        .mechanism-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .mechanism-card h3 {
+            color: var(--azul-revolucao);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .mechanism-card p {
+            color: var(--preto);
+            font-size: 1rem;
+        }
+        
+        /* Listas */
+        .styled-list {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .styled-list li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            list-style-type: none;
+            padding-left: 1.5rem;
+        }
+        
+        .styled-list li::before {
+            content: '•';
+            color: var(--azul-revolucao);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 5vh;
+            animation: zoom 0.3s;
+        }
+        
+        @keyframes zoom {
+            from {transform: scale(0.9); opacity: 0;}
+            to {transform: scale(1); opacity: 1;}
+        }
+        
+        .close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: var(--azul-revolucao);
+            transform: rotate(90deg);
+        }
+        
+        /* Responsivo */
+        @media (max-width: 900px) {
+            .header-content h1 {
+                font-size: 3rem;
+            }
+            
+            .header-content p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dossier-section {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="header-content">
+            <h1>ESTADO NOVO: MECANISMOS DE CONTROLO E DESINFORMAÇÃO</h1>
+            <p>Uma análise especializada sobre censura, propaganda e repressão (1933-1974)</p>
+            <div class="periodo">Páginas retiradas do Arquivo.pt</div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-menu">
+            
+            <button class="nav-btn" data-section="censura">Censura</button>
+            <button class="nav-btn" data-section="propaganda">Propaganda</button>
+            <button class="nav-btn" data-section="mocidade">Mocidade</button>
+            <button class="nav-btn" data-section="repressao">Repressão</button>
+            <button class="nav-btn" data-section="simbolos">Símbolos</button>
+            <button class="nav-btn" data-section="revolucao">Revolução</button>
+            <button class="nav-btn" data-section="revisionismo">Revisionismo</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+      
+        
+        <!-- Censura -->
+        <section id="censura" class="dossier-section">
+            <h2 class="section-title">Censura Institucionalizada</h2>
+            
+            <p class="section-text">Desde 1933, o Estado Novo legitimou a censura como forma de "defender" a opinião pública. O Decreto-Lei 22.469, de 11 de Abril de 1933, instituiu a censura prévia na imprensa para impedir a "perversão da opinião pública".</p>
+            
+            <img src="https://static.wixstatic.com/media/73a840_277f1e2b9d0740769bee3b9178a3c429~mv2.jpeg" alt="Censura no Diário de Lisboa" class="section-image" onclick="openModal(this)">
+            <p class="image-caption">JANEIRO DE 1924. Dirigido por Raul de Carvalho, “A Ditadura” foi um dos jornais nacionalistas que fez a apologia do ideário fascista ainda na I República (retirado de Arquivo.pt)</p>
+            
+           
+           
+            
+            <h3>Mecanismos de Censura:</h3>
+            <ul class="styled-list">
+                <li><strong>Secretariado da Propaganda Nacional (SPN)</strong> - criado em 1933 para supervisionar a informação</li>
+                <li><strong>Secretariado Nacional de Informação (SNI)</strong> - a partir de 1944, centralizou cultura, imprensa e rádio</li>
+                <li><strong>Lápis azul</strong> - instrumento icônico dos censores para riscar conteúdos</li>
+                <li><strong>Comissões de Censura</strong> - examinavam provas de jornais, livros e peças teatrais</li>
+            </ul>
+        </section>
+        
+        <!-- Propaganda -->
+        <section id="propaganda" class="dossier-section">
+    <h2 class="section-title">Máquina de Propaganda: A "Política do Espírito"</h2>
+    
+    <p class="section-text">O Estado Novo desenvolveu um sofisticado aparelho de propaganda sob a direção de António Ferro, que entre 1933 e 1949 moldou a imagem do regime através do cinema, artes visuais e imprensa. O <strong>Jornal Português</strong> (1938-1951) foi o principal veículo cinematográfico desta estratégia, projetando Portugal como uma nação imperial, moderna e neutra em tempos de guerra.</p>
+    
+    <div class="mechanisms-grid">
+        <div class="mechanism-card">
+            <h3>Cinema como Arma</h3>
+            <p>Actualidades filmadas exibidas em cinemas nacionais e pelo cinema ambulante do SPN/SNI</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Culto a Salazar</h3>
+            <p>Construção da imagem do líder como "grande realizador" do "filme Portugal"</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Nacionalismo Visual</h3>
+            <p>Exaltação de efemérides históricas e rituais patrióticos</p>
+        </div>
+    </div>
+    
+    <img src="https://static.wixstatic.com/media/73a840_c29b4376c1d54911b87ec6b0ee212bc6~mv2.jpeg" alt="António Ferro e equipa de filmagem" class="section-image" onclick="openModal(this)">
+    <p class="image-caption">António Ferro (centro) durante produção de material de propaganda (Fonte: Buala)</p>
+    
+    <div class="truth">
+        <p>Entre 1938-1945, o Jornal Português produziu 471 edições com cobertura tendenciosa, mostrando apenas 1 reportagem sobre colónias (Angola em 1950) apesar da retórica imperial. Após 1945, com a derrota do fascismo na Europa, a propaganda mudou para uma "política da matéria", destacando obras públicas.</p>
+    </div>
+    
+    <h3>Estratégias de Propaganda</h3>
+    <ul class="styled-list">
+        <li><strong>Neutralidade belicosa</strong>: Exaltação da "paz portuguesa" durante a II Guerra</li>
+        <li><strong>Irmandade Ibérica</strong>: Intercâmbio com o NO-DO espanhol de Franco</li>
+        <li><strong>Militarização do quotidiano</strong>: Imagens de paradas e exercícios militares</li>
+        <li><strong>Revisionismo histórico</strong>: Celebração do 28 de Maio e batalhas medievais</li>
+    </ul>
+    
+    <div class="quote">
+        <p>"Ferro impôs Salazar como o grande realizador de um filme com final feliz - Portugal. O presidente prestou-se a figurar em manifestações para dar substância aos valores do regime que corporizava."</p>
+        <p class="quote-source">- Análise do Jornal Português</p>
+    </div>
+    
+    <div class="document-card">
+        <h4>Documento Histórico</h4>
+        <p>Análise detalhada sobre "Salazar vai ao cinema" e a Política do Espírito no Jornal Português.</p>
+        <a href="https://arquivo.pt/wayback/20191117012320/https://www.buala.org/pt/afroscreen/salazar-vai-ao-cinema-a-politica-do-espirito-no-jornal-portugues" class="document-link" target="_blank">Acessar análise completa</a>
+    </div>
+    
+    <h3>Fases da Propaganda Estadonovista</h3>
+    <div class="timeline">
+        <div class="timeline-item">
+            <h4>1933-1938: Fundação</h4>
+            <p>Criação do SPN e primeiras campanhas de legitimação do regime</p>
+        </div>
+        <div class="timeline-item">
+            <h4>1938-1945: Apogeu</h4>
+            <p>Jornal Português como principal veículo durante a Guerra</p>
+        </div>
+        <div class="timeline-item">
+            <h4>1945-1958: Adaptação</h4>
+            <p>Transição para a "política da matéria" após derrota do Eixo</p>
+        </div>
+        <div class="timeline-item">
+            <h4>1958-1974: Declínio</h4>
+            <p>Perda de eficácia com novos meios de comunicação</p>
+        </div>
+    </div>
+    
+    <div class="disinformation">
+        <p>Narrativa oficial: "O Jornal Português mostrava a verdadeira face de Portugal" - omitindo a seleção cuidadosa de imagens e a omissão de problemas sociais.</p>
+    </div>
+</section>
+       <!--repressão -->
+        <section id="repressão" class="dossier-section">
+      <div class="document-card">
+    <h4>Vítima do Tarrafal: Albino de Carvalho</h4>
+    <img src="https://static.wixstatic.com/media/73a840_84f6b2d5db604004991421694a6afad1~mv2.webp" alt="Ficha prisional de Albino de Carvalho" class="section-image" onclick="openModal(this)">
+    <p class="image-caption">Ficha prisional de Albino António de Oliveira de Carvalho (Fonte: Museu do Aljube)</p>
+    
+    <p class="section-text">Albino António de Oliveira de Carvalho, comerciante em Tomar conhecido como "Carvalho das Batatas", foi uma das vítimas mortais do Campo de Concentração do Tarrafal.</p>
+    
+    <div class="disinformation">
+        <p>Narrativa oficial: "Preso para averiguações" - omitindo que foi vítima da repressão política sem julgamento.</p>
+    </div>
+    
+    <h5>Percurso Prisional (1937-1941):</h5>
+    <ul class="styled-list">
+        <li><strong>1937</strong>: Detido pela PVDE (antecessora da PIDE) e enviado para o Aljube</li>
+        <li><strong>1937-1939</strong>: Prisão de Peniche</li>
+        <li><strong>1939</strong>: Transferido para Caxias e depois deportado para o Tarrafal</li>
+        <li><strong>1941</strong>: Morre no campo aos 56 anos, vítima de maus-tratos e falta de assistência</li>
+    </ul>
+    
+    <div class="quote">
+        <p>"Morreu no Tarrafal vítima de doença, maus tratos e falta de assistência médica"</p>
+        <p class="quote-source">- Registos do Museu do Aljube</p>
+    </div>
+    
+    <a href="https://arquivo.pt/wayback/20210505160620/https://tomarnarede.pt/sociedade/um-tomarense-que-morreu-no-tarrafal/" class="document-link" target="_blank">Ler reportagem completa</a>
+</div>
+<div class="document-card">
+    <h4>Estratégias de Resistência à PIDE</h4>
+    <p>No Centro Nacional de Cultura, os opositores ao regime desenvolveram métodos criativos para enganar a polícia política:</p>
+    
+    <ul class="styled-list">
+        <li><strong>Passagem secreta</strong> - Permitia a fuga pelas traseiras durante batidas</li>
+        <li><strong>Frigorífico como esconderijo</strong> - Documentos proibidos eram guardados entre alimentos</li>
+        <li><strong>Reuniões clandestinas</strong> - Disfarçadas como eventos culturais</li>
+    </ul>
+    
+    <div class="quote">
+        <p>"Vasculharam tudo... mas esqueceram-se de procurar no frigorífico onde estavam os panfletos proibidos."</p>
+        <p class="quote-source">- Relato sobre Francisco Sousa Tavares enganando a PIDE</p>
+    </div>
+    
+    <div class="truth">
+        <p>Em 1969, a PIDE fechou à força a conferência "Lusitania Quo Vadis?" com Mário Soares e Jorge Sampaio, mas os organizadores rapidamente arranjaram um local alternativo numa fábrica em Alvalade.</p>
+    </div>
+    
+    <a href="https://arquivo.pt/wayback/20150604180046/http://expresso.sapo.pt/cultura/2015-06-04-A-PIDE-vasculhou-todos-os-cantos-da-casa.-Menos-o-frigorifico-onde-estavam-os-papeis" class="document-link" target="_blank">Ler reportagem completa</a>
+</div>
+</section>        
+        <!-- Mocidade Portuguesa -->
+       <section id="mocidade" class="dossier-section">
+    <h2 class="section-title">Mocidade Portuguesa: Doutrinação da Juventude</h2>
+    
+    <p class="section-text">Criada em 1936 (masculina) e 1937 (feminina), a <strong>Mocidade Portuguesa</strong> foi o principal instrumento de doutrinação juvenil do Estado Novo, inspirada nos modelos fascistas europeus. A organização visava moldar mentalidades desde a infância, promovendo valores nacionalistas, colonialistas e de obediência ao regime.</p>
+    
+    <img src="https://static.wixstatic.com/media/73a840_37999dac8d4948fab95907d377552c4f~mv2.jpg" alt="Membros da Mocidade Portuguesa em formação" class="section-image" onclick="openModal(this)">
+    <p class="image-caption">Membros da Mocidade Portuguesa em formação, Lisboa, 1936 (Fonte: Arquivo DN)</p>
+    
+    <div class="truth">
+        <p>A organização era obrigatória para jovens dos 7 aos 14 anos (Lusitos e Lusitas) e dos 14 aos 25 anos (Mocidade Portuguesa e Feminina). Em 1973, Marcello Caetano aboliu a obrigatoriedade, mas manteve a estrutura até à Revolução de 1974.</p>
+    </div>
+    
+    <h3>Características Principais:</h3>
+    <div class="mechanisms-grid">
+        <div class="mechanism-card">
+            <h3>Formação Ideológica</h3>
+            <p>Promoção do culto ao líder, exaltação do império colonial e valores nacional-católicos</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Atividades Paramilitares</h3>
+            <p>Exercícios de ordem unida, marchas e instrução militar básica para rapazes</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Modelo de Género</h3>
+            <p>Para raparigas: economia doméstica e preparação para "funções maternais"</p>
+        </div>
+    </div>
+    
+    <div class="document-card">
+        <h4>Reportagem Histórica: O Dia da Mocidade</h4>
+        <p>Desfile de 4.000 rapazes em Lisboa em 1946, descrito pelo Diário de Notícias como demonstração de "organização e retidão" do regime.</p>
+        <a href="https://arquivo.pt/wayback/20181203180620/https://www.dn.pt/edicao-do-dia/03-dez-2018/interior/o-dia-da-mocidade-10268658.html?target=conteudo_fechado" class="document-link" target="_blank">Ler reportagem original</a>
+    </div>
+    
+    <div class="disinformation">
+        <p>Narrativa oficial: "A Mocidade formava o carácter dos jovens portugueses" - omitindo o caráter doutrinário e a preparação paramilitar da organização.</p>
+    </div>
+    
+    <h3>Mocidade Portuguesa Feminina</h3>
+    <p class="section-text">Dirigida por Maria Guardiola durante 31 anos (1937-1968), a MPF promovia um modelo de mulher católica e submissa. Em 1936, uma delegação portuguesa visitou organizações juvenis fascistas em Itália para inspirar o modelo português.</p>
+    
+    <div class="quote">
+        <p>"Maria Guardiola era a mulher paradigmática da elite feminina do Estado Novo; culta, formada, católica, conservadora, próxima do regime"</p>
+        <p class="quote-source">- Irene Flunser Pimentel, historiadora</p>
+    </div>
+    
+    <div class="document-card">
+        <h4>Exemplo de discurso reacionário</h4>
+        <p>Relato pessoal de um ex-estudante sobre a transição do sistema educativo do Estado Novo para o pós-25 de Abril.</p>
+        <a href="https://arquivo.pt/wayback/20200907185001/https://www.jn.pt/opiniao/joao-goncalves/deixem-os-miudos-em-paz-12697605.html" class="document-link" target="_blank">Ler depoimento</a>
+    </div>
+    
+    <h3>Impacto e Legado</h3>
+    <ul class="styled-list">
+        <li>Formou gerações de portugueses nos valores do regime</li>
+        <li>Promoveu a adesão acrítica ao Estado Novo</li>
+        <li>Foi um instrumento de controle social sobre a juventude</li>
+        <li>Após 1974, foi extinta e substituída por organizações juvenis democráticas</li>
+    </ul>
+</section>
+        
+       
+        <!-- Símbolos Nacionais -->
+        <section id="simbolos" class="dossier-section">
+            <h2 class="section-title">Símbolos Nacionais e Religião</h2>
+            
+            <p class="section-text">O Estado Novo ancorou-se na nostalgia nacionalista e identidade católica para legitimar-se, promovendo:</p>
+            
+            <img src="https://static.wixstatic.com/media/73a840_ec922ba0795348cdaf6a298f949956c0~mv2.jpg" alt="Salazar e Franco" class="section-image" onclick="openModal(this)">
+            <p class="image-caption">Encontro entre Salazar e Francisco Franco, demonstrando a aliança entre regimes autoritários ibéricos (Fonte: DN)</p>
+            
+            <ul class="styled-list">
+                <li>Culto a Salazar (monumentos, nomes de ruas e escolas)</li>
+                <li><strong>Cristo-Rei</strong> em Lisboa (1940) como símbolo do nacional-catolicismo</li>
+                <li>Concordata com a Igreja Católica (1940)</li>
+                <li>Festas nacionais com desfiles militares e folclore</li>
+            </ul>
+            
+            <div class="disinformation">
+                <p>Narrativa oficial: "Portugal é um santuário fiel à sua alma antiga" - ocultando diversidade cultural e conflitos sociais.</p>
+            </div>
+        </section>
+        
+        <!-- Revolução -->
+       <section id="revolucao" class="dossier-section">
+    <h2 class="section-title">Revolução dos Cravos: O Fim do Estado Novo</h2>
+    
+    <p class="section-text">Em 25 de Abril de 1974, o <strong>Movimento das Forças Armadas (MFA)</strong> derrubou o regime autoritário em um golpe militar pacífico que ficaria conhecido mundialmente como a Revolução dos Cravos - símbolo da transição democrática portuguesa.</p>
+    
+    <div class="mechanisms-grid">
+        <div class="mechanism-card">
+            <h3>Operação Fim-Regime</h3>
+            <p>Planejada por capitães de abril como Salgueiro Maia</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Adesão Popular</h3>
+            <p>Civis apoiaram os militares nas ruas de Lisboa</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Símbolo dos Cravos</h3>
+            <p>Flores colocadas nos canos das armas como sinal de paz</p>
+        </div>
+    </div>
+    
+    <img src="https://static.wixstatic.com/media/73a840_8534bd43470b47489a7a12eef3cd29c0~mv2.jpg" alt="25 de Abril de 1974" class="section-image" onclick="openModal(this)">
+    <p class="image-caption">Momento histórico da Revolução dos Cravos em Lisboa (Fonte: Arquivo DN)</p>
+    
+    <div class="truth">
+        <h3>A Origem do Símbolo</h3>
+        <p>Os cravos vermelhos que se tornaram ícone da revolução foram um gesto espontâneo de Celeste Caeiro, funcionária do restaurante Franjinhas. Ao saber que "não se trabalhava porque estava em marcha uma revolução", levou cravos que seriam usados na decoração de um aniversário e os distribuiu a soldados no Rossio.</p>
+        
+        <div class="quote">
+            <p>"Um soldado pediu-me um cigarro, mas eu não tinha. Dei-lhe um cravo, que ele pôs no cano da espingarda. Um colega fez o mesmo. Dei os cravos todos. Foi o dia mais feliz da minha vida."</p>
+            <p class="quote-source">- Celeste Caeiro, em entrevista à Notícias Magazine</p>
+        </div>
+    </div>
+    
+    <h3>Momento Decisivo no Largo do Carmo</h3>
+    <p class="section-text">O ponto culminante da revolução ocorreu quando as tropas comandadas por Salgueiro Maia cercaram o Quartel do Carmo, onde Marcelo Caetano se refugiou. Celeste testemunhou a cena histórica:</p>
+    
+    <ul class="styled-list">
+        <li>Marcelo Caetano rendeu-se ao General Spínola</li>
+        <li>Multidões celebraram com cravos e bandeiras</li>
+        <li>Nenhum tiro foi disparado contra civis</li>
+    </ul>
+    
+    <div class="document-card">
+        <h4>Reportagem Histórica</h4>
+        <p>O relato emocionante de Celeste Caeiro, a mulher que iniciou o símbolo dos cravos na revolução.</p>
+        <a href="https://arquivo.pt/wayback/20190426183432/https://www.noticiasmagazine.pt/2019/a-celeste-que-encheu-a-revolucao-de-cravos/" class="document-link" target="_blank">Ler reportagem completa</a>
+    </div>
+    
+    <div class="mechanisms-grid">
+        <div class="mechanism-card">
+            <h3>Consequências Imediatas</h3>
+            <p>Fim da censura e libertação de presos políticos</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Processo Revolucionário</h3>
+            <p>Período conturbado até a estabilização democrática</p>
+        </div>
+        <div class="mechanism-card">
+            <h3>Legado</h3>
+            <p>25 de Abril como feriado nacional celebrando a liberdade</p>
+        </div>
+    </div>
+    
+    <div class="disinformation">
+        <p>Narrativas revisionistas: "O 25 de Abril trouxe caos" - omitindo que a revolução evitou violência e permitiu eleições livres.</p>
+    </div>
+    
+    <img src="https://static.wixstatic.com/media/73a840_08b3c84110c446cebd1921b9d7ffec27~mv2.jpeg" alt="1º de Maio de 1974" class="section-image" onclick="openModal(this)">
+    <p class="image-caption">Primeira celebração do 1º de Maio após a revolução, com Mário Soares e Álvaro Cunhal (Fonte: RTP)</p>
+</section>
+        
+        <!-- Revisionismo -->
+        <section id="revisionismo" class="dossier-section">
+            <h2 class="section-title">Revisionismo e Desinformação</h2>
+            
+            <p class="section-text">Atualmente, circulam narrativas que buscam reabilitar o Estado Novo, negando ou minimizando suas repressões:</p>
+            
+            <img src="https://static.wixstatic.com/media/73a840_60e722590dbe4355b69b131a44aad764~mv2.jpg" alt="Manifestação pró-Salazar em 2017" class="section-image" onclick="openModal(this)">
+            <p class="image-caption">Manifestação em homenagem a Salazar em Lisboa (2017) (Fonte: Global Imagens)</p>
+            
+            <div class="disinformation">
+                <p>Exemplo de fake news: "Salazar foi vítima de conspiração" ou "Portugal era mais seguro no Estado Novo".</p>
+            </div>
+            
+            <div class="truth">
+                <p>Arquivos públicos como a Torre do Tombo e Museu do Aljube comprovam torturas e execuções sistemáticas do regime.</p>
+            </div>
+            
+            <h3>Formas de Revisionismo:</h3>
+            <div class="mechanisms-grid">
+                <div class="mechanism-card">
+                    <h3>Homenagens Públicas</h3>
+                    <p>Ato em Lisboa (2017) evocando Salazar como "vítima".</p>
+                </div>
+                <div class="mechanism-card">
+                    <h3>Teorias Conspiratórias</h3>
+                    <p>Sobre possível assassinato de Salazar.</p>
+                </div>
+                <div class="mechanism-card">
+                    <h3>Negacionismo</h3>
+                    <p>Questionamento de crimes comprovados do regime.</p>
+                </div>
+            </div>
+            
+            <div class="document-card">
+                <h4>2024</h4>
+                <p>Ato anti-imigração em Lisboa tem saudações nazistas e defesa de Salazar.</p>
+                <a href="https://www1.folha.uol.com.br/mundo/2024/02/esvaziado-ato-anti-imigracao-em-lisboa-tem-saudacoes-nazistas-e-defesa-de-salazar.shtml" class="document-link" target="_blank">Acessar fontes primárias</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal para imagens -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        // Navegação entre seções
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const sectionId = button.getAttribute('data-section');
+                
+                // Atualiza botão ativo
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                
+                // Rola até a seção
+                document.getElementById(sectionId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Modal de imagens
+        function openModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = img.src;
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+        
+        // Fecha modal ao clicar fora da imagem
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
