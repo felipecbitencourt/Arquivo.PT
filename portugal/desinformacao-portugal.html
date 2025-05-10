@@ -159,7 +159,7 @@
         }
         
         .section-image {
-            width: 100%;
+            width: 50%;
             border-radius: 8px;
             margin: 1.5rem 0;
             border: 1px solid var(--cinza-medio);
@@ -407,6 +407,111 @@
             
             .main-container {
                 padding: 1rem;
+            }
+        }
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 3rem 1rem;
+                min-height: 3vh;
+               }
+            .section-image {
+      width: 100%; /* Dobra a largura */
+        max-width: 100%;
+        margin: 1.5rem 0;
+        transform: scale(1); /* Remove qualquer transform anterior */
+             }
+            
+            .nav-menu {
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+                gap: 2rem;
+            }
+            
+            .dossier-section {
+                padding: 1.5rem;
+            }
+            
+            .mechanisms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::before {
+                left: 60px;
+                border: medium solid var(--azul-revolucao);
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            
+            .left::after, .right::after {
+                left: 21px;
+            }
+            
+            .right {
+                left: 0%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 2rem 1rem;
+                min-height: 1vh;
+            }
+          .section-image {
+        width: 100%; /* Dobra a largura */
+        max-width: 100%;
+        margin: 1.5rem 0;
+        transform: scale(1); /* Remove qualquer transform anterior */
+             }
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .header-content p {
+                font-size: 1rem;
+            }
+            
+            .periodo {
+                font-size: 0.8rem;
+            }
+            
+            .dossier-section {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-text {
+                font-size: 0.95rem;
+            }
+            
+            .document-card {
+                padding: 1rem;
+            }
+            
+            .quote {
+                padding: 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
