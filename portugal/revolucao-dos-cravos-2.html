@@ -1,610 +1,210 @@
-
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Revolução dos Cravos | 25 de Abril de 1974</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --vermelho: #cc0000;
-            --vermelho-claro: #ff3333;
-            --preto: #1a1a1a;
-            --branco: #ffffff;
-            --cinza-escuro: #2d2d2d;
-            --cinza-medio: #4a4a4a;
-            --cinza-claro: #e0e0e0;
-            --fundo-claro: #f9f9f9;
-            --sombra: 0 2px 4px rgba(0, 0, 0, 0.1);
-            --sombra-destaque: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conquistas da Revolução</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --vermelho: #cc0000;
+      --vermelho-claro: #ff3333;
+      --preto: #1a1a1a;
+      --branco: #ffffff;
+      --cinza-claro: #f9f9f9;
+      --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --sombra-destaque: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Raleway', sans-serif;
-            background-color: var(--branco);
-            color: var(--preto);
-            line-height: 1.5;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
-            -webkit-font-smoothing: antialiased;
-        }
+    body {
+      font-family: 'Raleway', sans-serif;
+      background-color: var(--branco);
+      color: var(--preto);
+      line-height: 1.7;
+    }
 
-        /* ANIMAÇÕES OTIMIZADAS */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* SEÇÃO - MOBILE FIRST */
-        .section {
-            padding: 3rem 1.2rem;
-            position: relative;
-        }
+    .section {
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, var(--cinza-claro) 0%, var(--branco) 100%);
+    }
 
-        .section-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 2.5rem;
-            position: relative;
-            color: var(--vermelho);
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      text-align: center;
+      color: var(--vermelho);
+      margin-bottom: 4rem;
+      position: relative;
+    }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 3px;
-            background: var(--vermelho);
-        }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--vermelho);
+    }
 
-        /* LINHA DO TEMPO - MOBILE FIRST */
-        .timeline-container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 0;
-        }
+    .conquistas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        .timeline {
-            position: relative;
-            padding: 3rem 0 2rem;
-        }
+    .conquista-card {
+      background: var(--branco);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--sombra);
+      border-top: 4px solid var(--vermelho);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.4s ease;
+      animation: fadeIn 0.6s ease forwards;
+    }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 30px;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--vermelho);
-            z-index: 0;
-        }
+    .conquista-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 3rem;
-            padding-top: 50px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
+    .conquista-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: var(--sombra-destaque);
+    }
 
-        .timeline-item.visible {
-            opacity: 1;
-        }
+    .conquista-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--vermelho);
+      color: var(--branco);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
 
-        /* ANOS */
-        .timeline-year {
-            position: absolute;
-            left: 30px;
-            top: 0;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--vermelho);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.2rem;
-            color: var(--branco);
-            z-index: 3;
-            border: 4px solid var(--branco);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-        }
+    .conquista-card:hover .conquista-icon {
+      background: var(--vermelho-claro);
+      transform: rotate(15deg) scale(1.1);
+    }
 
-        /* CONTEÚDO */
-        .timeline-content {
-            background: var(--branco);
-            border-radius: 10px;
-            padding: 1.5rem;
-            width: calc(100% - 80px);
-            margin-left: 80px;
-            box-shadow: var(--sombra);
-            position: relative;
-            overflow: hidden;
-            border-left: 4px solid var(--vermelho);
-        }
+    .conquista-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      text-align: center;
+      color: var(--vermelho);
+      margin-bottom: 1rem;
+    }
 
-        .timeline-content:hover {
-            transform: none;
-        }
+    .conquista-card p {
+      text-align: center;
+      font-size: 1rem;
+    }
 
-        .timeline-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--vermelho);
-            position: relative;
-            padding-bottom: 8px;
-        }
+    @media (max-width: 768px) {
+      .section {
+        padding: 4rem 1.5rem;
+      }
 
-        .timeline-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 2px;
-            background: var(--vermelho);
-        }
+      .section-title {
+        font-size: 2.5rem;
+      }
+    }
 
-        .timeline-text {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: var(--preto);
-        }
+    @media (max-width: 480px) {
+      .section-title {
+        font-size: 2rem;
+      }
 
-        .timeline-date {
-            font-weight: bold;
-            color: var(--vermelho);
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
+      .conquista-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
 
-        .timeline-list {
-            margin: 0.8rem 0;
-            padding-left: 1.2rem;
-            font-size: 0.95rem;
-        }
-
-        .timeline-list li {
-            margin-bottom: 0.4rem;
-        }
-
-        .timeline-image, .image-grid img {
-            width: 100%;
-            border-radius: 6px;
-            margin: 1rem 0;
-            border: 1px solid var(--cinza-medio);
-            box-shadow: var(--sombra);
-        }
-
-        .timeline-source {
-            font-size: 0.85rem;
-            color: var(--cinza-medio);
-            margin-top: 0.8rem;
-            font-style: italic;
-        }
-
-        .timeline-source a {
-            color: var(--vermelho);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--vermelho);
-        }
-
-        /* PERÍODOS */
-        .period-marker {
-            position: relative;
-            width: 100%;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .period-title {
-            display: inline-block;
-            background-color: var(--vermelho);
-            color: white;
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-            box-shadow: var(--sombra);
-        }
-
-        /* BOTÃO VOLTAR */
-        .back-button {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 2rem auto 0;
-            padding: 0.7rem 1.5rem;
-            background: var(--vermelho);
-            color: var(--branco);
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-align: center;
-            font-family: 'Raleway', sans-serif;
-            box-shadow: var(--sombra);
-        }
-
-        /* IMAGE GRID */
-        .image-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin: 1rem 0;
-        }
-
-        /* ELEMENTOS ESPECIAIS */
-        .timeline-highlight {
-            background: rgba(204, 0, 0, 0.05);
-            border-left: 3px solid var(--vermelho);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .timeline-highlight blockquote {
-            font-style: italic;
-            margin: 0;
-        }
-
-        .timeline-highlight footer {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            text-align: right;
-        }
-
-        .timeline-details {
-            margin: 1rem 0;
-        }
-
-        .timeline-details h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            color: var(--vermelho);
-        }
-
-        /* RESPONSIVIDADE PARA TELAS MAIORES */
-        @media (min-width: 768px) {
-            .section {
-                padding: 4rem 1.5rem;
-            }
-            
-            .section-title {
-                font-size: 2.5rem;
-                margin-bottom: 3rem;
-            }
-            
-            .section-title::after {
-                width: 80px;
-                height: 4px;
-                bottom: -12px;
-            }
-            
-            .timeline::before {
-                left: calc(50% - 2px);
-            }
-            
-            .timeline-item {
-                margin-bottom: 4rem;
-                padding-top: 60px;
-            }
-            
-            .timeline-year {
-                left: 50%;
-                width: 80px;
-                height: 80px;
-                font-size: 1.5rem;
-            }
-            
-            .timeline-content {
-                width: calc(50% - 80px);
-                padding: 2rem;
-                margin-top: 20px;
-            }
-            
-            .timeline-item:nth-child(even) .timeline-content {
-                margin-left: calc(50% + 80px);
-                border-left: none;
-                border-right: 4px solid var(--vermelho);
-            }
-            
-            .timeline-title {
-                font-size: 1.6rem;
-            }
-            
-            .period-title {
-                font-size: 1.5rem;
-                padding: 0.5rem 1.5rem;
-            }
-            
-            .image-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .section {
-                padding: 5rem 2rem;
-            }
-            
-            .section-title {
-                font-size: 3rem;
-            }
-            
-            .timeline-content {
-                padding: 2.5rem;
-                border-left-width: 6px;
-            }
-            
-            .timeline-item:nth-child(even) .timeline-content {
-                border-right-width: 6px;
-            }
-            
-            .timeline-title {
-                font-size: 1.8rem;
-            }
-            
-            .timeline-text {
-                font-size: 1.1rem;
-            }
-        }
-    </style>
+      .conquista-card h3 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-   <!-- SEÇÃO DE LINHA DO TEMPO ATUALIZADA -->
-<section class="section">
-        <div class="timeline-container">
-            <h2 class="section-title">Revolução dos Cravos e Repercussões</h2>
-            
-            <div class="timeline">
-                <!-- 24 DE ABRIL -->
-                <div class="period-marker">
-                    <div class="period-title">24-25 de Abril de 1974</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-year">1974</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">24 de abril, 22h55</div>
-                        <h3 class="timeline-title">Primeiro Sinal: "E Depois do Adeus"</h3>
-                        <p class="timeline-text">A canção de Paulo de Carvalho, representante de Portugal no Festival Eurovisão daquele ano, foi escolhida como primeiro sinal codificado pelo MFA. Aparentemente inofensiva, passou despercebida pela censura do regime. Sua transmissão na Rádio Emissores Associados acionou as tropas revolucionárias em seus quartéis.</p>
-                        <div class="image-grid">
-                            <img src="https://static.wixstatic.com/media/73a840_d1e0b625e2f44c3d9992af3e4da5f628~mv2.png" alt="Diário de Lisboa sobre situação política">
-                          
-                        </div>
-                        <p class="timeline-source">Fontes: <a href="https://giradiscos.me/2020/04/25/a-historia-da-cancao-que-foi-a-primeira-senha-da-revolucao/" target="_blank">História da canção</a> | <a href="https://en.wikipedia.org/wiki/E_depois_do_adeus" target="_blank">Contexto Eurovisão</a></p>
-                    </div>
-                </div>
-                
-                <!-- 25 DE ABRIL MADRUGADA -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1974</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">25 de abril, 00h20</div>
-                        <h3 class="timeline-title">Segundo Sinal: "Grândola, Vila Morena"</h3>
-                        <p class="timeline-text">A canção proibida de Zeca Afonso, transmitida na Rádio Renascença, confirmou o avanço das tropas. Suas letras sobre fraternidade - "Grândola, vila morena/Terra da fraternidade" - tornaram-se o hino da revolução. O MFA escolheu esta música por seu claro conteúdo subversivo e popularidade entre os opositores do regime.</p>
-                        <img src="https://static.wixstatic.com/media/73a840_bac9c0d5049141ef9e7a05f168321eb2~mv2.jpeg" alt="Soldados durante a revolução" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://festivaiscancao.wordpress.com/2018/04/24/25-de-abril-de-1974-e-depois-do-adeus-da-o-arraque-ao-movimento-dos-capitaes/" target="_blank">Análise da música</a></p>
-                    </div>
-                </div>
-                
-                <!-- TOMADA DE LISBOA -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1974</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">25 de abril - madrugada/manhã</div>
-                        <h3 class="timeline-title">Tomada de Lisboa</h3>
-                        <p class="timeline-text">O capitão Salgueiro Maia liderou a ocupação do Terreiro do Paço com cerca de 200 soldados e 10 tanques. Enquanto isso, outras unidades tomaram a RTP, o Rádio Clube Português e o aeroporto. A população, inicialmente receosa, começou a juntar-se aos soldados quando percebeu que não haveria resistência armada. </p>
-                        <div class="image-grid">
-                         
-                            <img src="https://static.wixstatic.com/media/73a840_577b9136d5914e20b830d970d8e6d48a~mv2.jpg" alt="Quartel do Carmo">
-                        </div>
-                        <p class="timeline-source">Fontes: <a href="https://arquivos.rtp.pt/conteudos/25-de-abril-dia-da-liberdade/" target="_blank">Arquivos RTP</a> | <a href="https://tvtnews.com.br/revolucao-dos-cravos-portugal-escolhe-liberdade/" target="_blank">Depoimento de Celeste</a></p>
-                    </div>
-                </div>
-               <div class="timeline-item">
-    <div class="timeline-year">1974</div>
-    <div class="timeline-content">
-        <div class="timeline-date">25 de abril, manhã</div>
-        <h3 class="timeline-title">O Gesto de Celeste: Nasce o Símbolo da Revolução</h3>
-        <div class="image-grid">
-            <img src="https://static.wixstatic.com/media/73a840_c9cd95f18e4f425cbf669fb019afbc5d~mv2.jpeg" alt="Celeste Caeiro em foto histórica">
-           
-        </div>
-        <p class="timeline-text">Na manhã do dia 25, Celeste Martins Caeiro, empregada no restaurante "Franjinhas", decidiu distribuir os cravos vermelhos que não foram usados nas comemorações do aniversário do estabelecimento (fechado devido à revolução). Ao oferecer as flores aos soldados no Largo do Carmo, um deles colocou o cravo no cano do fuzil - gesto imitado por companheiros e que definiria a estética pacífica do movimento.</p>
-        
-        <div class="timeline-highlight">
-            <i class="fas fa-quote-left"></i>
-            <blockquote>
-                "Não foi planeado, foi espontâneo. Os cravos iam morrer de qualquer maneira, melhor foi dar-lhes um significado histórico."
-                <footer>- Celeste Caeiro, em entrevista para o 50.º aniversário</footer>
-            </blockquote>
-        </div>
-        
-        <div class="timeline-details">
-            <h4>Impacto Cultural:</h4>
-            <ul class="timeline-list">
-                <li>Os cravos vermelhos tornaram-se símbolo global de revoluções pacíficas</li>
-                <li>Inspiraram o nome "Revolução dos Cravos" (alternativa ao "25 de Abril")</li>
-                <li>Representados no Museu da República (Lisboa) como peça histórica</li>
-            </ul>
-        </div>
-        <p class="timeline-source">Fontes: 
-            <a href="https://tvtnews.com.br/revolucao-dos-cravos-portugal-escolhe-liberdade/" target="_blank">Entrevista com Celeste</a> | 
-            <a href="https://ensina.rtp.pt/artigo/a-historia-dos-cravos-de-abril/" target="_blank">RTP Ensina</a>
-        </p>
+  <section class="section">
+    <h2 class="section-title">Conquistas da Revolução</h2>
+    <div class="conquistas-grid">
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Liberdades Democráticas</h3>
+        <p>Fim da censura, legalização dos partidos políticos, eleições livres e liberdade de expressão.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Descolonização</h3>
+        <p>Independência das colônias portuguesas em África (Angola, Moçambique, Guiné-Bissau, Cabo Verde e São Tomé e Príncipe).</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Reforma Agrária</h3>
+        <p>Ocupação de latifúndios no Alentejo e criação de cooperativas agrícolas.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Direitos Trabalhistas</h3>
+        <p>Salário mínimo nacional, férias pagas, semana de 40 horas e direito à greve.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Educação e Saúde</h3>
+        <p>Expansão do acesso à educação pública e criação do Serviço Nacional de Saúde.</p>
+      </div>
+
+      <div class="conquista-card">
+        <div class="conquista-icon">🌸</div>
+        <h3>Igualdade de Género</h3>
+        <p>Reconhecimento dos direitos das mulheres e igualdade perante a lei.</p>
+      </div>
     </div>
-</div> 
-                <!-- RENDIÇÃO -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1974</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">25 de abril - tarde</div>
-                        <h3 class="timeline-title">Rendição no Quartel do Carmo</h3>
-                        <p class="timeline-text">Marcelo Caetano refugiou-se no Quartel do Carmo, cercado por civis e militares. Após horas de negociação mediada pelo general Spínola, rendeu-se por volta das 17h45. Sua saída foi televisionada ao vivo pela RTP, marcando simbolicamente o fim do Estado Novo. </p>
-                        <div class="image-grid">
-                            <img src="https://static.wixstatic.com/media/73a840_8534bd43470b47489a7a12eef3cd29c0~mv2.jpg" alt="Reunião do MFA">
-                            
-                        </div>
-                        <p class="timeline-source">Fonte: <a href="https://brasilescola.uol.com.br/historiag/revolucao-dos-cravos.htm" target="_blank">Cronologia detalhada</a></p>
-                    </div>
-                </div>
+  </section>
 
-                <!-- PÓS-REVOLUÇÃO -->
-                <div class="period-marker">
-                    <div class="period-title">Pós-Revolução e Descolonização</div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-year">1974</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">26 de abril</div>
-                        <h3 class="timeline-title">Junta de Salvação Nacional</h3>
-                        <p class="timeline-text">Formada pelo general Spínola, a Junta iniciou imediatamente a democratização: libertou presos políticos, extinguiu a PIDE/DGS e marcou eleições para uma Assembleia Constituinte. O 1.º de Maio foi celebrado legalmente pela primeira vez desde 1926, reunindo meio milhão de pessoas em Lisboa. O processo revolucionário, porém, enfrentaria tensões entre moderados (Spínola) e radicais (Otelo Saraiva de Carvalho).</p>
-                        <img src="https://static.wixstatic.com/media/73a840_0c63e913b3cc4e34a09012b2306e7b80~mv2.jpeg" alt="Comemorações do 25 de Abril" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20140929040101/http://searanova.publ.pt/pt/1727/40anosdeabril/496/Do-sonho-%C3%A0-realidade.htm" target="_blank">Do sonho à realidade (Arquivo.pt) </a></p>
-                    </div>
-                </div>
-
-                <!-- DESCOLONIZAÇÃO -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1975</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Independências Africanas</h3>
-                        <p class="timeline-text">Portugal reconheceu a independência de Guiné-Bissau (10/09/1974), Moçambique (25/06/1975), Cabo Verde (05/07/1975), São Tomé e Príncipe (12/07/1975) e Angola (11/11/1975). O processo acelerado gerou conflitos em Angola e Moçambique, enquanto cerca de 500 mil retornados chegavam a Portugal, pressionando a economia. A descolonização encerrou 5 séculos de império colonial português.</p>
-                        <img src="https://static.wixstatic.com/media/73a840_542114443d0e45cda4f64b466de1cc8d~mv2.jpg" alt="Soldados portugueses em África" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20200221160914/https://www.esquerda.net/dossier/da-guerra-colonial-independencias-africanas/63737" target="_blank">Da guerra colonial às independências africanas (Arquivo.pt)</a></p>
-                    </div>
-                </div>
-
-                <!-- ELEIÇÕES -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1975</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">25 de abril de 1975</div>
-                        <h3 class="timeline-title">Primeiras Eleições Livres</h3>
-                        <p class="timeline-text">Com 92% de participação, o PS obteve 38% dos votos para a Assembleia Constituinte, seguido pelo PPD (26%) e PCP (14%). Foi a primeira votação democrática desde 1925, marcando o início da institucionalização do regime. A Constituinte teria a tarefa de redigir uma nova carta magna, enquanto o país vivia o turbulento "Verão Quente" entre socialistas e comunistas.</p>
-                        <img src="https://static.wixstatic.com/media/73a840_f579e1e8a6bd4c739075986db8ea778e~mv2.jpg" alt="Eleições de 1975" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://arquivo.pt/wayback/20220413134321/https://paivacardoso.com/2015/04/25/eleicoes-1975-o-inicio-do-combate-entre-a-legitimidade-revolucionaria-e-a-legitimidade-eleitoral/" target="_blank">Eleições 1975. O início do combate entre a legitimidade revolucionária e a legitimidade eleitoral</a></p>
-                    </div>
-                </div>
-
-                <!-- CONSTITUIÇÃO -->
-                <div class="timeline-item">
-                    <div class="timeline-year">1976</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Nova Constituição Democrática</h3>
-                        <p class="timeline-text">Promulgada em 2 de abril, a Constituição consagrou direitos sociais inéditos (saúde e educação públicas), nacionalizações e controle operário. O texto refletia o clima revolucionário, com referências ao "socialismo" e papel central das Forças Armadas. Seria revisado em 1982 (redução do poder militar) e 1989 (fim da irreversibilidade das nacionalizações).</p>
-                        <img src="https://static.wixstatic.com/media/73a840_8c6cb9feff5543f685e33681910a6b2e~mv2.jpeg" alt="Constituição de 1976" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://brasilescola.uol.com.br/historiag/revolucao-dos-cravos.htm" target="_blank">Brasil Escola</a></p>
-                    </div>
-                </div>
-
-                <!-- LEGADO -->
-                <div class="period-marker">
-                    <div class="period-title">Memória e Legado</div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-year">1986</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Entrada na CEE</h3>
-                        <p class="timeline-text">A adesão à Comunidade Econômica Europeia (atual UE) em 1 de janeiro marcou a plena integração de Portugal na Europa democrática. Os fundos europeus modernizaram infraestruturas, mas aprofundaram assimetrias regionais. O país passou por transformações sociais aceleradas, do acesso a bens de consumo à secularização.</p>
-                        <img src="https://static.wixstatic.com/media/73a840_2e57dd2a0c5c403382502acd4c9e1d26~mv2.jpg" alt="Mapa da UE em 1986" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://arquivos.rtp.pt/conteudos/1986-adesao-a-cee/" target="_blank">Reportagem RTP</a></p>
-                    </div>
-                </div>
-
-                <!-- COMEMORAÇÕES -->
-                <div class="timeline-item">
-                    <div class="timeline-year">Anual</div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">25 de abril</div>
-                        <h3 class="timeline-title">Dia da Liberdade</h3>
-                        <p class="timeline-text">Celebrado desde 1975, o feriado nacional inclui:</p>
-                        <ul class="timeline-list">
-                            <li>Reencenações da ocupação do Carmo</li>
-                            <li>Concertos com "Grândola" em todo o país</li>
-                            <li>Debates sobre direitos civis e memória colonial</li>
-                            <li>Inauguração de monumentos aos "Capitães de Abril"</li>
-                        </ul>
-                        <div class="image-grid">
-                            <img src="https://static.wixstatic.com/media/73a840_096a981137ba4d39b7230a87c8519432~mv2.jpg" alt="Comemorações do 25 de Abril">
-                            
-                        </div>
-                        <p class="timeline-source">Fonte: <a href="https://tvtnews.com.br/revolucao-dos-cravos-portugal-escolhe-liberdade/" target="_blank">TVT News</a></p>
-                    </div>
-                </div>
-
-                <!-- 50 ANOS -->
-                <div class="timeline-item">
-                    <div class="timeline-year">2024</div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">50.º Aniversário</h3>
-                        <p class="timeline-text">As comemorações do cinquentenário destacaram:</p>
-                        <ul class="timeline-list">
-                            <li>Exposições sobre mulheres na revolução</li>
-                            <li>Documentários com arquivos da PIDE</li>
-                            <li>Reedição do livro "Capitães de Abril"</li>
-                            <li>Debates sobre colonialismo e memória</li>
-                        </ul>
-                        <img src="https://static.wixstatic.com/media/73a840_4f451daf34f942f5babf72e8c6c997a6~mv2.png" alt="Logotipo das comemorações dos 50 anos" class="timeline-image">
-                        <p class="timeline-source">Fonte: <a href="https://50anos25abril.pt/" target="_blank">Site oficial</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-                   
-
-    <script>
-        // Animação de scroll otimizada para mobile
-        function checkScroll() {
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            const windowHeight = window.innerHeight;
-            
-            timelineItems.forEach(item => {
-                const itemTop = item.getBoundingClientRect().top;
-                if (itemTop < windowHeight - 100) {
-                    item.classList.add('visible');
-                }
-            });
+  <script>
+    // Ativar animação ao scroll
+    function revelarConquistas() {
+      const cards = document.querySelectorAll('.conquista-card');
+      cards.forEach(card => {
+        const top = card.getBoundingClientRect().top;
+        if (top < window.innerHeight - 100) {
+          card.classList.add('visible');
         }
-        
-        // Verificar scroll ao carregar e ao rolar com debounce
-        let isScrolling;
-        window.addEventListener('load', checkScroll);
-        window.addEventListener('scroll', function() {
-            window.clearTimeout(isScrolling);
-            isScrolling = setTimeout(checkScroll, 50);
-        }, { passive: true });
-        
-        // Inicializar animações
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(checkScroll, 300);
-        });
-    </script>
+      });
+    }
+
+    window.addEventListener('scroll', revelarConquistas);
+    window.addEventListener('load', revelarConquistas);
+  </script>
 </body>
 </html>
